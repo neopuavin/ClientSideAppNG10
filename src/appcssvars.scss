@@ -1,0 +1,116 @@
+// Size Variables
+$header_height: 60px;
+$footer_height: 24px;
+
+$detail_top_height: 0px;
+$detail_bottom_height: 0px;
+
+$toolbar_height: 30px;
+
+$separator_size: 6px;
+$separator_collapse_size: 25px;
+
+$fixed_height_total: $header_height + $footer_height + $detail_top_height +
+  $detail_bottom_height;
+
+// ******************************* modules params ****************************************
+// Form Header
+$form_header_height: $toolbar_height;
+$form_fixed_height_total: $fixed_height_total + $form_header_height;
+$form_header_font-family:'Futura-Book-Italic';
+$form_body_font-family:'Futura-Book';
+$form_footer_font-family:'Futura-Condensed-Light';
+$form_input_font-family:'Futura-Book';
+$form_label_font-family:'Futura-Book';
+$form_button_font-family:'Futura-Book';
+
+
+// ********************************** bootstrap colors ******************************
+$bs_danger: #dc3545;
+$bs_warning: #ffc107;
+$bs_success: #28a745;
+$bs_info: #17a2b8;
+$bs_secondary: #6c757d;
+$bs_primary: #007bff;
+$bs_default: #6479a4;
+
+$bs_warning_light: #ffe495;
+$bs_purple: purple;
+
+// ********************************* Colour Variables ****************************
+// $back_color_dark: #071e3e;
+// $back_color_light: #304c86;
+
+
+$back_color_dark: $bs_warning;
+$back_color_light:$bs_warning;  // change to a lighter color to see gradient effect in header
+
+$back_color_gray:#f7f7f9;  // change to a lighter color to see gradient effect in header
+$fore_color_gray:#dadadd;  // change to a lighter color to see gradient effect in header
+
+
+$back_color_very_light_blue: #ebf1fa;
+
+$fore_color_dark: #1b365b;
+//$fore_color_dark: $back_color_light;
+$fore_color_light: #6479a4;
+$fore_color_lighter: #859dbf;
+
+//$line_color_dark: #25427f;
+$line_color_dark:$bs_danger;
+$menu_undeline: #859dbf;
+
+$line_very_light_gray: #dfdfdf;
+$line_extremely_light_gray: #efefef;
+
+//separators
+$separator_color: #d8dfe7;
+$separator_border: 1px inset #c0c0c0;
+
+//tree
+$tree_bg_current_node: $separator_color;
+$tree_bg_toolbar: $back_color_very_light_blue;
+$tree_fg_toolbar_btn: $fore_color_dark;
+$tree_ht_toolbar: $toolbar_height;
+$tree_border_toolbar: 1px inset $line_very_light_gray;
+$tree_node_font_family:'Futura-Book';
+
+//$line_color_view: #c0c0c0;
+$line_color_view: $menu_undeline;
+// Notes
+//   1. Usage of varibles in calc expression #{$varname}
+//   2.
+
+/************************************* Data Grid Definitions *******************************************/
+//$grid_fg_header: white;// $back_color_very_light_blue;
+//$grid_bg_header: $fore_color_light;// $back_color_very_light_blue;
+$grid_fg_header: $fore_color_dark;// $back_color_very_light_blue;
+$grid_bg_header: $back_color_gray;// $back_color_very_light_blue;
+
+$grid_bg_footer:$grid_bg_header;
+$grid_border_color:$line_very_light_gray;
+$grid_header_border_color:$fore_color_gray;
+
+$grid_row_selected_color:$line_very_light_gray;
+$grid_hover_color:$line_extremely_light_gray;
+
+$grid_header_font-family:'Futura-Book';
+$grid_body_font-family:'Futura-Book';
+$grid_footer_font-family:'Futura-Book';
+
+$grid_cell_font:'Futura-Book';
+$grid_cell_font_size:.85em;
+$grid_cell_padding:0px 5px;
+
+$grid_header_cell_font_size:.85em;
+$grid_header_cell_padding:2px 5px;
+
+$grid_prompt_padding:2px 10px;
+$grid_prompt_height:$footer_height;
+$grid_prompt_background:$back_color_gray;
+
+
+/*  */
+$form_tab_pane_border_color:#dee2e6;
+$form_tab_font-family:'Futura-Book';
+

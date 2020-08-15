@@ -1,0 +1,147 @@
+<div class="container-fluid m-0 p-0 flex-column" *ngIf="ds">
+  <nav id="nav-main" class="navbar p-0 px-2">
+    <!-- left side of navigation bar -->
+    <img src="./assets/shell_logo_d.png" alt="">
+    <p class="m-0 mx-1">
+      <span class="nav-brand noselect h5">{{ds.data["appHeader"]}}</span><br />
+      <span class="nav-brand noselect h6">{{ds.data["appHeaderSub"]}}</span>
+      <span id="app-ver" matTooltipPosition="below" [matTooltip]="appVer.tipText" class="noselect">{{appVer.label}}</span>
+    </p>
+
+    <!-- navigation bar middle spacer-->
+    <p style="margin: auto auto;">&nbsp;</p>
+
+    <!-- right side of navigation bar -->
+    <div class="d-flex flex-column">
+      <!--menu start-->
+      <div id="menu" class="d-flex text-white justify-content-end">
+        <span *ngFor="let m of menuList" class="noselect {{m.active ? 'active' : ''}}" (click)="menuClick(m.id)"><i
+            *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''" [class]="m.icon + ' mr-1'"></i>{{m.label}}
+        </span>
+        <span id="notifiaction" class="px-0 m-0 ml-2">
+          <i class="fa active"  matTooltipPosition="below" [matTooltip]="notificationTip"
+            [ngClass]="{'fa-flag':!ds.globalMessage['error'],'fa-ban':ds.globalMessage['error']}"></i>
+        </span>
+      </div>
+
+      <!--sub menu start [style.text-decoration]="s.ready ? null : 'line-through'"-->
+      <div>
+        <div id="sub-menu" class="d-flex text-white justify-content-end">
+          <span *ngIf="subMenu.length==0 || !subMenu">&nbsp;</span><span *ngFor="let s of subMenu"
+            class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
+
+            [style.color]="s.ready ? null : 'gray'">{{s.label}}</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="detail-container" class="card">
+    <div *ngIf="false" class="card-header">
+      <h1>Header</h1>
+    </div>
+    <div class="card-body p-0">
+      <div id="pnl-top"></div>
+      <div id="pnl-middle">
+        <div id="pnl-left"
+          [style.width]="this.panelSwitch.tree ? (treePanelWidth==-1 ? '' : treePanelWidth + 'px') :  '0px'">
+
+
+          <app-tree-view *ngIf="true" #mainTree [treeData]="ds.mainTreeData" [colorDefinitions]="ds.colorDefinitions"
+            [rootId]="ds.rootNodeId" [nodeHeight]="22" (nodeClick)="TreeClick($event)" [rollupColorData]="ds.treeColorData"
+            (searchTreeClick)="this.ds.SearchTree($event)"
+            (selectSearchedItem)="this.ds.SearchTreeDirectChildren($event)"
+            (nodePMClick)="TreePMClick($event)">
+            <span class="text-center p-3">
+              <i class="fa fa-spinner fa-spin fa-3x fa-fw mr-1" [style.font-size.em]="1.6"></i>{{treeLoadingMessage}}
+            </span>
+          </app-tree-view>
+
+        </div>
+        <div [class]="'vsp' + (!this.panelSwitch.tree ? ' vspc' : '')" (click)="SeparatorClick('tree')"></div>
+        <div id="pnl-center" [style.width.px]="0">
+          <!-- width=0 is necessary to prevent content to control the width of the panel-->
+          <!-- Modules -->
+          <app-anomaly [treeView]="treeView" [detailsHeight]="270" [moduleId]="1" [sourceTable]="ds.tblAnomalies" [assetField]="'AN_ASSET_ID'"
+            *ngIf="activeModule==1"></app-anomaly>
+          <app-design-data [treeView]="treeView" [moduleId]="2" [sourceTable]="ds.tblDesignData" [assetField]="''" *ngIf="activeModule==2">
+          </app-design-data>
+          <app-chemical-database [treeView]="treeView" [moduleId]="3" *ngIf="activeModule==3"></app-chemical-database>
+          <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4"></app-risk-based-inspection>
+          <app-survey-data [treeView]="treeView" [moduleId]="5" [sourceTable]="ds.tblSurveyHeader" *ngIf="activeModule==5"></app-survey-data>
+          <app-freespan [treeView]="treeView" [moduleId]="6" *ngIf="activeModule==6"></app-freespan>
+          <app-reference-library [treeView]="treeView" [sourceTable]="ds.tblRefFiles" [moduleId]="7" *ngIf="activeModule==7">
+          </app-reference-library>
+          <app-seismic [treeView]="treeView" [moduleId]="8" *ngIf="activeModule==8"></app-seismic>
+          <!-- Tools -->
+          <app-user-management [moduleId]="9" *ngIf="activeModule==9"></app-user-management>
+          <app-asset-management [moduleId]="10" *ngIf="activeModule==10"></app-asset-management>
+          <app-survey-upload [moduleId]="11" *ngIf="activeModule==11"></app-survey-upload>
+          <app-settings [moduleId]="14" *ngIf="activeMenu.id==3" [formTitle]="'Application Settings'"></app-settings>
+        </div>
+        <div *ngIf="false" [class]="'vsp' + (!this.panelSwitch.info ? ' vspc' : '')" (click)="SeparatorClick('info')">
+        </div>
+        <div *ngIf="false" id="pnl-right"
+          [style.width]="this.panelSwitch.info ? (infoPanelWidth==-1 ?'' : infoPanelWidth +'px') :  '0px'">
+          <ul class="list-group">
+            <li class="list-group-item py-1 px-2">Asset:&nbsp;{{ this.ds.mainTreeCurrentNode.text }}</li>
+            <li class="list-group-item py-1 px-2">URL:&nbsp;{{ this.ds.apiUrl }}</li>
+            <li class="list-group-item py-1 px-2">Lookup: {{this.ds.tblLookups.rows.length}}</li>
+            <li *ngIf="ds.TimeVars['rf']" class="list-group-item py-1 px-2">Processec RF (ms): {{ds.TimeVars['rf']}}
+            </li>
+            <li *ngIf="ds.TimeVars['an']" class="list-group-item py-1 px-2">Processec RF (ms): {{ds.TimeVars['an']}}
+            </li>
+            <li *ngIf="ds.TimeVars['bench']" class="list-group-item py-1 px-2">Process bench (ms):
+              {{ds.TimeVars['bench']}}</li>
+            <li *ngIf="ds.TimeVars['node_group']" class="list-group-item py-1 px-2">Process node_group (ms):
+              {{ds.TimeVars['node_group']}}</li>
+            <!-- <li *ngIf="modReferenceLibrary" class="list-group-item py-1 px-2">RefFiles Filtered Records: {{modReferenceLibrary.mainGrid.dataSource.length}}</li> -->
+            <li *ngIf="ds.tblRefFiles.rows.length" class="list-group-item py-1 px-2">RefFiles Table Records:
+              {{ds.tblRefFiles.rows.length}}</li>
+            <li *ngIf="ds.tblRefFiles.rows.length" class="list-group-item py-1 px-2">RefFile row 0
+              data:({{ds.tblRefFiles.rows[0].RF_ID}})-{{ds.tblRefFiles.rows[0].RF_CONTRACTOR}}</li>
+            <li class="list-group-item py-1 px-2">Last Tree Extract Stat:
+              {{ds.tblTreeStruc.lastRequestDataParams | json}}</li>
+
+          </ul>
+
+        </div>
+      </div>
+      <div id="pnl-bottom"></div>
+
+    </div>
+    <div class="card-footer py-0 d-flex">
+      <span [title]="NodePath">Path:&nbsp;</span><span id="node-path"
+        style="overflow: hidden; text-overflow: ellipsis;">{{NodePath}}</span>
+      <span class="sp">&nbsp;</span>
+      <span>&nbsp;</span>
+      <!--Middle Footer-->
+      <span class="sp">&nbsp;</span>
+      <div class="d-flex">
+        <div class="d-flex">
+
+          <div id="view-cols" class="d-flex bg-light" title="Arrange panels in columns">
+            <div class="d-flex flex-column">
+              <div></div>
+              <div></div>
+            </div>
+            <div></div>
+            <div></div>
+          </div>
+
+          <div id="view-rows" class="d-flex bg-light" title="Arrange panels in rows">
+            <div class="d-flex flex-column">
+              <div></div>
+              <div></div>
+            </div>
+            <div class="d-flex flex-column">
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+
+        </div>
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  </div>
+</div>

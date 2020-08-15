@@ -1,0 +1,37 @@
+:host {
+  // background:lime;
+}
+$common_font: "Futura-Book";
+mat-form-field {
+  margin-right: 12px;
+  //background-color: yellow;
+  >
+  div.mat-form-field-wrapper{
+
+    div.mat-form-flex{
+      div.mat-form-field-infix{
+        input{
+    background-color: beige;
+    font-family: $common_font;
+    font-size: 1.3em;
+}
+      }
+    }
+
+  }
+  // input {
+  //   background-color: beige;
+  //   font-family: $common_font;
+  //   font-size: 1.3em;
+
+  // }
+}
+mat-label {
+  font-size: 1em;
+  font-family: $common_font;
+  // font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+div{
+  background:magenta !important;
+}

@@ -1,0 +1,52 @@
+@import "../../../../appcssvars.scss";
+:host{
+  // background-color: red;
+  flex:1 1 0;
+}
+.form-group {
+  box-sizing: border-box;
+  padding: 0px;
+  label {
+    font-family: $form_label_font-family;
+    font-size: 0.95em;
+    white-space: nowrap;
+    margin-right: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+  }
+  div.form-control{
+    padding:0px;
+    padding-top:2px;
+    font-size:1em;
+    // background-color: white;
+  }
+  .form-control[type="text"],
+  textarea.form-control,
+  select,
+  .form-control option {
+    font-size: 0.95em;
+    font-family: $form_input_font-family;
+  }
+
+  select.form-control{
+    padding-left: 3px;
+  }
+  select,
+  .form-control option {
+    padding-top: 3px;
+  }
+
+  // remove dropdown button
+  .xselect {
+    /* for Firefox */
+    -moz-appearance: none;
+    /* for Chrome */
+    -webkit-appearance: none;
+    /* For IE10 */
+    ::-ms-expand{
+      display: none;
+    }
+  }
+
+}

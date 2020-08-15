@@ -1,0 +1,165 @@
+@import "../../../../appcssvars.scss";
+
+
+
+
+
+#tree-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  height: 100%;
+  font-family: $tree_node_font_family;
+  // background-color: beige;
+
+
+  #search-result{
+    div.card-header {
+      flex:1 1 0;
+      padding:0px;
+      display: flex;
+      >span{
+        font-family: $tree_node_font_family;
+        font-size:0.85em;
+        // background: lime;
+        padding:0px 5px;
+      }
+      >i{
+        margin-left: auto;
+        font-size:0.7em;
+        padding:5px 5px;
+        cursor: pointer;
+        color:$bs_secondary;
+        // background-color: yellow;
+      }
+    }
+  }
+
+  div.hsp{
+    height:$separator_size;
+    border-top:$separator_size solid $separator_color;
+    border-bottom:1px solid #c0c0c0;
+    box-sizing: border-box;
+    font-size:0px;
+    margin:0px;
+    padding:0px;
+  }
+
+  #tree-toolbar {
+    display: flex;
+    height: $tree_ht_toolbar;
+    background-color: $tree_bg_toolbar;
+    border-bottom: $tree_border_toolbar;
+    //margin-bottom: 5px;
+    box-sizing: border-box;
+    padding-left: 2px;
+    padding-right: 2px;
+    > div {
+      font-family: $tree_node_font_family;
+      button {
+        height: 26px;
+        width: 26px;
+        padding: 0px 0px;
+        > span.fa-stack {
+          width: 22px !important;
+          > i:last-child {
+            color: $tree_fg_toolbar_btn;
+            font-size: 0.5em;
+            margin-left: 6px;
+            margin-top: 6px;
+            //text-shadow: black 2px 2px 1px;
+          }
+          > i:first-child {
+            color: #c0c0c0; //$tree_fg_toolbar_btn;
+            font-size: 0.6em;
+            margin-top: 6px;
+          }
+        }
+      }
+    }
+    > div:last-child {
+      margin-left: auto;
+    }
+
+    > div#search-div {
+      input#search {
+        margin-top: 4px;
+        font-size: 0.8em;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        padding-left: 8px;
+        padding-right: 8px;
+        width: 150px;
+        border: 1px solid $line_very_light_gray;
+        border-radius: 10px;
+      }
+    }
+
+    button {
+      i {
+        font-size: 0.8em;
+      }
+    }
+  }
+
+  #tree-view-port {
+    display: flex;
+    flex-direction: column;
+    // background: cyan;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+
+    div.current {
+      background-color: $tree_bg_current_node;
+    }
+
+    div.node {
+      white-space: nowrap;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -o-user-select: none;
+      display: flex;
+      > div:first-child {
+        //background-color: lime;
+
+        font-size: 0.6em;
+        padding: 0px;
+        padding-top: 2px;
+        text-align: center;
+        cursor: pointer;
+        width: 12px;
+      }
+      > span.node-icon {
+        //background-color: red;
+        width: 18px;
+        padding-top: 0px;
+        margin-top: 0px;
+        margin-right: 0px;
+        text-align: center;
+        font-size: 0.9em;
+        > i.node-working {
+          font-size: 1.6em;
+          //color: $bs_default;
+          color: darkolivegreen;
+          //text-shadow:  gray 1px 1px 1px;
+        }
+      }
+      > div.node-text {
+        // node text
+        //background-color: magenta;
+        font-family: $tree_node_font_family;
+        font-size: 0.9em;
+        white-space: nowrap;
+        cursor: default;
+        padding-top: 2px;
+        padding-left: 2px;
+        margin-left: 0px;
+        flex: 1 1 0;
+      }
+    }
+  }
+}

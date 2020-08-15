@@ -1,0 +1,8 @@
+@import "../../../appcssvars.scss";
+
+:host {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 0 !important;
+  // background: red;
+}

@@ -1,0 +1,4 @@
+<div *ngIf="!this.formObject" class="alert alert-info" role="alert">
+  Form group object not initialized!
+</div>
+<ng-content *ngIf="this.formObject"></ng-content>

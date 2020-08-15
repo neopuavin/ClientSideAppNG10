@@ -1,1 +1,132 @@
-/* You can add global styles to this file, and also import other style files */
+
+/* preferred font definitions */
+@font-face {
+  font-family: "Alegreya Sans SC";
+  font-style: normal;
+  font-weight: bold;
+  src: url(/assets/fonts/Alegreya_Sans_SC/AlegreyaSansSC-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Roboto-Light";
+  font-style: normal;
+  font-weight: bold;
+  src: url(/assets/fonts/Roboto-Light.ttf);
+}
+
+@font-face {
+  font-family: "Montserrat-Italic";
+  font-style: normal;
+  font-weight: bold;
+  src: url(/assets/fonts/Montserrat-Italic.ttf);
+}
+
+@font-face {
+  font-family: "Montserrat-SemiBold";
+  font-style: normal;
+  font-weight: bold;
+  src: url(/assets/fonts/Montserrat-SemiBold.ttf);
+}
+
+@font-face {
+  font-family: "Montserrat-SemiBoldItalic";
+  font-style: normal;
+  font-weight: bold;
+  src: url(/assets/fonts/Montserrat-SemiBoldItalic.ttf);
+}
+
+@font-face {
+  font-family: "Futura-Bold";
+  src: url(/assets/fonts/Futura-Bold-font.ttf);
+}
+
+@font-face {
+  font-family: "Futura-Bold-Italic";
+  src: url(/assets/fonts/Futura-Bold-Italic-font.ttf);
+}
+
+@font-face {
+  font-family: "Futura-Book";
+  src: url(/assets/fonts/Futura-Book-font.ttf);
+}
+
+@font-face {
+  font-family: "Futura-Book-Italic";
+  src: url(/assets/fonts/Futura-Book-Italic-font.ttf);
+}
+
+@font-face {
+  font-family: "Futura-Condensed-Light";
+  src: url(/assets/fonts/Futura-CondensedLight.ttf);
+}
+
+/* fallback */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url(/assets/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format("woff2");
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  // -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+// body {
+//   //magrin:0 0 0 0;
+//   margin: 0px 0px 0px 0px;
+//   padding: 0px 0px 0px 0px;
+//   overflow: hidden;
+// }
+
+html,
+body {
+  height: 100%;
+  background: #cfcfcf;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+}
+
+#after-title {
+  font-family: "Montserrat-Italic";
+  padding-top: 0px;
+  padding-left: 10px;
+  font-size: 0.85em;
+}
+
+.noselect {
+  // background: red !important;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+// local variables
+$fore_color_dark: #1b365b;
+
+h2.form-header-text {
+    font-family: "Futura-Book";
+    font-weight: bold;
+    font-style: italic;
+    color: #505050;
+}
+

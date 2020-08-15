@@ -1,0 +1,9 @@
+<div class="d-flex flex-grow-1"
+[style.padding-left.px]="PaddingLeft"
+[style.padding-right.px]="PaddingRight"
+[style.padding-top.px]="PaddingTop"
+[style.padding-bottom.px]="PaddingBottom"
+[style.background]="bgcolor"
+[ngClass]="{'flex-column':!horizontal}">
+  <ng-content></ng-content>
+</div>

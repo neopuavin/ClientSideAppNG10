@@ -1,0 +1,94 @@
+<div id="grid-wrapper" *ngIf="isReady">
+  <div *ngIf="false" id="grid-toolbar">Toolbar</div>
+  <div #gridHeader id="grid-header" [style.min-height.px]="options.rowHeaderHeight+1"
+    [style.max-height.px]="options.rowHeaderHeight+1">
+
+    <!-- actual visible column headers -->
+    <div class="grid-header-row" [style.margin-left.px]="leftScrollOffset"
+      [style.min-height.px]="options.rowHeaderHeight" [style.max-height.px]="options.rowHeaderHeight">
+      <div class="row-header" [style.border-bottom]="'none'" [style.max-width.px]="RowHeaderWidth"
+        [style.min-width.px]="RowHeaderWidth">&nbsp;</div>
+      <div *ngFor="let h of options.columns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)" class="noselect"
+        [style.max-width.px]="cellWidth(h,ci)">{{h.caption}}</div>
+      <div *ngIf="headerPadWidth!=0" [style.min-width.px]="headerPadWidth" [style.max-width.px]="headerPadWidth">&nbsp;
+      </div>
+    </div>
+
+    <!-- hidden row which is used for column widths of visible header and details -->
+    <div #gridHeaderWidthGuide class="grid-header-row" [style.height.px]="0">
+      <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth">.</div>
+      <div *ngFor="let h of options.columns" [style.min-width.px]="headerWidth(h,{min:true})"
+        [style.max-width.px]="headerWidth(h,{max:true})">
+        {{h.minWidth}} : {{headerWidth(h,{max:true})}} : {{h.width}}</div>
+      <div
+        *ngIf="headerPadWidth!=0"
+        [style.min-width.px]="headerPadWidth"
+        [style.max-width.px]="headerPadWidth">&nbsp;
+      </div>
+    </div>
+  </div>
+
+  <cdk-virtual-scroll-viewport id="grid-view-port" #gridViewPort [style.height.%]="100" [itemSize]="options.rowHeight">
+    <div class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
+    <div class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
+    <div class="grid-prompt noselect" *ngIf="isLoadingData"><i
+        class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
+
+    <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;" [style.height.px]="options.rowHeight"
+      (click)="RowClick($event,r)" [ngClass]="RowClass(r)">
+      <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth">
+
+        <!-- <i class="pointer fa fa-pen"></i> -->
+        <!-- <i class="pointer fa fa-lock"></i> -->
+        <i class="pointer fa fa-caret-right"></i>
+        <input class="row-focus" type="text" (keyup)="KeyUp($event,r)" [id]="'row_focus_' + r[options.keyColumnName]" />
+        <!-- <i class="pointer fa fa-chevron-right"></i> -->
+      </div>
+      <div *ngFor="let c of options.columns;let ci=index;" class="grid-cell" [style.text-align]="c.align"
+        [style.min-width.px]="cellWidth(c,ci)" [style.max-width.px]="cellWidth(c,ci)" [style.color]="cellColor(r,c)"
+        [style.background]="cellBack(r,c)" (mouseenter)="OnCellMouse($event,r,c)" (mouseleave)="OnCellMouse($event,r,c)"
+        matTooltipPosition="below" [matTooltip]="cellTip">
+        {{cellText(r,c)}}
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+  <div *ngIf="!options.noFooter" id="grid-footer" class="d-flex">
+    <div id="footer-status" class="noselect" *ngIf="isPaging">{{recordStatus}}</div>
+    <div id="footer-no-paging" *ngIf="!isPaging" class="text-center">&nbsp;</div>
+    <div class="mr-auto">&nbsp;</div>
+
+    <div id="footer-loading" *ngIf="isLoadingData">Loading...<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>
+
+    <nav *ngIf="isPaging" aria-label="Page navigation example">
+      <ul class="pagination noselect m-0">
+        <li class="page-item">
+          <a class="page-link" href="#" (click)="pageNumber>1 ? PageClick($event,pageNumber-1): null"
+            aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li *ngFor="let p of pageArray" class="page-item">
+          <a [ngClass]="{'page-link':true,'page-active':isCurrPage(p+1)}"
+            (click)="!isCurrPage(p+1) && p!=-1 ? PageClick($event,p+1): null" href="#">{{PageNum(p)}}</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#" (click)="pageNumber<totalPages ? PageClick($event,pageNumber+1): null"
+            aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+        <li>
+          <select [value]="pageSize" [disabled]="isLoadingData" (change)="PageSizeChange($event)">
+            <option value="200">200</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+            <option value="1500">1500</option>
+            <option value="2000">2000</option>
+            <option value="3000">3000</option>
+          </select>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<!-- <div style="display: flex;flex-direction:column;">
+<app-data-grid #basic [sourceRows]="sourceRows" [options]="mainGridOptions"></app-data-grid>
+<app-data-grid #moreOptions [sourceRows]="sourceRows" [options]="mainGridOptions"></app-data-grid>
+</div> -->
+<div style="display: flex;flex-direction:column;height:calc(100% - 20px);">
+<div style="flex:1 1 0;background:#aeaeae;">
+  <app-data-grid #basic [sourceRows]="sourceRows(20)" [options]="basicGridOptions"></app-data-grid>
+</div>
+
+<div style="height:250px;background:#aeaeae;">
+  <app-data-grid #moreOptions [sourceRows]="sourceRows(5)" [options]="advancedGridOptions"></app-data-grid>
+</div>
+</div>

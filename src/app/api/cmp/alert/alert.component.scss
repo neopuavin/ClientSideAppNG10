@@ -1,0 +1,24 @@
+@import "../../../../appcssvars.scss";
+
+:host{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height:100%;
+}
+#wrapper{
+  display: flex;
+  flex-direction: column;
+  flex:1 1 0;
+  #content{
+    margin:0px 20px;
+    text-align: center;
+    margin:auto;
+    line-height: 1em;
+    font-family: $form_body_font-family;
+
+    font-size: 2.5em;
+    color: $fore_color_dark;
+    text-shadow: gray 1px 1px 1px;
+  }
+}

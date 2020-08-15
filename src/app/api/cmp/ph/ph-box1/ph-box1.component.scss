@@ -1,0 +1,46 @@
+:host{
+  flex:1 1 0;
+}
+.placeholder-content {
+  overflow: hidden;
+  background: #000;
+  position: relative;
+
+  // Animation
+  // animation-duration: 1.7s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-name: placeholderAnimate;
+  background: #f6f7f8; // Fallback
+  //background: linear-gradient(to right, #eee 2%, #ddd 18%, #eee 33%);
+  background: linear-gradient(to right, #fefefe 2%, #efefef 18%, #fefefe 33%);
+
+  flex:1 1 0;
+  // background-size: 1300px; // Animation Area
+}
+// .placeholder-content_item {
+//   width: 100%;
+//   position: absolute;
+//   background: #fff;
+//   z-index: 2;
+// }
+
+// .placeholder-content_item:after,
+// .placeholder-content_item:before {
+//   width: inherit;
+//   height: inherit;
+//   content: "";
+//   position: absolute;
+// }
+
+
+
+@keyframes placeholderAnimate {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}

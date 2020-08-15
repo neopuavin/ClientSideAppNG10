@@ -1,3 +1,4 @@
+import { AppMainServiceService } from './svc/app-main-service.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +7,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ng10';
+  title = 'NG10App';
+  public showMaterials:boolean =false;
+  public showFontAwesome:boolean =false;
+
+  constructor(
+    public dataSource: AppMainServiceService
+  ) {
+    // this.dataSource.dialog = this.dialog;
+  }
+
+  public get withSource(): boolean {
+    if (!this.dataSource) return false;
+    if (!this.dataSource.ActiveSource) return false;
+    return true;
+  }
+
 }

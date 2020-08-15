@@ -1,0 +1,87 @@
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-form-header',
+  templateUrl: './form-header.component.html',
+  styleUrls: ['./form-header.component.scss'],
+})
+export class FormHeaderComponent implements OnInit, AfterViewInit {
+  @Input() title: string;
+  @Input() rights: any = {};
+
+  @Output() addClick: EventEmitter<any> = new EventEmitter();
+  @Output() editClick: EventEmitter<any> = new EventEmitter();
+  @Output() deleteClick: EventEmitter<any> = new EventEmitter();
+  @Output() printClick: EventEmitter<any> = new EventEmitter();
+  @Output() searchKeyEvent: EventEmitter<any> = new EventEmitter();
+  @Output() filterClick: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('search') searchTextObj: any;
+  searchText: HTMLElement = null;
+
+  constructor() {}
+
+  SetButtonTitle(type: string): string {
+    if (type == 'add') {
+      return 'Add new record';
+    } else if (type == 'edit') {
+      return 'Edit selected record';
+    } else if (type == 'delete') {
+      return 'Delete selected record(s)';
+    }
+    return 'Sorry. This action is not yet avialable...';
+  }
+
+  ngAfterViewInit() {
+    this.searchText = this.searchTextObj.nativeElement;
+  }
+
+  ngOnInit(): void {}
+
+  SearchKeyEvent(event: any) {
+    this.searchKeyEvent.emit({ sender: this.searchText, e: event });
+  }
+
+  public get allowAdd(): boolean {
+    return this.rights.allowAdd;
+  }
+
+  AddClick(event: any) {
+    this.addClick.emit(event);
+  }
+
+  public get allowEdit(): boolean {
+    return this.rights.allowEdit
+  }
+  EditClick(event: any) {
+    this.editClick.emit(event);
+  }
+
+  public get allowDelete(): boolean {
+    return this.rights.allowDelete
+  }
+  DeleteClick(event: any) {
+    this.deleteClick.emit(event);
+  }
+
+
+  public get allowPrint(): boolean {
+    return this.rights.allowPrint;
+  }
+  PrintClick(event: any) {
+    this.printClick.emit(event);
+  }
+
+
+  FilterClick(event: any) {
+    this.filterClick.emit(event);
+  }
+}

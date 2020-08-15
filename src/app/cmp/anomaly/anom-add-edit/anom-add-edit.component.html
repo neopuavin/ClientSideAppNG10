@@ -1,0 +1,132 @@
+<app-app-form-a *ngIf="isReady" #detailForm [excludes]="['AN_TYPE_GROUP']" [readOnly]="false" (afterScatter)="AfterScatter($event)"
+  [sourceRow]="data.row" [formObject]="formObject" [labelWidth]="90" [rowSpacing]="1">
+  <div style="font-size:0.95em;padding:10px;height:92px;margin-bottom:10px;" class="form-control">
+    <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
+      <app-app-input-a [readOnly]="true" [fieldName]="'AN_REF'" [label]="'Ref.No.'" [LPL]="0"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_TYPE_GROUP'" [label]="'Group'" [lookupSource]="this.AnomalyLookup(149)">
+      </app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_ORIG_CLASS'" [label]="'Orig.Action'" [lookupSource]="this.AnomalyLookup(144)">
+      </app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_CURR_CLASS'" [label]="'Curr.Action'" [lookupSource]="this.AnomalyLookup(144)">
+      </app-app-input-a>
+    </app-panel-a>
+      <!-- <p>{{AssetInfo.code + ' - ' + AssetInfo.desc}}</p> -->
+    <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
+      <app-app-input-a  [readOnly]="true" [fieldName]="'AN_REVNO'" [label]="'Rev.No.'" [LPL]="0"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_TYPE'" [label]="'Type'" [lookupSource]="this.AnomalyTypeLookup()">
+      </app-app-input-a>
+
+      <app-app-input-a [fieldName]="'AN_ORIG_AVAIL_CLASS'" [label]="'Orig.Avail'"
+        [lookupSource]="this.AnomalyLookup(144)"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_CURR_AVAIL_CLASS'" [label]="'Curr.Avail'"
+        [lookupSource]="this.AnomalyLookup(144)"></app-app-input-a>
+    </app-panel-a>
+    <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
+      <app-app-input-a [fieldName]="'AN_ASSET_ID'"
+        [actionIcon]="'fa-sitemap'" [actionTip]="'Select new asset...'"
+        (actionClick)="ChangeAsset($event)"
+        [label]="'Asset'" [LPL]="0" [width]="335"
+        [lookupSource]="this.data.assetLookup">
+      </app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_DATE_IDENT'" [label]="'Identified'" (actionClick)="ChangeDate($event)"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_STATUS'" [label]="'Acn.Status'" [lookupSource]="this.AnomalyLookup(143)">
+      </app-app-input-a>
+    </app-panel-a>
+  </div>
+  <app-data-tabs #mainTab id="mainTabs" [options]="mainTabsOptions" name="mainTabs" (tabClicked)="TabClicked($event)">
+    <div *ngIf="activeTab.id==1">
+      <app-panel-a [horizontal]="true">
+        <app-panel-a [PR]="2">
+          <app-app-input-a [fieldName]="'AN_TITLE'" [label]="'Title'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_DESC'" [label]="'Description'" [rows]="6"></app-app-input-a>
+          <app-panel-a [horizontal]="true">
+            <app-panel-a [PR]="2">
+              <app-app-input-a [fieldName]="'AN_ASIS'" [label]="'Include in OTR1'" [toggleDisplay]="['Yes','No']">
+              </app-app-input-a>
+              <app-app-input-a [fieldName]="'AN_START_NORTH'" [label]="'Start Northing'"></app-app-input-a>
+              <app-app-input-a [fieldName]="'AN_END_NORTH'" [label]="'End Northing'"></app-app-input-a>
+
+            </app-panel-a>
+            <app-panel-a [PL]="2" [labelWidth]="120">
+              <app-app-input-a [fieldName]="'AN_MAINT_REQ'" [label]="'Maintenance Required'"
+                [toggleDisplay]="['Yes','No']"></app-app-input-a>
+              <app-app-input-a [fieldName]="'AN_START_EAST'" [label]="'Start Easting'"></app-app-input-a>
+              <app-app-input-a [fieldName]="'AN_END_EAST'" [label]="'End Easting'"></app-app-input-a>
+
+            </app-panel-a>
+
+          </app-panel-a>
+        </app-panel-a>
+        <app-panel-a [PL]="2" [width]="250" [labelWidth]="100">
+          <app-app-input-a [fieldName]="'AN_FNCR_REQUIRED'" [label]="'FNCR Required'" [toggleDisplay]="['Yes','No']">
+          </app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_FNCR'" [label]="'FNCR Reference'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_ACT_BY_DATE'" [label]="'Action Date'"  (actionClick)="ChangeDate($event)"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_LIFE_TERM'" [label]="'Life Term'" [lookupSource]="this.AnomalyLookup(146)">
+          </app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_ACT_PARTY'" [label]="'Action Party'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_WO_REF'" [label]="'SAP WO No.'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_WO_STATUS'" [label]="'SAP Status'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_PT_SUPPORT'" [label]="'P&T Support'" [toggleDisplay]="['Yes','No']">
+          </app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_PORTFOLIO_APPL'" [label]="'Port Application'"
+            [toggleDisplay]="['Yes','No']"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_EQ_FAILURE'" [label]="'Equipment Failure'" [toggleDisplay]="['Yes','No']">
+          </app-app-input-a>
+        </app-panel-a>
+      </app-panel-a>
+    </div>
+    <div *ngIf="activeTab.id==2">
+      <app-panel-a [horizontal]="true">
+        <app-panel-a [PR]="2">
+          <app-app-input-a [fieldName]="'AN_ASSMNT'" [label]="'Details'" [rows]="9"></app-app-input-a>
+        </app-panel-a>
+        <app-panel-a [PL]="2" [width]="300" [labelWidth]="100">
+          <app-app-input-a [fieldName]="'AN_RAISED_BY'" [label]="'Raised By'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_RAISED_DATE'" [label]="'Raised Date'"  (actionClick)="ChangeDate($event)"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_ASS_BY'" [label]="'Assessed By'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_ASS_DATE'" [label]="'Assessed Date'"  (actionClick)="ChangeDate($event)"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_UPD_BY'" [label]="'Updated By'" [readOnly]="true"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_UPD_DATE'" [label]="'Update Date'" [readOnly]="true"></app-app-input-a>
+        </app-panel-a>
+      </app-panel-a>
+    </div>
+    <div *ngIf="activeTab.id==3">
+      <app-panel-a [horizontal]="true">
+        <app-panel-a [PR]="2">
+          <app-app-input-a [fieldName]="'AN_RECCMD'" [label]="'Details'" [rows]="9"></app-app-input-a>
+        </app-panel-a>
+        <app-panel-a [PL]="2" [width]="300" [labelWidth]="100">
+          <app-app-input-a [fieldName]="'AN_TA_APPROVED'" [label]="'TA Approved'" [toggleDisplay]="['Yes','No']">
+          </app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_TA_NAME'" [label]="'TA Name'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_TA_APPR_DATE'" [label]="'Ta Approved Date'"  (actionClick)="ChangeDate($event)"></app-app-input-a>
+        </app-panel-a>
+      </app-panel-a>
+    </div>
+    <div *ngIf="activeTab.id==4">
+      <app-panel-a [horizontal]="true">
+        <app-panel-a [PR]="2">
+          <app-app-input-a [fieldName]="'AN_RISK_RANK_COMMENTS'" [label]="'Comments'" [rows]="9"></app-app-input-a>
+        </app-panel-a>
+        <app-panel-a [PL]="2" [PT]="4" [width]="320">
+          <app-risk-matrix [readOnly]="false" (riskClick)="RiskClick($event)" [phHeight]="210" [severity]="severity" [likelihood]="likelihood"></app-risk-matrix>
+        </app-panel-a>
+      </app-panel-a>
+
+    </div>
+    <div *ngIf="activeTab.id==5">
+      <app-panel-a [horizontal]="true">
+        <div style="background: red;flex:1 1 0;display:flex;">
+          <div style="display: flex;flex:1 1 0;" class="form-group">
+            <label for="">Select 1</label>
+            <select style="flex:1 1 0;" class="form-control form-control-sm">
+              <option>Opt1</option>
+              <option>Opt2</option>
+            </select>
+          </div>
+        </div>
+      </app-panel-a>
+    </div>
+  </app-data-tabs>
+</app-app-form-a>

@@ -1,0 +1,90 @@
+<div id="tree-wrapper">
+  <div id="tree-toolbar">
+    <div>
+
+      <button matTooltipPosition="below" [matTooltip]="SetButtonTitle('show_code')" class="btn btn-sm text-secondary"
+        (click)="ToggleCode()">
+        <i class="fa pt-2 pl-1" [ngClass]="{'fa-th-list':showCode,'fa-stream':!showCode}" style="font-size:1.0em;"></i>
+      </button>
+
+      <button *ngIf="currNode" matTooltipPosition="below" [matTooltip]="SetButtonTitle('zoom_tree')"
+        class="btn btn-sm text-secondary" (click)="NodeZoomClick()">
+        <span class="fa-stack fa-2x m-0 p-0">
+          <i class="fa fa-stream fa-stack-2x"></i>
+          <i class="fa fa-search-plus fa-stack-2x"></i>
+        </span>
+      </button>
+
+      <button *ngIf="rootNode" matTooltipPosition="below" [matTooltip]="SetButtonTitle('unzoom_tree')"
+        class="btn btn-sm text-secondary" (click)="NodeUnZoomClick()">
+        <span class="fa-stack fa-2x m-0 p-0">
+          <i class="fa fa-stream fa-stack-2x"></i>
+          <i class="fa fa-search-minus fa-stack-2x"></i>
+        </span>
+      </button>
+
+      <!-- <button (click)="ExpandAll()" [disabled]="isGlobalAction" [title]="SetButtonTitle('exp_all')" class="btn btn-sm text-secondary p-1">
+        <i class="fa fa-angle-double-down"></i>
+      </button>
+      <button (click)="CollapseAll()" [disabled]="isGlobalAction" [title]="SetButtonTitle('col_all')" class="btn btn-sm text-secondary p-1">
+        <i class="fa fa-angle-double-up"></i>
+      </button> -->
+      <button *ngIf="false" (click)="CollapseAllToLevel()" [disabled]="isGlobalAction"
+        [title]="SetButtonTitle('col_level')" class="btn btn-sm text-secondary p-1">
+        <i class="fa fa-angle-double-left"></i>
+      </button>
+
+      <!-- <button class="btn btn-sm">
+        <mat-icon color="red" >grade</mat-icon>
+      </button> -->
+
+    </div>
+
+    <!-- <div class="p-2">
+      Nodes: {{treeData.length}}
+    </div> -->
+
+    <!-- <div>{{rollupColorData.length}}</div> -->
+
+    <div id="search-div" class="ml-auto">
+      <input type="text" #searchInput id="search"
+      matTooltipPosition="below" matTooltip="Type string to search and hit enter or click search button. By default, matching records are those where the specified text is contained in the field value. To search starting with, append a % (percent) sign, to search ending prefix with % (percent) and for exact search, prefix with ! (exclamation)"
+      (keyup)="InpuKeyEvent($event)" placeholder="Search" aria-label="Search">
+      <button matTooltipPosition="below" id="search_button" (click)="InpuKeyEvent($event)" [matTooltip]="SetButtonTitle('search_tree')" class="btn btn-sm text-secondary">
+        <i id="search_button_icon" class="fa fa-search"></i>
+      </button>
+    </div>
+  </div>
+  <div id="search-result" class="card p-0 m-0"
+    [style.height.px]="searched || searching ? SearchResultHeight + gridOptions.rowHeight : 0"
+      [style.visibility]="searched || searching ? 'visible' : 'hidden'">
+    <div class="card-header" [style.height.px]="gridOptions.rowHeight">
+      <span [ngClass]="{'text-danger':searchError.length!=0, 'text-info':searchError.length==0}">{{searchPrompt}}</span>
+      <i class="fa fa-times" (click)="searched = false" matTooltipPosition="right" matTooltip="Close search results panel"></i>
+    </div>
+    <div class="card-body p-0 m-0 bg-secondary d-flex flex-column flex-grow"
+    [style.height.px]="SearchResultHeight" [style.visibility]="searched && searchCount!=0 ? 'visible' : 'hidden'">
+      <div style="flex:1 1 0;background:white;" class="m-0 p-0">
+        <app-data-grid #searchGrid (rowClick)="SearchRowClick($event)" [sourceRows]="this.searchResult" [options]="gridOptions"></app-data-grid>
+      </div>
+      <!-- <div class="bg-warning" style="border:1px solid red;">&nbsp;</div> -->
+    </div>
+  </div>
+  <div class="hsp" *ngIf="searchCount > 1 && searched"></div>
+
+  <ng-content *ngIf="treeData.length==0"></ng-content>
+
+  <cdk-virtual-scroll-viewport *ngIf="treeData.length!=0" #treeViewPort id="tree-view-port" [itemSize]="nodeHeight">
+    <div [attr.id]="'n_' + n.id" [class]="'node' + (n.current ? ' current' : '')" *cdkVirtualFor="let n of FlatTree"
+      [style.padding-left.px]="treeLeftPadding + (n.level * nodeIndent)" [style.height.px]="nodeHeight">
+      <div (click)="NodePMClick(n)"><i [ngClass]="NodePM(n)"></i></div>
+      <span class="node-icon fa-stack">
+        <i [class]="NodeIcon(n)+' fa-stack-1x'" [style.color]="NodeIconColor(n)"></i>
+        <i *ngIf="n.isChildNodesLoading" class="fa fa-spinner fa-spin fa-3x fa-fw fa-stack-1x m-0 node-working"></i>
+      </span>
+      <div [class]="'node-text'" [style.color]="n.isChildNodesLoading ? colorDefinitions.danger : ''"
+        (click)="NodeClick(n)">{{NodeText(n)}}</div>
+    </div>
+
+  </cdk-virtual-scroll-viewport>
+</div>

@@ -1,0 +1,111 @@
+<!--
+   [formGroup]="this.form.formObject" must exist as attribute to the
+   immediate wrapper container of the control in order to work!!!
+   !!! declaration of this attibute is not required at the top level form element
+-->
+<div *ngIf="this.form.formObject" [formGroup]="this.form.formObject" class="form-group d-flex flex-grow-1 mb-0"
+  [style.margin-top.px]="panel.RowSpacing">
+
+  <label for="" [style.min-width.px]="LabelWidth" [style.max-width.px]="LabelWidth"
+    [style.padding-left.px]="labelPaddingLeft" [style.padding-right.px]="labelPaddingRight"
+    [style.margin-top.px]="panel.MarginTop" [style.margin-bottom.px]="panel.MarginBottom"
+    [style.margin-left.px]="panel.MarginLeft" [style.margin-right.px]="panel.MarginRight"
+    class="noselect">{{label}}</label>
+
+  <div class="input-group" *ngIf="isInput &&  !isDataLoading" style="white-space: nowrap;display:flex;"
+    [style.width.px]="inputWidth">
+
+    <input #input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
+      [style.background]="background" [formControlName]="fieldName" [readonly]="isReadOnly || actionIcon"
+      class="form-control flex-grow-1 form-control-sm py-0 my-0">
+    <div *ngIf="actionIcon" class="input-group-append">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <i [class]="'fa ' + actionIcon" style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"
+          (click)="ActionClick($event)" [matTooltip]="actionTip"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- isDate   -->
+
+  <div class="input-group" *ngIf="isDate && !isDataLoading" style="white-space: nowrap;display:flex;"
+    [style.width.px]="inputWidth">
+
+    <input #input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
+      [style.background]="background" [formControlName]="fieldName" [readonly]="true"
+      class="form-control flex-grow-1 form-control-sm py-0 my-0" >
+    <div *ngIf="!isReadOnly" class="input-group-append">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <i class="fa fa-calendar-alt" style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"
+          (click)="ActionClick($event)" [matTooltip]="actionTip ? actionTip : 'Click to select date/time...'"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Select input, not readonly -->
+  <div class="input-group" *ngIf="isSelect && !isReadOnly && !isDataLoading" style="white-space: nowrap;display:flex;"
+    [style.width.px]="inputWidth">
+
+    <select #input *ngIf="actionClick.observers.length==0" [formControlName]="fieldName"
+      [style.height.px]="controlHeight" [style.width.px]="inputWidth"
+      class="form-control form-control-sm py-0 my-0 select">
+      <option *ngFor="let item of fieldLookup" [value]="item.key">{{item.text}}</option>
+    </select>
+
+    <input #input type="text" *ngIf="actionClick.observers.length!=0" [style.height.px]="controlHeight"
+      [placeholder]="placeHolder" [style.background]="background" [value]="displayValue" [readonly]="true"
+      class="form-control flex-grow-1 form-control-sm py-0 my-0">
+
+    <div *ngIf="actionClick.observers.length!=0" class="input-group-append">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <i [class]="'fa ' + (actionIcon ? actionIcon : 'fa-hand-pointer')"
+          style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below" (click)="ActionClick($event)"
+          [matTooltip]="actionTip ? actionTip : 'Click to select date/time...'"></i>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="input-group" *ngIf="isToggle && !isReadOnly">
+    <div class="input-group-prepend">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <input [formControlName]="fieldName" [attr.id]="fieldName+'_1'" type="radio" [value]="-1" style="margin:auto;">
+      </div>
+    </div>
+    <div class="form-control px-1" [style.height.px]="controlHeight">
+      <label [attr.for]="fieldName + '_1'">{{toggleDisplay[0]}}</label>
+    </div>
+
+    <div class="input-group-prepend">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <input [formControlName]="fieldName" [attr.id]="fieldName+'_0'" type="radio" [value]="0" style="margin:auto;">
+      </div>
+    </div>
+    <div class="form-control px-1" [style.height.px]="controlHeight">
+      <label [attr.for]="fieldName + '_0'">{{toggleDisplay[1]}}</label>
+    </div>
+
+    <!-- <input type="text" class="form-control px-1" onfocus="this.blur()" [readonly]="true" [style.background]="'white'" [value]="toggleDisplay[1]" [style.height.px]="controlHeight" aria-label="Text input with radio button"> -->
+  </div>
+  <!-- <input #input *ngIf="isToggle" class="form-control form-control-sm" type="radio" [formControlName]="fieldName" [value]="-1">
+  <input #input *ngIf="isToggle" class="form-control form-control-sm" type="radio" [formControlName]="fieldName" [value]="0"> -->
+
+  <!-- display data only -->
+  <div class="input-group" *ngIf="(isSelect || isToggle ) && isReadOnly && !isDataLoading">
+    <input #input type="text" [style.height.px]="controlHeight" [placeholder]="placeHolder"
+      [style.width.px]="inputWidth" [style.background]="background" [value]="displayValue" [readonly]="true"
+      class="form-control flex-grow-1 form-control-sm py-0 my-0">
+  </div>
+
+  <app-ph-box1 *ngIf="(isSelect || isInput || isToggle || isDate) && isDataLoading" [stripHeight]="controlHeight"
+    [backSize]="phBackSizeSelf" [duration]="phDurationSelf"></app-ph-box1>
+
+  <textarea #input *ngIf="isMemo && !isDataLoading" [rows]="Rows" [readonly]="isReadOnly"
+    [style.background]="background" [style.min-height.px]="Rows * controlHeight + panel.RowSpacing * (Rows-1)"
+    class="form-control flex-grow-1 form-control-sm py-0 my-0" [formControlName]="fieldName">
+  </textarea>
+  <app-ph-box1 *ngIf="isMemo && isDataLoading" [stripHeight]="Rows * controlHeight + panel.RowSpacing * (Rows-1)"
+    [backSize]="phBackSizeSelf" [duration]="phDurationSelf"></app-ph-box1>
+
+</div>
+

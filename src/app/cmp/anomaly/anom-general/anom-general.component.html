@@ -1,0 +1,47 @@
+<app-app-form-a [readOnly]="true" #detailForm [sourceRow]="this.module.sourceRow" [formObject]="this.module.mainFormObject"
+  [labelWidth]="90" [rowSpacing]="1">
+  <app-panel-a [horizontal]="true">
+    <app-panel-a [PR]="2">
+      <app-app-input-a [fieldName]="'AN_TITLE'" [label]="'Title'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_DESC'" [label]="'Description'" [rows]="6"></app-app-input-a>
+      <app-panel-a [horizontal]="true">
+        <app-panel-a [PR]="2">
+          <app-app-input-a [fieldName] = "'AN_ASIS'" [label]="'Include in OTR1'"  [toggleDisplay]="['Yes','No']"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_START_NORTH'" [label]="'Start Northing'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_END_NORTH'" [label]="'End Northing'"></app-app-input-a>
+
+        </app-panel-a>
+        <app-panel-a [PL]="2" [labelWidth]="120">
+          <app-app-input-a [fieldName]="'AN_MAINT_REQ'" [label]="'Maintenance Required'" [toggleDisplay]="['Yes','No']"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_START_EAST'" [label]="'Start Easting'"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_END_EAST'" [label]="'End Easting'"></app-app-input-a>
+
+        </app-panel-a>
+
+      </app-panel-a>
+    </app-panel-a>
+    <app-panel-a [PL]="2" [width]="250" [labelWidth]="100">
+      <app-app-input-a [fieldName]="'AN_FNCR_REQUIRED'" [label]="'FNCR Required'"  [toggleDisplay]="['Yes','No']"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_FNCR'" [label]="'FNCR Reference'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_ACT_BY_DATE'" [label]="'Action Date'"></app-app-input-a>
+      <!-- <app-app-input-a
+        [lookupTable]="this.module.ds.tblLookups"
+        [lookupGroup]="146"
+        [lookupValue]="'LKP_ID'"
+        [lookupDisplay]="'LKP_DESC_B'"
+        [fieldName]="'AN_LIFE_TERM'" [label]="'Life Term'"></app-app-input-a> -->
+
+        <app-app-input-a [lookupSource]="this.module.AnomalyLookup(146)"
+        [fieldName]="'AN_LIFE_TERM'" [label]="'Life Term'"></app-app-input-a>
+
+
+      <app-app-input-a [fieldName]="'AN_ACT_PARTY'" [label]="'Action Party'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_WO_REF'" [label]="'SAP WO No.'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_WO_STATUS'" [label]="'SAP Status'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_PT_SUPPORT'" [label]="'P&T Support'"  [toggleDisplay]="['Yes','No']"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_PORTFOLIO_APPL'" [label]="'Port Application'" [toggleDisplay]="['Yes','No']"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_EQ_FAILURE'" [label]="'Equipment Failure'" [toggleDisplay]="['Yes','No']"></app-app-input-a>
+    </app-panel-a>
+  </app-panel-a>
+
+</app-app-form-a>

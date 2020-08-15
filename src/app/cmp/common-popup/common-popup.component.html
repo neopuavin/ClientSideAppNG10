@@ -1,0 +1,18 @@
+<h2 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
+  class="m-0 noselect form-header-text p-1 px-3" mat-dialog-title><i *ngIf="data.icon"
+    [class]="'mr-2 fa ' + data.icon"></i>{{data.title ? data.title : 'No Title'}}
+</h2>
+
+<mat-dialog-content class="mat-typography">
+
+  <app-asset-selector *ngIf="data.component=='assetSelector'"></app-asset-selector>
+  <app-date-picker-a [data]="data" *ngIf="data.component=='datePicker'"></app-date-picker-a>
+  <app-anom-add-edit [data]="data" *ngIf="data.component=='addEditAnomaly'"></app-anom-add-edit>
+  <app-alert [data]="data" *ngIf="data.component=='alert'"></app-alert>
+
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="data.buttons" align="center">
+  <button mat-button *ngFor="let btn of this.data.buttons" [mat-dialog-close]="btn.value"
+    [class]="btn.class + ' m-0 p-0 ml-2'">{{btn.label}}</button>
+</mat-dialog-actions>

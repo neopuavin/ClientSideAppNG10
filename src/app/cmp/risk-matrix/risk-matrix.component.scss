@@ -1,0 +1,58 @@
+@import "../../../appcssvars.scss";
+.wrapper {
+  align-items: stretch;
+  font-size: 1.1em;
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  > div#heading {
+    display:flex;
+    background: #28a745;
+    color: white;
+    padding: 0.2em;
+    border-bottom: 1px solid white;
+    span{
+      margin:auto;
+    }
+  }
+  > div {
+    //background: cyan;
+    display: flex;
+    div {
+      // flex: 1 1 0;
+    }
+    div:first-child,
+    div.det_cell,
+    div.hdr_cell {
+      display: flex;
+      box-sizing: border-box;
+      // border: 1px solid $line_very_light_gray;
+      // min-width: 4em;
+      // max-width: 4em;
+      flex: 1 1 0;
+      // min-height: 2em;
+      // max-height: 2em;
+      padding-top: 0.2em;
+      padding-bottom: 0.2em;
+      text-align: center;
+      margin: 0.05em;
+      cursor: default;
+      p {
+        display: inline-block;
+        vertical-align: middle;
+        margin: auto;
+        flex: 1 1 0;
+        font-size:0.85em;
+      }
+    }
+    div.det_cell {
+      border-radius: 0.3em;
+      cursor: pointer;
+    }
+  }
+}
+
+::ng-deep .test {
+  white-space: pre-line;
+}

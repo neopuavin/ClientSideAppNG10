@@ -1,0 +1,227 @@
+@import "../../../appcssvars.scss";
+
+#nav-main {
+  background-image: linear-gradient($back_color_dark, $back_color_light);
+  //font-family: "Alegreya Sans SC", "Arial";
+  font-family: $form_body_font-family;
+
+  height: $header_height;
+
+  p span {
+    color: $fore_color_dark;
+    text-shadow: gray 1px 1px 1px;
+  }
+
+  #app-ver {
+    color: $fore_color_dark;
+    cursor: default;
+    margin-left: 7px;
+    font-size: 0.65em;
+    font-family: $form_body_font-family;
+    text-shadow: none;
+  }
+
+  #menu span.active,
+  #sub-menu span.active {
+    border-bottom: 2px solid $menu_undeline;
+    //color: $fore_color_dark;;
+  }
+  #menu span,
+  #sub-menu span {
+    color: $fore_color_dark;
+    font-size: 0.85em;
+    margin-left: 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  #menu span:hover,
+  #sub-menu span:hover {
+    color: $bs_success;
+  }
+  #menu span {
+    font-size: 0.9em;
+  }
+  #menu span#notifiaction{
+    color:#c0c0c0;
+    i.active{
+      color: $bs_danger;
+    }
+  }
+}
+
+#detail-container {
+  height: calc(100vh - #{$header_height});
+  border-radius: 0px;
+  border: none;
+  border-top: 2px solid $line_color_dark;
+  .card-body {
+    div {
+      //height: 100px;
+    }
+    #pnl-top {
+      background-color: lime;
+      height: $detail_top_height;
+    }
+
+    #pnl-middle {
+      display: flex;
+      justify-content: space-between;
+      //background-color: greenyellow;
+
+      height: calc(100vh - #{$fixed_height_total});
+
+      .vsp,
+      .vspc {
+        // vertical separator
+        background-color: $separator_color;
+        box-sizing: border-box;
+
+        border-left: $separator_border;
+        border-right: $separator_border;
+        //border-right:$separator_border;
+        width: $separator_size;
+        cursor: ew-resize;
+      }
+      .vspc {
+        width: $separator_collapse_size;
+        cursor: default;
+      }
+      .hsp {
+        // horizontal separator
+        background-color: $separator_color;
+        box-sizing: border-box;
+        height: $separator_size;
+      }
+
+      #pnl-left {
+        // Tree section
+        width: 320px;
+        z-index: 2;
+      }
+      #pnl-center {
+        flex-grow: 1;
+        //background-color: beige;
+      }
+      #pnl-right {
+        //background-color: cyan;
+        width: 250px;
+      }
+    }
+
+    #pnl-bottom {
+      background-color: green;
+      height: $detail_bottom_height;
+    }
+  }
+  .card-footer {
+    //border-top:1px solid $line_color_dark;
+
+    font-size: 0.9em;
+    height: $footer_height;
+    padding: 0px 5px;
+    white-space: nowrap;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none;
+    font-family: $form_footer_font-family;
+    >span:nth-child(1),>span:nth-child(2){
+      margin-top:3px;
+      margin-left:2px;
+    }
+    span#node-path {
+      overflow: hidden;
+    }
+    .sp {
+      // spacers
+      margin: auto auto;
+    }
+    #view-cols {
+      //background-color: red;
+      //width: 33px;
+      margin-top: 3px;
+      margin-right: 5px;
+      font-size: 0.1em;
+      height: 18px;
+      cursor: pointer;
+
+      > div {
+        height: 17px;
+        border-right: 1px solid $line_color_view;
+        border-bottom: 1px solid $line_color_view;
+        border-top: 1px solid $line_color_view;
+      }
+      > div:nth-child(1) {
+        //background-color: blue;
+        width: 7px;
+        border-left: 1px solid $line_color_view;
+        > div:nth-child(1) {
+          border-bottom: 1px solid $line_color_view;
+          height: 14px;
+        }
+        > div:nth-child(2) {
+          height: 3px;
+          //background-color: yellow;
+        }
+      }
+      > div:nth-child(2) {
+        width: 8px;
+      }
+      > div:nth-child(3) {
+        width: 12px;
+      }
+    }
+    #view-cols:hover {
+      //background-color: #c0c0c0;
+      background-color: red;
+    }
+    #view-rows:hover {
+      background-color: red;
+    }
+    #view-rows {
+      //background-color: red;
+      //width: 33px;
+      margin-top: 3px;
+      margin-right: 5px;
+      font-size: 0.1em;
+      height: 18px;
+      cursor: pointer;
+
+      > div {
+        height: 17px;
+        border-right: 1px solid $line_color_view;
+        border-bottom: 1px solid $line_color_view;
+        border-top: 1px solid $line_color_view;
+      }
+      > div:nth-child(1):hover {
+      }
+      > div:nth-child(1) {
+        //background-color: blue;
+        width: 7px;
+        border-left: 1px solid $line_color_view;
+        > div:nth-child(1) {
+          border-bottom: 1px solid $line_color_view;
+          height: 14px;
+        }
+        > div:nth-child(1):hover {
+        }
+        > div:nth-child(2) {
+          height: 3px;
+          //background-color: yellow;
+        }
+      }
+      > div:nth-child(2) {
+        width: 18px;
+        > div:nth-child(1) {
+          border-bottom: 1px solid $line_color_view;
+          height: 9px;
+        }
+        > div:nth-child(2) {
+          height: 9px;
+          //background-color: yellow;
+        }
+      }
+    }
+  }
+}

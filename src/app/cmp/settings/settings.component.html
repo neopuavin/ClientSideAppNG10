@@ -1,0 +1,11 @@
+<app-form-header [title]="moduleTitle" (addClick)="AddRecordEvent($event)" (searchKeyEvent)="SearchEvent($event)">
+  <div *ngIf="false" id="after-title" class="p-1 pl-2 pt-1">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw mr-1" style="font-size:.9em;"></i><span>Loading Data. Please
+      wait...</span>
+  </div>
+
+  <!-- <div id="after-title">AfterTitle</div>
+  <div id="before-search">Before Search</div>
+  <div id="before-actions">BeforeAction</div>
+  <div id="after-actions" class="test_class">AfterActions</div> -->
+</app-form-header>

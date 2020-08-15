@@ -1,0 +1,256 @@
+{
+  "DataSources": [
+    {
+      "name": "sepco",
+      "app_title": "SEPCo - IMSA",
+      "app_header_main": "Integrity Management System Application - IMSA",
+      "app_header_sub": "Shell Exploration and Production Company - SEPCo",
+      "tree_definition": [
+        {
+          "tree_id": 1,
+          "name": "Integrity Status",
+          "roots": [{ "location": "aa", "id": 772 }]
+        },
+        {
+          "tree_id": 2,
+          "name": "Equipment",
+          "roots": [{ "location": "ab", "id": 11542 }]
+        },
+        {
+          "tree_id": 5,
+          "name": "Other",
+          "roots": [
+            { "location": "ac", "id": 11690 },
+            { "location": "ad", "id": 89680 },
+            { "location": "ae", "id": 89683 },
+            { "location": "af", "id": 89684 },
+            { "location": "ag", "id": 89685 },
+            { "location": "ah", "id": 89686 },
+            { "location": "ai", "id": 89687 },
+            { "location": "aj", "id": 89688 },
+            { "location": "ak", "id": 89689 },
+            { "location": "al", "id": 89690 },
+            { "location": "am", "id": 89873 },
+            { "location": "an", "id": 89874 },
+            { "location": "ao", "id": 89875 },
+            { "location": "ap", "id": 89877 },
+            { "location": "aq", "id": 90169 },
+            { "location": "ar", "id": 95874 },
+            { "location": "as", "id": 95875 }
+          ]
+        }
+      ],
+      "url_local": "http://soga-alv/ngarbi/api/app",
+      "url_deploy": "http://ngimsa.ivideolib.com/api/app",
+      "url_use_deploy": false
+    },
+    {
+      "name": "spex",
+      "app_title": "SPEX - IMSA",
+      "app_header_main": "Integrity Management System Application - IMSA",
+      "app_header_sub": "Shell Philippines Exploration B.V. - SPEX",
+      "tree_definition": [
+        {
+          "tree_id": 1,
+          "name": "Integrity Status",
+          "roots": [{ "location": "aa", "id": 4667 }]
+        },
+        {
+          "tree_id": 2,
+          "name": "Equipment",
+          "roots": [{ "location": "ab", "id": 13970 }]
+        }
+      ],
+      "url_local": "http://soga-alv/ngarbi/api/app",
+      "url_deploy": "http://ngimsa.ivideolib.com/api/app",
+      "url_use_deploy": false
+    }
+  ],
+  "app_menu": [
+    {
+      "id": 1,
+      "label": "Modules",
+      "active": true,
+      "icon": "fa fa-window-maximize",
+      "subMenu": [
+        {
+          "id": 1,
+          "label": "Anomaly",
+          "active": true,
+          "init_fields": "AN_ID`AN_TITLE`ASSET_ID`AN_ORIG_CLASS`AN_CURR_CLASS",
+          "ready": true
+        },
+        { "id": 2, "label": "Design Data", "active": false, "ready": true },
+        { "id": 3, "label": "Chemical Database", "active": false },
+        { "id": 4, "label": "Risk Based Inspection", "active": false },
+        { "id": 5, "label": "Survey Data", "active": false, "ready": true },
+        { "id": 6, "label": "Freespan", "active": false, "ready": false },
+        {
+          "id": 7,
+          "label": "Reference Library",
+          "active": false,
+          "ready": true
+        },
+        { "id": 8, "label": "Seismic", "active": false }
+      ]
+    },
+    {
+      "id": 2,
+      "label": "Tools",
+      "active": false,
+      "icon": "fa fa-wrench",
+      "subMenu": [
+        { "id": 9, "label": "User Management", "active": false },
+        { "id": 10, "label": "Asset Management", "active": false },
+        { "id": 11, "label": "Survey Upload", "active": false }
+      ]
+    },
+    {
+      "id": 3,
+      "label": "Settings",
+      "active": false,
+      "icon": "fa fa-cog",
+      "subMenu": []
+    },
+    {
+      "id": 4,
+      "label": "Help",
+      "active": false,
+      "icon": "fa fa-question-circle",
+      "subMenu": []
+    },
+    {
+      "id": 5,
+      "label": "Hi User Name [id]",
+      "active": false,
+      "icon": "fa fa-user ml-2",
+      "subMenu": []
+    }
+  ],
+  "general": {
+    "url_local": "http://soga-alv/ngarbi/api/app",
+    "url_deploy": "http://ngimsa.ivideolib.com/api/app",
+    "url_use_deploy": false,
+    "app_version": {
+      "ver": "Alpha 1.3.2",
+      "build": "20200814",
+      "updates": [
+        "Migrated from Angular 9 to Angular 10 to take advantage of new features and bug fixes",
+        "Enabled up/down arrow key navigation on data grid/list",
+        "Implemented asset tree search feature",
+        "Implemented Integrity Status Tree Coloring",
+        "Activated Anomaly Edit Feature (no saving yet)",
+        "Created Asset Selector",
+        "Implemented common popup component",
+        "Started working on custom date picker",
+        "Enhanced Reactive Form input component for auto detection of data type and format UI accordingly",
+        "Fixed pagination issue",
+        "Tested application with larger SEPCo data to determine speed performance especially with tree coloring"
+      ],
+      "history": [
+        {
+          "ver": "Alpha 1.3.1",
+          "build": "20200813",
+          "updates": [
+            "Enabled up/down arrow key navigation on data grid/list",
+            "Implemented asset tree search feature",
+            "Implemented Integrity Status Tree Coloring"
+          ]
+        },
+        {
+          "ver": "Alpha 1.3.0",
+          "build": "20200810",
+          "updates": [
+            "Enhanced Reactive Form input component for auto detection of data type and format UI accordingly",
+            "Fixed pagination issue",
+            "Tested application with larger SEPCo data to determine speed performance especially with tree coloring"
+          ]
+        },
+        {
+          "ver": "Alpha 1.2.5",
+          "build": "20200722",
+          "updates": [
+            "Working on related records from other modules",
+            "Implemented inline lookups",
+            "Changed theme fonts to Futura",
+            "Started working on view objects",
+            "Started working on reactive forms",
+            "Concentrated working on Anomaly Module (i.e. other modules are obsolete)"
+          ]
+        },
+        {
+          "ver": "Alpha 1.2.5",
+          "build": "20200610",
+          "updates": ["Implemented Tree zoom feature"]
+        },
+        {
+          "ver": "Alpha 1.2.4",
+          "build": "20200609",
+          "updates": ["Implemented response data compression"]
+        },
+        {
+          "ver": "Alpha 1.2.3",
+          "build": "20200604",
+          "updates": [
+            "Changed tree loading to on-demand mode",
+            "Changed overall theme to Shell preferred colors",
+            "Started client and server side api advanced filtering facility",
+            "Activated Survey Module"
+          ]
+        },
+        {
+          "ver": "Alpha 1.2.0",
+          "build": "20200528",
+          "updates": [
+            "Activated Anomaly Module",
+            "Implemented cell rendering with foreground and backround settings"
+          ]
+        },
+        {
+          "ver": "Alpha 1.2.1",
+          "build": "20200528",
+          "updates": [
+            "Activated Anomaly Module",
+            "Implemented grid column lookup feature",
+            "Implemented cell rendering with foreground and backround settings",
+            "Activated Design Data Moodule",
+            "Implemented 2-level grid lookup using nested lookupParams",
+            "Implemented application versioning"
+          ]
+        },
+        {
+          "ver": "Alpha 1.2.2",
+          "build": "20200601",
+          "updates": [
+            "Started client and server side api advanced filtering facility",
+            "Activated Survey Module",
+            "Activated Anomaly Module",
+            "Implemented grid column lookup feature",
+            "Implemented cell rendering with foreground and backround settings",
+            "Activated Design Data Moodule",
+            "Implemented 2-level grid lookup using nested lookupParams",
+            "Implemented application versioning"
+          ]
+        }
+      ]
+    },
+    "color_defs": {
+      "danger": "#dc3545",
+      "warning": "#ffc107",
+      "success": "#28a745",
+      "info": "#17a2b8",
+      "secondary": "#6c757d",
+      "primary": "#007bff",
+      "default": "#6479a4"
+    }
+  },
+
+  "tree_init_config": {
+    "tree_root_location": "aa",
+    "tree_location_filter_pattern": "aa,aa__",
+    "tree_location_filter_pattern_deploy": "aa,aa__",
+    "tree_extract_node_fields": "REC_TAG`NODE_ID`NODE_DESC",
+    "tree_extract_tree_fields": "TRE_NOD_TAG`TRE_NOD_TAG_PAR`TRE_NOD_LOC`TRE_DAT_TAG",
+    "tree_child_extract_levels": 2
+  }
+}

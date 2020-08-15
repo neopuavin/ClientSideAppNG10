@@ -1,0 +1,10 @@
+@import "../../../appcssvars.scss";
+#main-grid-panel {
+  height: calc(100vh - #{$form_fixed_height_total + 100px});
+}
+.test_class {
+  color: red;
+}
+
+
+

@@ -1,0 +1,21 @@
+<div #tabWrapper class="tab-wrapper" [style.height.px]="dataTabHeight">
+    <ul class="nav nav-tabs">
+
+
+      <li class="nav-item"  *ngFor="let t of options.tabs" mat>
+        <button (click)="TabClicked(t)"
+          [class]="'nav-link py-0 px-2 noselect' + (t.active ? ' active' : '')"
+          [id]="'t_'+ t.id"  matTooltipPosition="below" [matTooltip]="t.toolTip"
+          href="#"><i *ngIf="t.icon" [class]="t.icon"></i>{{t.label}}</button>
+        <!-- <a (click)="TabClicked(t)"
+          [class]="'nav-link py-0 px-2 noselect' + (t.active ? ' active' : '')"
+          [id]="'t_'+ t.id"  matTooltipPosition="below" [matTooltip]="t.toolTip"
+          href="#"><i *ngIf="t.icon" [class]="t.icon"></i>{{t.label}}</a> -->
+      </li>
+
+    </ul>
+
+    <div class="tab-pane p-1">
+      <ng-content></ng-content>
+    </div>
+  </div>

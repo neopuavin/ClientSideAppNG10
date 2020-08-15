@@ -1,0 +1,28 @@
+<!-- <app-app-form-a #detailForm [sourceRow]="this.module.sourceRow" [formObject]="this.module.mainFormObject"
+  [labelWidth]="90" [rowSpacing]="1">
+  <app-panel-a [horizontal]="true">
+    <app-panel-a [PR]="2">
+      <app-app-input-a [fieldName]="'AN_ASSMNT'" [label]="'Details'" [rows]="9"></app-app-input-a>
+    </app-panel-a>
+    <app-panel-a [PL]="2" [width]="300" [labelWidth]="100">
+      <app-risk-matrix [phHeight]="210"></app-risk-matrix>
+    </app-panel-a>
+  </app-panel-a>
+
+</app-app-form-a> -->
+
+
+<app-app-form-a #detailForm [readOnly]="true" [sourceRow]="module.sourceRow" [formObject]="this.module.mainFormObject"
+  [labelWidth]="90" [rowSpacing]="4">
+  <app-panel-a [horizontal]="true">
+    <app-panel-a [PR]="2">
+      <app-app-input-a [fieldName]="'AN_RISK_RANK_COMMENTS'" [label]="'Comments'" [rows]="9"></app-app-input-a>
+      <!-- <app-app-input-a [fieldName]="'AN_RISK_RANK_SEVERITY'" [label]="'Severity'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_RISK_RANK_LIKELIHOOD'" [label]="'Likelihood'"></app-app-input-a> -->
+    </app-panel-a>
+    <app-panel-a [PL]="2" [PT]="4" [width]="320">
+      <app-risk-matrix [phHeight]="210" [severity]="severity"  [likelihood]="likelihood"></app-risk-matrix>
+    </app-panel-a>
+  </app-panel-a>
+
+</app-app-form-a>
