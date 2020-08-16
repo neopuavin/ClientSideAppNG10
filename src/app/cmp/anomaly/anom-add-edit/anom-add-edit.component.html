@@ -32,7 +32,7 @@
       </app-app-input-a>
     </app-panel-a>
   </div>
-  <app-data-tabs #mainTab id="mainTabs" *ngIf="isReady" [options]="mainTabsOptions" name="mainTabs" (tabClicked)="TabClicked($event)">
+  <app-data-tabs #mainTab id="mainTabs" [options]="mainTabsOptions" name="mainTabs" (tabClicked)="TabClicked($event)">
     <div *ngIf="activeTab.id==1">
       <app-panel-a [horizontal]="true">
         <app-panel-a [PR]="2">

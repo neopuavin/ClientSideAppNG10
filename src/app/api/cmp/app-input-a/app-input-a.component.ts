@@ -153,7 +153,7 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     //   const formObj = this.form.formObject;
     //   const ctrl = formObj.get(this.fieldName);
     // }
-    setTimeout(()=>this._changeValueNow=true,1);
+    setTimeout(()=>this._changeValueNow=true,0);
   }
 
   ngOnInit(): void {
@@ -306,15 +306,8 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     return ctrl;
   }
 
-  private _displayValueNow:boolean=false;
   public get displayValue(): string {
-
-    if(!this._displayValueNow){
-      // put a little delay to avoid error rendering UI when
-      // bound value unnecessarily change on initial load!
-      setTimeout(()=>this._displayValueNow=true,1);
-      return null;
-    }
+    if(!this._changeValueNow)return null;
 
     const ctrl = this.getFormControl;
     if (!ctrl) return '';

@@ -44,8 +44,8 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
 
-    setTimeout(()=>this._isReady=true,50)
-    setTimeout(() => this.SetAnomalyTypeGroup(), 60);
+    setTimeout(()=>this._isReady=true,5)
+    setTimeout(() => this.SetAnomalyTypeGroup(), 9);
 
   }
 
@@ -93,7 +93,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.detailForm.Scatter();
           tab.loaded = true;
-        }, 100);
+        }, 10);
       }
     }
   }
