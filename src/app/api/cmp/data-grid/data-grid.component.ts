@@ -99,6 +99,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor() {}
 
+  private _changeValuesNow:boolean = false;
   ngAfterViewInit() {
     setTimeout(() => {
       this.gridHeader = this.gridHeaderObj.nativeElement;
@@ -110,6 +111,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
           this._leftScrollOffset = -e.srcElement.scrollLeft;
         }
       );
+
+      setTimeout(()=>this._changeValuesNow =true,12);
     }, 10);
   }
 
@@ -174,6 +177,15 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   private _currentRow: any = null;
   public RowClick(event: any, row: any) {
     this.currentRow = row;
+  }
+
+  public get headerHeight():number{
+    if(!this._changeValuesNow)return 0;
+    return this.options.rowHeaderHeight+1;
+  }
+  public get rowHeaderHeight():number{
+    if(!this._changeValuesNow)return 0;
+    return this.options.rowHeaderHeight
   }
 
   public RowClass(row: any) {
@@ -249,6 +261,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _leftScrollOffset: number = 0;
   public get leftScrollOffset(): number {
+    if(!this._changeValuesNow)return 0;
     return this._leftScrollOffset;
   }
 
@@ -460,11 +473,18 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public get RowHeaderWidth(): number {
+    if(!this._changeValuesNow)return 6;
+
     if (this.options.rowHeaderWidth != undefined) {
       return this.options.rowHeaderWidth;
     } else {
       return this.options.rowHeaderHeight * 0.9;
     }
+  }
+
+  public setValueTo(trueValue:any,defaultValue:any){
+    if(!this._changeValuesNow)return defaultValue;
+    return trueValue;
   }
 
   // Events START **************************************************************************

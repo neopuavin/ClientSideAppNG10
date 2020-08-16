@@ -132,9 +132,11 @@
     "url_deploy": "http://ngimsa.ivideolib.com/api/app",
     "url_use_deploy": false,
     "app_version": {
-      "ver": "Alpha 1.3.2",
-      "build": "20200814",
+      "ver": "Alpha 1.3.3",
+      "build": "20200816",
       "updates": [
+        "Modularized application features for maintainability",
+        "Set delays on propery value assignment to prevent UI rendering errors",
         "Migrated from Angular 9 to Angular 10 to take advantage of new features and bug fixes",
         "Enabled up/down arrow key navigation on data grid/list",
         "Implemented asset tree search feature",
@@ -148,6 +150,13 @@
         "Tested application with larger SEPCo data to determine speed performance especially with tree coloring"
       ],
       "history": [
+        {
+          "ver": "Alpha 1.3.2",
+          "build": "20200814",
+          "updates": [
+            "Migrated from Angular 9 to Angular 10 to take advantage of new features and bug fixes"
+          ]
+        },
         {
           "ver": "Alpha 1.3.1",
           "build": "20200813",

@@ -1,4 +1,4 @@
-<app-app-form-a *ngIf="isReady" #detailForm [excludes]="['AN_TYPE_GROUP']" [readOnly]="false" (afterScatter)="AfterScatter($event)"
+<app-app-form-a #detailForm [excludes]="['AN_TYPE_GROUP']" [readOnly]="false" (afterScatter)="AfterScatter($event)"
   [sourceRow]="data.row" [formObject]="formObject" [labelWidth]="90" [rowSpacing]="1">
   <div style="font-size:0.95em;padding:10px;height:92px;margin-bottom:10px;" class="form-control">
     <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
@@ -32,7 +32,7 @@
       </app-app-input-a>
     </app-panel-a>
   </div>
-  <app-data-tabs #mainTab id="mainTabs" [options]="mainTabsOptions" name="mainTabs" (tabClicked)="TabClicked($event)">
+  <app-data-tabs #mainTab id="mainTabs" *ngIf="isReady" [options]="mainTabsOptions" name="mainTabs" (tabClicked)="TabClicked($event)">
     <div *ngIf="activeTab.id==1">
       <app-panel-a [horizontal]="true">
         <app-panel-a [PR]="2">

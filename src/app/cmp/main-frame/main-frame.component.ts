@@ -48,9 +48,11 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {}
 
+  private _changeValuesNow:boolean  = false;
   ngAfterViewInit() {
     //console.log("treeView",this.treeView,this.treeView.treeData);
     this.InitComponent();
+    setTimeout(()=>this._changeValuesNow = true,1);
   }
 
   GetModuleData() {
@@ -216,6 +218,12 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
 
   SeparatorClick(item: string) {
     this.panelSwitch[item] = !this.panelSwitch[item];
+  }
+
+
+  public setValueTo(trueValue:any,defaultValue:any){
+    if(!this._changeValuesNow)return defaultValue;
+    return trueValue;
   }
 
   private _treeLoadingMessage = 'Loading tree. Please wait...';

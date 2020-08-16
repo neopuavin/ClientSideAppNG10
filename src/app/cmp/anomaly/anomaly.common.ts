@@ -2,11 +2,10 @@ import { AppFormAComponent } from './../../api/cmp/app-form-a/app-form-a.compone
 import { AnomalyComponent } from './anomaly.component';
 import { Inject, ViewChild, Component } from '@angular/core';
 
-
 @Component({
   template: ''
 })
-export class AnomalyCommon {
+export abstract class AnomalyCommon {
   // declaration of details form inserted on each module subform
   // instance of the form must have #detailForm identifier
 

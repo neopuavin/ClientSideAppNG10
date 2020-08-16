@@ -1,11 +1,11 @@
 <div id="grid-wrapper" *ngIf="isReady">
   <div *ngIf="false" id="grid-toolbar">Toolbar</div>
-  <div #gridHeader id="grid-header" [style.min-height.px]="options.rowHeaderHeight+1"
-    [style.max-height.px]="options.rowHeaderHeight+1">
+  <div #gridHeader id="grid-header" [style.min-height.px]="headerHeight"
+    [style.max-height.px]="headerHeight">
 
     <!-- actual visible column headers -->
     <div class="grid-header-row" [style.margin-left.px]="leftScrollOffset"
-      [style.min-height.px]="options.rowHeaderHeight" [style.max-height.px]="options.rowHeaderHeight">
+      [style.min-height.px]="rowHeaderHeight" [style.max-height.px]="rowHeaderHeight">
       <div class="row-header" [style.border-bottom]="'none'" [style.max-width.px]="RowHeaderWidth"
         [style.min-width.px]="RowHeaderWidth">&nbsp;</div>
       <div *ngFor="let h of options.columns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)" class="noselect"
@@ -52,7 +52,7 @@
       </div>
     </div>
   </cdk-virtual-scroll-viewport>
-  <div *ngIf="!options.noFooter" id="grid-footer" class="d-flex">
+  <div *ngIf="setValueTo(!options.noFooter,true)" id="grid-footer" class="d-flex">
     <div id="footer-status" class="noselect" *ngIf="isPaging">{{recordStatus}}</div>
     <div id="footer-no-paging" *ngIf="!isPaging" class="text-center">&nbsp;</div>
     <div class="mr-auto">&nbsp;</div>

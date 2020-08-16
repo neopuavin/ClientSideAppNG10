@@ -15,6 +15,7 @@ import { PanelAComponent } from './cmp/panel-a/panel-a.component';
 import { AppFormAComponent } from './cmp/app-form-a/app-form-a.component';
 import { AlertComponent } from './cmp/alert/alert.component';
 import { AppInputAComponent } from './cmp/app-input-a/app-input-a.component';
+import { FormHeaderComponent } from './cmp/form-header/form-header.component';
 
 const declare = [
   AlertComponent,
@@ -27,9 +28,9 @@ const declare = [
   PhBox2Component,
   DatePickerAComponent,
   DataGridComponent,
-  TreeViewComponent
+  TreeViewComponent,
+  FormHeaderComponent
 ];
-// const declare = [AppInputAComponent]
 
 @NgModule({
   declarations: declare,

@@ -4,7 +4,6 @@ import {
   OnInit,
   Inject,
   AfterViewInit,
-  ViewChild,
 } from '@angular/core';
 import { AnomalyCommon } from '../anomaly.common';
 

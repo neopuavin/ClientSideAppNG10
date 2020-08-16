@@ -146,12 +146,14 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     @Inject(PanelAComponent) public panel: PanelAComponent
   ) {}
 
+  private _changeValueNow:boolean = false;
   ngAfterViewInit() {
     //console.log("readOnly:",this.form.readOnly,this.readOnly);
-    if (this._input) {
-      const formObj = this.form.formObject;
-      const ctrl = formObj.get(this.fieldName);
-    }
+    // if (this._input) {
+    //   const formObj = this.form.formObject;
+    //   const ctrl = formObj.get(this.fieldName);
+    // }
+    setTimeout(()=>this._changeValueNow=true,1);
   }
 
   ngOnInit(): void {
@@ -167,6 +169,7 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   }
 
   public get background(): string {
+    if(!this._changeValueNow)return null;
     if (this.isDisabled) return null;
     return 'white';
   }
@@ -303,7 +306,16 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     return ctrl;
   }
 
+  private _displayValueNow:boolean=false;
   public get displayValue(): string {
+
+    if(!this._displayValueNow){
+      // put a little delay to avoid error rendering UI when
+      // bound value unnecessarily change on initial load!
+      setTimeout(()=>this._displayValueNow=true,1);
+      return null;
+    }
+
     const ctrl = this.getFormControl;
     if (!ctrl) return '';
     if (this.isToggle) {
