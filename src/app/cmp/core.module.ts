@@ -22,6 +22,11 @@ import { AssetSelectorComponent } from './asset-selector/asset-selector.componen
 
 const declare = [CommonPopupComponent, AssetSelectorComponent];
 const both = [
+  // common modules
+  APIModule,
+  MaterialModule,
+
+  // meature modules
   AnomalyModule,
   AssetManagementModule,
   ChemicalDatabaseModule,
@@ -38,7 +43,7 @@ const both = [
 
 @NgModule({
   declarations: declare,
-  imports: [CommonModule, APIModule, MaterialModule, both],
+  imports: [CommonModule,  both],
   exports: [CommonPopupComponent, both],
 })
 export class CoreModule {}
