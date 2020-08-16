@@ -326,6 +326,7 @@ export class AnomalyComponent extends FormCommon
           },
         ],
         formObject: this.mainFormObject,
+        riskMatrixData:this.ds.riskMatrixData,
         parent: this,
         title: 'Edit Anomaly',
         icon: 'fa-edit',

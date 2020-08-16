@@ -74,7 +74,7 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.gridOptions
       .SetRowHeaderHeight(24)
-      //.SetRowHeaderWidth(0)
+      .SetRowHeaderWidth(6)
       .NoFooter // .AddColumn({
       //   caption: 'Id',
       //   fieldName: 'id',

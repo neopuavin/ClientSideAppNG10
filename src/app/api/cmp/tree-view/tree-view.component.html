@@ -65,7 +65,8 @@
     <div class="card-body p-0 m-0 bg-secondary d-flex flex-column flex-grow"
     [style.height.px]="SearchResultHeight" [style.visibility]="searched && searchCount!=0 ? 'visible' : 'hidden'">
       <div style="flex:1 1 0;background:white;" class="m-0 p-0">
-        <app-data-grid #searchGrid (rowClick)="SearchRowClick($event)" [sourceRows]="this.searchResult" [options]="gridOptions"></app-data-grid>
+        <app-data-grid #searchGrid (rowClick)="SearchRowClick($event)"
+          [sourceRows]="this.searchResult" [options]="gridOptions"></app-data-grid>
       </div>
       <!-- <div class="bg-warning" style="border:1px solid red;">&nbsp;</div> -->
     </div>

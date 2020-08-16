@@ -5,8 +5,8 @@
 
 <mat-dialog-content class="mat-typography">
 
-  <app-asset-selector *ngIf="data.component=='assetSelector'"></app-asset-selector>
   <app-date-picker-a [data]="data" *ngIf="data.component=='datePicker'"></app-date-picker-a>
+  <app-asset-selector *ngIf="data.component=='assetSelector'"></app-asset-selector>
   <app-anom-add-edit [data]="data" *ngIf="data.component=='addEditAnomaly'"></app-anom-add-edit>
   <app-alert [data]="data" *ngIf="data.component=='alert'"></app-alert>
 

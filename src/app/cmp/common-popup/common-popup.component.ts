@@ -13,6 +13,7 @@ export class CommonPopupComponent implements OnInit {
  ) { }
 
   ngOnInit(): void {
+    console.log("DATA",this.data);
   }
 
 }

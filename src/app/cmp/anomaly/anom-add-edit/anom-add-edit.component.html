@@ -10,7 +10,6 @@
       <app-app-input-a [fieldName]="'AN_CURR_CLASS'" [label]="'Curr.Action'" [lookupSource]="this.AnomalyLookup(144)">
       </app-app-input-a>
     </app-panel-a>
-      <!-- <p>{{AssetInfo.code + ' - ' + AssetInfo.desc}}</p> -->
     <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
       <app-app-input-a  [readOnly]="true" [fieldName]="'AN_REVNO'" [label]="'Rev.No.'" [LPL]="0"></app-app-input-a>
       <app-app-input-a [fieldName]="'AN_TYPE'" [label]="'Type'" [lookupSource]="this.AnomalyTypeLookup()">
@@ -110,7 +109,12 @@
           <app-app-input-a [fieldName]="'AN_RISK_RANK_COMMENTS'" [label]="'Comments'" [rows]="9"></app-app-input-a>
         </app-panel-a>
         <app-panel-a [PL]="2" [PT]="4" [width]="320">
-          <app-risk-matrix [readOnly]="false" (riskClick)="RiskClick($event)" [phHeight]="210" [severity]="severity" [likelihood]="likelihood"></app-risk-matrix>
+          <app-risk-matrix [readOnly]="false"
+            [riskMatrixData] = "data.riskMatrixData"
+            (riskClick)="RiskClick($event)"
+            [phHeight]="210"
+            [severity]="severity"
+            [likelihood]="likelihood"></app-risk-matrix>
         </app-panel-a>
       </app-panel-a>
 

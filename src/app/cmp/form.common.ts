@@ -19,7 +19,7 @@ import { DataTabsOption } from '../api/cmp/data-tabs/data-tabs.component';
 @Component({
   template: ''
 })
-export abstract class FormCommon {
+export class FormCommon {
   constructor(public dataSource: AppMainServiceService) {}
 
   @ViewChild('mainGrid') mainGrid: DataGridComponent;

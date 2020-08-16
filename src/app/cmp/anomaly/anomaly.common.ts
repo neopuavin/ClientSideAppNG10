@@ -6,7 +6,7 @@ import { Inject, ViewChild, Component } from '@angular/core';
 @Component({
   template: ''
 })
-export abstract class AnomalyCommon {
+export class AnomalyCommon {
   // declaration of details form inserted on each module subform
   // instance of the form must have #detailForm identifier
 

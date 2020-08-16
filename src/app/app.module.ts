@@ -1,3 +1,4 @@
+import { CoreModule } from './cmp/core.module';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -14,13 +15,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppCommonMethodsService } from './api/svc/app-common-methods.service';
 import { MainFrameComponent } from './cmp/main-frame/main-frame.component';
 
-import { TreeViewComponent } from './api/cmp/tree-view/tree-view.component';
-import { AppInputAComponent } from './api/cmp/app-input-a/app-input-a.component';
-import { DataGridComponent } from './api/cmp/data-grid/data-grid.component';
-// import { PanelAComponent } from './api/cmp/panel-a/panel-a.component';
-// import { AppFormAComponent } from './api/cmp/app-form-a/app-form-a.component';
-// import { DataTabsComponent } from './api/cmp/data-tabs/data-tabs.component';
-
 // contains all module imports related to Angular Materials/CDK
 import { MaterialModule } from './material.module';
 import { APIModule } from './api/api.module';
@@ -36,7 +30,7 @@ import { UserManagementComponent } from './cmp/user-management/user-management.c
 import { AssetManagementComponent } from './cmp/asset-management/asset-management.component';
 import { RiskBasedInspectionComponent } from './cmp/risk-based-inspection/risk-based-inspection.component';
 import { SurveyUploadComponent } from './cmp/survey-upload/survey-upload.component';
-import { FormHeaderComponent } from './cmp/form-header/form-header.component';
+
 import { SettingsComponent } from './cmp/settings/settings.component';
 
 import { AnomalyComponent } from './cmp/anomaly/anomaly.component';
@@ -48,13 +42,7 @@ import { AnomAttachmentsComponent } from './cmp/anomaly/anom-attachments/anom-at
 import { AnomFailureThreatsComponent } from './cmp/anomaly/anom-failure-threats/anom-failure-threats.component';
 import { AnomRiskRankingComponent } from './cmp/anomaly/anom-risk-ranking/anom-risk-ranking.component';
 import { AnomAssessmentComponent } from './cmp/anomaly/anom-assessment/anom-assessment.component';
-import { AnomAddEditComponent } from './cmp/anomaly/anom-add-edit/anom-add-edit.component';
-// import { AlertComponent } from './api/cmp/alert/alert.component';
-import { RiskMatrixComponent } from './cmp/risk-matrix/risk-matrix.component';
-import { PhBox1Component } from './api/cmp/ph/ph-box1/ph-box1.component';
-import { AssetSelectorComponent } from './cmp/asset-selector/asset-selector.component';
-import { CommonPopupComponent } from './cmp/common-popup/common-popup.component';
-import { DatePickerAComponent } from './api/cmp/date-picker-a/date-picker-a.component';
+
 import { TreeViewSearchResultComponent } from './api/cmp/tree-view/tree-view-search-result/tree-view-search-result.component';
 import { TestDataGridComponent } from './cmp/test-data-grid/test-data-grid.component';
 
@@ -73,7 +61,7 @@ import { TestDataGridComponent } from './cmp/test-data-grid/test-data-grid.compo
     AssetManagementComponent,
     RiskBasedInspectionComponent,
     SurveyUploadComponent,
-    FormHeaderComponent,
+
     SettingsComponent,
     AnomalyComponent,
     AnomGeneralComponent,
@@ -85,22 +73,8 @@ import { TestDataGridComponent } from './cmp/test-data-grid/test-data-grid.compo
     AnomActionsComponent,
     AnomRelatedAnomaliesComponent,
 
-    TreeViewComponent,
-    // PanelAComponent,
-    DataGridComponent,
-    // AppFormAComponent,
-    // DataTabsComponent,
-    AppInputAComponent,
-    AnomAddEditComponent,
-    // AlertComponent,
-    RiskMatrixComponent,
-    PhBox1Component,
-    AssetSelectorComponent,
-    CommonPopupComponent,
-    DatePickerAComponent,
     TreeViewSearchResultComponent,
     TestDataGridComponent,
-
 
     FontAwesomeComponent,
     MaterialsComponent
@@ -111,7 +85,8 @@ import { TestDataGridComponent } from './cmp/test-data-grid/test-data-grid.compo
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MaterialModule,
-    APIModule
+    APIModule,
+    CoreModule
   ],
   providers: [AppCommonMethodsService,Title],
   bootstrap: [AppComponent]
