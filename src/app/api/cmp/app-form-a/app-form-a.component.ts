@@ -25,6 +25,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
 
   // holds the reactive form parent group
   @Input() formObject: FormGroup = null;
+  @Input() formName: string;
 
   @Input() phBackSize: number = -1;
   @Input() phDuration: number = -1;
@@ -35,6 +36,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
   @Input() excludes: Array<string> = [];
   @Input() readOnly: boolean = false;
 
+
   @Output() afterScatter: EventEmitter<any> = new EventEmitter();
 
   private _sourceRow: any = null;
@@ -44,12 +46,13 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     this._sourceRow = src;
 
     // set values of form controls to the new record's values
-    this.Scatter();
+    // call for scatter is necessary when record is changed
+    this.Scatter(true);
   }
-
   get sourceRow(): any {
     return this._sourceRow;
   }
+
 
   private _isDataLoading: boolean = false;
   @Input() set isDataLoading(value: boolean) {
@@ -59,19 +62,31 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     return this._isDataLoading;
   }
 
+  public fieldsInitialized:Array<string> = [];
+
+
   constructor(@Inject(LOCALE_ID) private locale: string) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
   ngAfterViewInit() {
-    this.Scatter();
+    // console.log();
+    // this.Scatter();
   }
 
-  public Scatter(): void {
+  private _formFields: {};
+  public get formFields(): {} {
+    return this._formFields;
+  }
+
+  public Scatter(recordChanged?: boolean): void {
     /******************************************************************************
      * Sets the values of form controls to the equivalent field of the source
      ******************************************************************************/
     if (!this.formObject) return;
-    //if (!this.sourceRow) return;
+
+    if (recordChanged == undefined) recordChanged = false;
+    if( recordChanged ) this.fieldsInitialized = [];
 
     let patchValues: any = {};
     let sourceTable: any = null;
@@ -81,48 +96,53 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     this.suspendControlChangeEvent = true; // suspend control change event
 
     if (this.sourceRow) {
-      sourceTable = this.sourceRow.parentTable;
-      if (sourceTable) cols = sourceTable.columns;
+      // sourceTable = this.sourceRow.parentTable;
+      // if (sourceTable) cols = sourceTable.columns;
 
       for (const field in this.formObject.controls) {
         // 'field' is a string
         // patch value of each
-        if (this.excludes.indexOf(field) == -1) {
-          let controlEnabled: boolean = true;
-          ctrl = this.formObject.get(field);
-          //ctrl.readonly = false;
-          if (this.sourceRow) {
-            // patchValues[field] = this.sourceRow[field];
-            const col = cols.find((c) => c.name == field);
-            let colValue: any = this.sourceRow[field];
 
-            if (col)
-              if (col.type == 'Date' && colValue) {
-                const timeValue = formatDate(colValue, 'HH:mm:ss', this.locale);
-                colValue = formatDate(
-                  colValue,
-                  'dd-MMM-yyyy' + (timeValue == '00:00:00' ? '' : ' HH:mm:ss'),
-                  this.locale
-                );
-              }
+        // if control is not to be updated, continue with the next control
+        if (this.excludes.indexOf(field) != -1) continue;
 
-            patchValues[field] = colValue;
+        // check if the field value has already been set initially
+        if(this.fieldsInitialized.indexOf(field) != -1) continue;
 
-            if (patchValues[field] == 'TBA') controlEnabled = false;
-          } else {
-            controlEnabled = false;
-            patchValues[field] = null;
-          }
+        let controlEnabled: boolean = true;
+        let colValue: any = undefined;
+
+        ctrl = this.formObject.get(field);
+
+        if (ctrl) {
+          // field is not yet initialized
+
+          // get field value from the source row
+          colValue = this.sourceRow[field];
+
+          //if (colValue == 'TBA' || colValue == undefined)
+          // if (colValue == 'TBA') controlEnabled = false;
+
+          patchValues[field] = colValue;
+
+          // field is now initialized
+          // this.formFields[field] = true;
+
+          // register field as with value initially set
+          this.fieldsInitialized.push(field);
 
           if (controlEnabled) {
             if (ctrl.disabled) ctrl.enable();
           } else {
             if (!ctrl.disabled) ctrl.disable();
           }
-        }// end of if not in excludes
+        }
 
       } // end of for
-    } else
+    } // end of sourceRow available
+
+    // sourceRow is not set or null
+    else
       for (const field in this.formObject.controls) {
         // 'field' is a string
         // patch value of each
@@ -131,7 +151,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
           // next line causes error reported on browser debugger but does not affect
           // execution of the program.
           if (!ctrl.disabled) ctrl.disable();
-
           patchValues[field] = null;
         }
       }
@@ -141,6 +160,8 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
 
     // resume control change event
     this.suspendControlChangeEvent = false;
+
+    console.log("AfterScatter, recordChanged",recordChanged)
 
     this.afterScatter.emit(this);
   }

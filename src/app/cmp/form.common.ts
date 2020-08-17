@@ -10,14 +10,20 @@ import {
   TreeViewNode,
   TreeViewComponent,
 } from './../api/cmp/tree-view/tree-view.component';
-import { Input, ViewChild, Component } from '@angular/core';
+import {
+  Input,
+  ViewChild,
+  Component,
+  ComponentFactoryResolver,
+} from '@angular/core';
 
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { DataGridOption } from '../api/cmp/data-grid/data-grid.component';
 import { DataTabsOption } from '../api/cmp/data-tabs/data-tabs.component';
+import { JsonPipe } from '@angular/common';
 
 @Component({
-  template: ''
+  template: '',
 })
 export class FormCommon {
   constructor(public dataSource: AppMainServiceService) {}
@@ -38,6 +44,7 @@ export class FormCommon {
   public mainTabsOptions = new DataTabsOption([]);
   public mainFormCollection: Array<AppFormAComponent> = [];
   public mainFormObject: FormGroup = new FormGroup({});
+  public mainFormData: {} = {};
 
   public suppressPendingRequestFlag: boolean = false;
 
@@ -68,6 +75,8 @@ export class FormCommon {
     } else {
       console.log('from clause not set!', this.sourceTable != null);
     }
+
+    // this.onChanges();
   }
 
   public get ds(): AppDataset {
@@ -359,35 +368,46 @@ export class FormCommon {
     //return ITS_JUST_ANGU
   }
 
-  // GridRowClickX(event) {
-  //   //console.log("ROW EVENT", event);
-
-  //   const row: any = event.row;
-  //   if (!row) return;
-  //   const tbl: any = row.parentTable;
-  //   const keyName = tbl.keyName;
-
-  //   this.suppressPendingRequestFlag = true;
-  //   tbl.GetRowById(
-  //     row[keyName],
-  //     (data) => {
-  //       tbl.currentKey = row[keyName];
-
-  //       //this._sourceRow = tbl.currentRow;
-
-  //       this.suppressPendingRequestFlag = false;
-  //       console.log('Requested data:', data);
-  //     },
-  //     null,
-  //     (data) => {
-  //       if (data) {
-  //         tbl.currentKey = row[keyName];
-  //         //this._sourceRow = tbl.currentRow;
-
-  //         this.suppressPendingRequestFlag = false;
-  //         console.log('Cached data:', data);
-  //       }
-  //     }
-  //   );
+  // onChanges(): void {
+  //   this.mainFormObject.valueChanges.subscribe((val) => {
+  //     console.log('ON CHANGES!', val);
+  //   });
   // }
+
+  SaveRecord() {
+    const formVal = this.mainFormObject.value;
+    let postValues = {};
+    let willPOST:boolean = false;
+    for (let field in formVal) {
+      if (formVal[field] != this.currentRow[field]) {
+        postValues[field] = formVal[field];
+        this.currentRow[field] = postValues[field];
+        willPOST=true;
+      }
+    }
+
+    // refresh display, call scatter method for each form/subform
+    // with recordChanged flag to reset fieldsInitialized parameter set to true
+    if(willPOST) {
+
+      // call POST method to save postValues
+      console.log("POST Values: ",postValues);
+
+      // scatter values on successful posting
+      this.mainFormCollection.forEach(f=>f.Scatter(true));
+    }
+  }
+
+  CancelUpdate() {
+    console.log("CancelUpdate:",this.mainFormData);
+    const formVal = this.mainFormObject.value;
+
+    let patchValues = {};
+    for (let field in formVal) {
+      if (formVal[field] != this.currentRow[field])
+        patchValues[field] = this.currentRow[field];
+    }
+
+    this.mainFormObject.patchValue(patchValues);
+  }
 }

@@ -1,3 +1,4 @@
+import { FieldInfo } from './../../mod/app-column.model';
 import { PanelAComponent } from './../panel-a/panel-a.component';
 import { AppFormAComponent } from './../app-form-a/app-form-a.component';
 import {
@@ -10,6 +11,7 @@ import {
   ViewChild,
   Output,
   EventEmitter,
+  SimpleChange,
 } from '@angular/core';
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
@@ -146,30 +148,50 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     @Inject(PanelAComponent) public panel: PanelAComponent
   ) {}
 
-  private _changeValueNow:boolean = false;
+  private _isReady: boolean = false;
+  private _changeValueNow: boolean = false;
+
+  ngOnInit(): void {
+    if (!this.fieldName || !this.form.formObject) return;
+
+    let control: any = this.form.formObject.get(this.fieldName);
+    if (!control) {
+      // if control is not yet part of the form
+      const colVal = this.sourceRow ? this.sourceRow[this.fieldName] : null;
+
+      // register field as with initialized value when sourceRow is available
+      // this is a must to prevent reinitialization when Scatter method is called
+      if (this.sourceRow) this.MarkAsInitialized();
+
+      control = new FormControl(colVal);
+      this.form.formObject.addControl(this.fieldName, control);
+    } else {
+      // control has previously been created
+      // console.log(this.fieldName,"Previously initialized!")
+      this.MarkAsInitialized();
+    }
+
+
+  }
+
   ngAfterViewInit() {
     //console.log("readOnly:",this.form.readOnly,this.readOnly);
     // if (this._input) {
     //   const formObj = this.form.formObject;
     //   const ctrl = formObj.get(this.fieldName);
     // }
-    setTimeout(()=>this._changeValueNow=true,0);
+    setTimeout(() => (this._changeValueNow = true), 0);
+    setTimeout(() => (this._isReady = true), 2000);
   }
 
-  ngOnInit(): void {
-    if (!this.fieldName || !this.form.formObject) return;
-
-    let row: any = this.form.sourceRow;
-
-    try {
-      this.form.formObject.addControl(this.fieldName, new FormControl(null));
-    } catch (e) {
-      console.log('Error:', e.message);
-    }
+  public get sourceRow(): any {
+    if (!this.form) return null;
+    if (!this.form.sourceRow) return null;
+    return this.form.sourceRow;
   }
 
   public get background(): string {
-    if(!this._changeValueNow)return null;
+    if (!this._changeValueNow) return null;
     if (this.isDisabled) return null;
     return 'white';
   }
@@ -307,7 +329,7 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   }
 
   public get displayValue(): string {
-    if(!this._changeValueNow)return null;
+    if (!this._changeValueNow) return null;
 
     const ctrl = this.getFormControl;
     if (!ctrl) return '';
@@ -331,15 +353,16 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     return '';
   }
 
+  MarkAsNotInitialized() {
+    const index = this.form.fieldsInitialized.indexOf(this.fieldName);
+    if (index != -1) this.form.fieldsInitialized.splice(index, 1);
+  }
+  MarkAsInitialized() {
+    const index = this.form.fieldsInitialized.indexOf(this.fieldName);
+    if (index == -1) this.form.fieldsInitialized.push(this.fieldName);
+  }
+
   ActionClick(e: any) {
     this.actionClick.emit({ e: e, source: this });
   }
-  /**
-   *   <select #input *ngIf="isSelect && !isReadOnly && !isDataLoading" [formControlName]="fieldName" [style.height.px]="controlHeight"
-    class="form-control flex-grow-1 form-control-sm py-0 my-0 select">
-    <option *ngFor="let item of fieldLookup" [value]="item.key">{{item.text}}</option>
-  </select>
-
-   *
-   */
 }

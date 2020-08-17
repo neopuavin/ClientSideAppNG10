@@ -267,7 +267,6 @@ export class AnomalyComponent extends FormCommon
 
         // where condition codes
         .Equal({ fieldName: 'FT_GROUP' }, 8707);
-
     } catch (e) {
       console.log('ERROR in ngAfterViewInit:', e.message);
     }
@@ -299,7 +298,6 @@ export class AnomalyComponent extends FormCommon
 
   EditRecordEvent(args: any) {
     // override function
-    console.log('EditRecordEvent', args, 'Current row:', this.currentRow);
     if (!this.currentRow) {
       this.dataSource.OpenPopup('alert', 450, 200, false, {
         title: 'No Current Record',
@@ -315,8 +313,10 @@ export class AnomalyComponent extends FormCommon
       });
       return;
     }
+
+    this.mainFormData = {};
     this.dataSource
-      .OpenPopup('addEditAnomaly', 870, 475, true, {
+      .OpenPopup('addEditAnomaly', 870, 675, true, {
         row: this.currentRow,
         assetLookup: [
           {
@@ -326,7 +326,8 @@ export class AnomalyComponent extends FormCommon
           },
         ],
         formObject: this.mainFormObject,
-        riskMatrixData:this.ds.riskMatrixData,
+        riskMatrixData: this.ds.riskMatrixData,
+        formData:this.mainFormData,
         parent: this,
         title: 'Edit Anomaly',
         icon: 'fa-edit',
@@ -336,11 +337,16 @@ export class AnomalyComponent extends FormCommon
             value: 'cancel',
             class: 'btn btn-sm btn-secondary',
           },
-          { label: 'Save', value: 'save', class: 'btn btn-sm btn-warning' },
+          {
+            label: 'Save',
+            value: 'save',
+            class: 'btn btn-sm btn-warning',
+          },
         ],
       })
       .subscribe((result) => {
-        console.log(`Dialog result: ${result}`);
+        if (result == 'cancel') this.CancelUpdate();
+        else if (result == 'save') this.SaveRecord();
       });
   }
 

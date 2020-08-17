@@ -1,1 +1,22 @@
-<p>text-input works!</p>
+<label for="" [style.min-width.px]="LabelWidth" [style.max-width.px]="LabelWidth"
+  [style.padding-left.px]="labelPaddingLeft" [style.padding-right.px]="labelPaddingRight"
+  [style.margin-top.px]="panel.MarginTop" [style.margin-bottom.px]="panel.MarginBottom"
+  [style.margin-left.px]="panel.MarginLeft" [style.margin-right.px]="panel.MarginRight"
+  class="noselect">{{label}}</label>
+
+<div [formGroup]="this.form.formObject" class="input-group" style="white-space: nowrap;display:flex;"
+  [style.width.px]="inputWidth">
+
+  <input #input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
+    [style.background]="background" [formControlName]="fieldName" [readonly]="isReadOnly || actionIcon"
+    class="form-control flex-grow-1 form-control-sm py-0 my-0">
+  <div *ngIf="actionIcon" class="input-group-append">
+    <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+      <i [class]="'fa ' + actionIcon" style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"
+        (click)="ActionClick($event)" [matTooltip]="actionTip"></i>
+    </div>
+  </div>
+</div>
+
+<app-ph-box1 *ngIf="isDataLoading" [stripHeight]="controlHeight" [backSize]="phBackSizeSelf"
+  [duration]="phDurationSelf"></app-ph-box1>

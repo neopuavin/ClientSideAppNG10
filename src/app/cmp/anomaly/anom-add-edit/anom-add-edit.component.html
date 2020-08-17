@@ -1,4 +1,5 @@
-<app-app-form-a #detailForm [excludes]="['AN_TYPE_GROUP']" [readOnly]="false" (afterScatter)="AfterScatter($event)"
+<app-app-form-a #detailForm [excludes]="['AN_TYPE_GROUP']" [readOnly]="false"
+  (afterScatter)="AfterScatter($event)"
   [sourceRow]="data.row" [formObject]="formObject" [labelWidth]="90" [rowSpacing]="1">
   <div style="font-size:0.95em;padding:10px;height:92px;margin-bottom:10px;" class="form-control">
     <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
@@ -133,4 +134,6 @@
       </app-panel-a>
     </div>
   </app-data-tabs>
+  <br><button class="btn btn-primary"(click)="Test()">Test</button>
+
 </app-app-form-a>

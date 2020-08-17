@@ -25,6 +25,10 @@
       </div>
     </div>
   </div>
+  <!-- <app-text-input *ngIf="isInput" [fieldName]="fieldName" [labelWidth]="labelWidth"
+  [LPR]="LPR" [LPL]="LPL" [label]="label"
+    [style.height.px]="controlHeight" [actionTip]="actionTip" [actionIcon]="actionIcon" [placeHolder]="placeHolder"
+    [data]="{form:this.form,panel:this.panel}"></app-text-input> -->
 
   <!-- isDate   -->
 
@@ -33,7 +37,7 @@
 
     <input #input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
       [style.background]="background" [formControlName]="fieldName" [readonly]="true"
-      class="form-control flex-grow-1 form-control-sm py-0 my-0" >
+      class="form-control flex-grow-1 form-control-sm py-0 my-0">
     <div *ngIf="!isReadOnly" class="input-group-append">
       <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
         <i class="fa fa-calendar-alt" style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"
@@ -46,7 +50,8 @@
   <div class="input-group" *ngIf="isSelect && !isReadOnly && !isDataLoading" style="white-space: nowrap;display:flex;"
     [style.width.px]="inputWidth">
 
-    <select #input *ngIf="actionClick.observers.length==0" [formControlName]="fieldName"
+    <select #input *ngIf="actionClick.observers.length==0"
+      [formControlName]="fieldName"
       [style.height.px]="controlHeight" [style.width.px]="inputWidth"
       class="form-control form-control-sm py-0 my-0 select">
       <option *ngFor="let item of fieldLookup" [value]="item.key">{{item.text}}</option>
@@ -97,6 +102,8 @@
       class="form-control flex-grow-1 form-control-sm py-0 my-0">
   </div>
 
+  <!-- <app-ph-box1 *ngIf="(isSelect || isInput || isToggle || isDate) && isDataLoading" [stripHeight]="controlHeight"
+    [backSize]="phBackSizeSelf" [duration]="phDurationSelf"></app-ph-box1> -->
   <app-ph-box1 *ngIf="(isSelect || isInput || isToggle || isDate) && isDataLoading" [stripHeight]="controlHeight"
     [backSize]="phBackSizeSelf" [duration]="phDurationSelf"></app-ph-box1>
 
@@ -108,4 +115,3 @@
     [backSize]="phBackSizeSelf" [duration]="phDurationSelf"></app-ph-box1>
 
 </div>
-

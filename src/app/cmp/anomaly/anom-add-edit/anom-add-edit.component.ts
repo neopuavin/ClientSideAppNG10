@@ -50,7 +50,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   public AfterScatter(evt: any) {
-    console.log('AfterScatter:', evt);
+    console.log('AfterScatter(this.data.formData):', this.data.formData);
   }
 
   public get AssetInfo():{code:string, desc:string}{
@@ -154,5 +154,10 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     // in the future, this should be dicated by the required parameters in the form (eg. lookups, etc.)
     return this._isReady;
   }
+
+  Test(){
+    console.log("this.detailForm.fieldsInitialized",this.detailForm.fieldsInitialized);
+  }
+
 
 }
