@@ -1,3 +1,4 @@
+import { CommonPopupComponent } from './../../common-popup/common-popup.component';
 import { AppFormAComponent } from './../../../api/cmp/app-form-a/app-form-a.component';
 import {
   DataTabsOption,
@@ -9,7 +10,7 @@ import {
   ViewChild,
   AfterViewInit,
   Input,
-  Output,
+  Inject,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EventEmitter } from 'protractor';
@@ -26,7 +27,9 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
 
   @Input() data: any = {};
 
-  constructor() {}
+  constructor(
+    @Inject(CommonPopupComponent) public popUp: CommonPopupComponent
+  ) {}
 
   ngOnInit(): void {
     this.mainTabsOptions
@@ -43,19 +46,20 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     // .AddTab({ id: 5, label: 'Test Tab', icon: '', active: false });
   }
   ngAfterViewInit() {
-
-    setTimeout(()=>this._isReady=true,5)
+    setTimeout(() => (this._isReady = true), 5);
     setTimeout(() => this.SetAnomalyTypeGroup(), 9);
-
   }
 
   public AfterScatter(evt: any) {
     console.log('AfterScatter(this.data.formData):', this.data.formData);
   }
 
-  public get AssetInfo():{code:string, desc:string}{
+  public get AssetInfo(): { code: string; desc: string } {
     //if(this.data.row)
-    return {code:this.data.row.XTRA.NODE_ID,desc:this.data.row.XTRA.NODE_DESC};
+    return {
+      code: this.data.row.XTRA.NODE_ID,
+      desc: this.data.row.XTRA.NODE_DESC,
+    };
   }
 
   public AnomalyLookup(key: any) {
@@ -112,14 +116,20 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   ChangeAsset(e: any) {
+    const currAsset = this.formObject.get('AN_ASSET_ID').value;
+    if (currAsset) {
+      let lkpItem = this.data.assetLookup.find((i) => i.key == currAsset);
+      this.data.currentLocation = lkpItem ? lkpItem.location : null;
+    }
+    console.log('Current data:', this.data);
     this.data.parent.dataSource.SelectAsset().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
+      console.log(`Change asset to:`, result);
     });
   }
 
-  ChangeDate(e:any){
+  ChangeDate(e: any) {
     this.data.parent.dataSource.SelectDate(e.source).subscribe((result) => {
-      console.log(`Dialog result: ${result}`,e);
+      console.log(`Dialog result: ${result}`, e);
     });
   }
 
@@ -132,7 +142,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     if (!this.data.row) return 0;
     return this.data.row.AN_RISK_RANK_SEVERITY;
   }
-  public set severity(value:number){
+  public set severity(value: number) {
     this.data.row.AN_RISK_RANK_SEVERITY = value;
   }
 
@@ -140,24 +150,25 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     if (!this.data.row) return 0;
     return this.data.row.AN_RISK_RANK_LIKELIHOOD;
   }
-  public set likelihood(value:number){
+  public set likelihood(value: number) {
     this.data.row.AN_RISK_RANK_LIKELIHOOD = value;
   }
 
-  RiskClick(risk:{likelihood:number, severity:number}){
+  RiskClick(risk: { likelihood: number; severity: number }) {
     this.likelihood = risk.likelihood;
     this.severity = risk.severity;
   }
 
-  private _isReady:boolean = false;
-  public get isReady():boolean{
+  private _isReady: boolean = false;
+  public get isReady(): boolean {
     // in the future, this should be dicated by the required parameters in the form (eg. lookups, etc.)
     return this._isReady;
   }
 
-  Test(){
-    console.log("this.detailForm.fieldsInitialized",this.detailForm.fieldsInitialized);
+  Test() {
+    console.log(
+      'this.detailForm.fieldsInitialized',
+      this.detailForm.fieldsInitialized
+    );
   }
-
-
 }

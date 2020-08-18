@@ -104,15 +104,17 @@ export class AppMainServiceService {
 
     if (!data) data = {};
     if (!data['component']) data['component'] = component;
+    let ref:MatDialogRef<CommonPopupComponent,any>;
+    data['ref'] = ref;
 
-    const dialogRef = this.dialog.open(CommonPopupComponent, {
+    ref = this.dialog.open(CommonPopupComponent, {
       width: `${width}px`,
       height: `${height}px`,
       disableClose: disableClose,
-      data: data,
+      data: data
     });
 
-    return dialogRef.afterClosed();
+    return ref.afterClosed();
 
     // dialogRef.afterClosed().subscribe((result) => {
     //   console.log(`Dialog result: ${result}`);
@@ -123,11 +125,14 @@ export class AppMainServiceService {
     return this.OpenPopup('assetSelector', 420, 550, false, {
       title: 'Asset Selector',
       icon: 'fa-sitemap',
+      dataSource:this,
       buttons: [
-        { label: 'Close', value: 'close', class: 'btn btn-sm btn-warning' },
+        { label: 'Select', value: 'accept', class: 'btn btn-sm btn-warning' },
+        { label: 'Close', value: 'close', class: 'btn btn-sm btn-secondary' },
       ],
     });
   }
+
   SelectDate(e: any): Observable<any> {
     const label = e.label;
     return this.OpenPopup('datePicker', 400, 450, false, {

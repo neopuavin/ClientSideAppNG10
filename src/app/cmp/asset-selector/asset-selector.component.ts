@@ -1,3 +1,4 @@
+import { CommonPopupComponent } from './../common-popup/common-popup.component';
 import { TblTreeStrucRow, TblNodesAttribRow } from './../../svc/app.tables';
 import {
   TreeViewComponent,
@@ -5,7 +6,7 @@ import {
 } from './../../api/cmp/tree-view/tree-view.component';
 import { AppDataset } from './../../svc/app-dataset.service';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit,Inject, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-asset-selector',
@@ -15,7 +16,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 export class AssetSelectorComponent implements OnInit, AfterViewInit {
   @ViewChild('mainTree') treeView: TreeViewComponent;
 
-  constructor(public dataSource: AppMainServiceService) {}
+  constructor(@Inject(CommonPopupComponent) public popUp: CommonPopupComponent,public dataSource: AppMainServiceService) {}
 
   public treeLoadingMessage: string = 'Loading...';
   public get ds(): AppDataset {
@@ -34,10 +35,13 @@ export class AssetSelectorComponent implements OnInit, AfterViewInit {
     this.ds.assetSelectorTreeData = value;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // assign listener to popup's validation routine
+    this.popUp.data.validate = this.SubmitValidation;
+  }
   ngAfterViewInit(): void {
     if (this.treeData.length == 0)
-      //this.GetInitialTreeData();
+      // call common GetTreeData function to get data from the server
       this.ds.GetTreeData({
         treeView: this.treeView,
         onSuccess: (result) => this.treeView.ProcessTree(),
@@ -64,6 +68,17 @@ export class AssetSelectorComponent implements OnInit, AfterViewInit {
     });
   }
 
-  TreeClick(e: any) {}
+  TreeClick(e: any) {
+    // assign TreeViewNode data to the response property of the common popup component
+    const node = e;
+    let ret:any = null;
+    if(node)ret = {id:node.id, code:node.code, text:node.text, dataId:node.did,location:node.loc}
+    this.popUp.data.response = ret;
+  }
+
+  SubmitValidation(node:any):boolean{
+    return (node != null && node!=undefined)
+  }
+
 
 }

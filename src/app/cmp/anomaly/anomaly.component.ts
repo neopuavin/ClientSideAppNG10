@@ -314,23 +314,32 @@ export class AnomalyComponent extends FormCommon
       return;
     }
 
-    this.mainFormData = {};
+
+
     this.dataSource
       .OpenPopup('addEditAnomaly', 870, 475, true, {
         row: this.currentRow,
+
+        // create single item asset lookup to display asset as a read-only select field
         assetLookup: [
           {
             key: this.currentRow.AN_ASSET_ID,
             code: this.currentRow.XTRA.NODE_ID,
             text: this.currentRow.XTRA.NODE_DESC,
+            location: this.currentRow.XTRA.TRE_NOD_LOC,
           },
         ],
+        // use common form object from the FormCommon base class
         formObject: this.mainFormObject,
+        //
         riskMatrixData: this.ds.riskMatrixData,
-        formData:this.mainFormData,
+        // set AnomalyComponent as the parent component reference
         parent: this,
+        // Dialog title
         title: 'Edit Anomaly',
+        // dialog title icon
         icon: 'fa-edit',
+        // dialog action buttons
         buttons: [
           {
             label: 'Cancel',
@@ -339,14 +348,16 @@ export class AnomalyComponent extends FormCommon
           },
           {
             label: 'Save',
-            value: 'save',
+            value: 'accept',
             class: 'btn btn-sm btn-warning',
           },
         ],
       })
       .subscribe((result) => {
-        if (result == 'cancel') this.CancelUpdate();
-        else if (result == 'save') this.SaveRecord();
+        if(result){
+          if (result.mode == 'accept') this.SaveRecord();
+        }else
+          this.CancelUpdate();
       });
   }
 
@@ -358,7 +369,7 @@ export class AnomalyComponent extends FormCommon
   PrintRecordEvent(args: any) {
     console.log('PrintRecordEvent', args, 'Current row:', this.currentRow);
     this.dataSource.SelectAsset().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
+      console.log('Dialog result:', result);
     });
   }
 }

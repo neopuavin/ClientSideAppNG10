@@ -5,14 +5,17 @@
 
 <mat-dialog-content class="mat-typography">
 
-  <app-date-picker-a [data]="data" *ngIf="data.component=='datePicker'"></app-date-picker-a>
-  <app-asset-selector *ngIf="data.component=='assetSelector'"></app-asset-selector>
-  <app-anom-add-edit [data]="data" *ngIf="data.component=='addEditAnomaly'"></app-anom-add-edit>
-  <app-alert [data]="data" *ngIf="data.component=='alert'"></app-alert>
+  <app-date-picker-a #subComponent [data]="data" *ngIf="data.component=='datePicker'"></app-date-picker-a>
+  <app-asset-selector #subComponent *ngIf="data.component=='assetSelector'"></app-asset-selector>
+  <app-anom-add-edit #subComponent [data]="data" *ngIf="data.component=='addEditAnomaly'"></app-anom-add-edit>
+  <app-alert #subComponent [data]="data" *ngIf="data.component=='alert'"></app-alert>
 
 </mat-dialog-content>
 
 <mat-dialog-actions *ngIf="data.buttons" align="center">
-  <button mat-button *ngFor="let btn of this.data.buttons" [mat-dialog-close]="btn.value"
-    [class]="btn.class + ' m-0 p-0 ml-2'">{{btn.label}}</button>
+  <!-- <button mat-button *ngFor="let btn of this.data.buttons" [mat-dialog-close]="{value:btn.value,response:data.response}"
+    [class]="btn.class + ' m-0 p-0 ml-2'">{{btn.label}}</button> -->
+  <button mat-button *ngFor="let btn of this.data.buttons"
+    [class]="btn.class + ' m-0 p-0 ml-2'"  (click)="this.clickAction(btn.value)">{{btn.label}}</button>
+  <!-- <button mat-button class="btn btn-warning m-0 p-0 ml-2" (click)="this.acceptAndClose()">Save</button> -->
 </mat-dialog-actions>

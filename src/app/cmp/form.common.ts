@@ -44,7 +44,6 @@ export class FormCommon {
   public mainTabsOptions = new DataTabsOption([]);
   public mainFormCollection: Array<AppFormAComponent> = [];
   public mainFormObject: FormGroup = new FormGroup({});
-  public mainFormData: {} = {};
 
   public suppressPendingRequestFlag: boolean = false;
 
@@ -299,19 +298,29 @@ export class FormCommon {
     const row: any = event.row;
     if (!row) return;
 
+    // get table object definition
     const tbl: any = row.parentTable;
+    // table code to be used as the primary table alias
     let tableCode: string = tbl.tableCode;
     let includedFields: string = '';
 
     const keyName = tbl.keyName;
     const key = row[keyName];
+    let assetKey: number = null;
 
     if (this.assetField) {
+
+      // if asset fieldname is defined, get asset information infomation
+      // from related tables (ie. asset code, desctription)
+      assetKey = row[this.assetField];
+
+      // select all fields in the main table, NODE_ID and NODE_DESC from the nodesAttrib table
       includedFields = tableCode + '.*`NODE_ID`NODE_DESC';
-      tableCode += `|-node,${this.assetField},REC_TAG`;
+
+      // append table relationship to node attrib
+      tableCode += `|-node,${this.assetField},REC_TAG;`;
     }
 
-    //console.log('GridRowClick', event, this.ds, this.sourceTable);
     this.suppressPendingRequestFlag = true;
 
     // set all isDataLoading flag to true
@@ -327,13 +336,32 @@ export class FormCommon {
           includedFields: includedFields,
           snapshot: true,
         },
+        {
+          // get tre_nod_loc on a separate sub request because this is faster than
+          // relating the struct table to the current selected data row
+          code: 'tre',
+          filter: `{TRE_DAT_TAG|${assetKey}}^{TRE_DAT_TYPE|${this.ds.currentTreeId}}`, // `{TRE_DAT_TAG|${+assetKey}}`,
+          includedFields: 'TRE_NOD_LOC',
+          snapshot: true,
+        },
       ],
       {
         onSuccess: (e) => {
-          if (e.processed.data[0].length)
+          if (e.processed.data[0].length) {
+
+            // set details current row data
             this._currentRow = e.processed.data[0].length
               ? e.processed.data[0][0]
               : null;
+
+            // set current row's tree location position data
+            this._currentRow.XTRA = {
+              TRE_NOD_LOC: e.processed.data[1].length
+                ? e.processed.data[1][0]['TRE_NOD_LOC']
+                : null,
+            };
+
+          }
 
           // triggers form scatter
           this._sourceRow = this._currentRow;
@@ -375,31 +403,32 @@ export class FormCommon {
   // }
 
   SaveRecord() {
+    console.log('Save updates:', this.mainFormObject);
+
     const formVal = this.mainFormObject.value;
     let postValues = {};
-    let willPOST:boolean = false;
+    let willPOST: boolean = false;
     for (let field in formVal) {
       if (formVal[field] != this.currentRow[field]) {
         postValues[field] = formVal[field];
         this.currentRow[field] = postValues[field];
-        willPOST=true;
+        willPOST = true;
       }
     }
 
     // refresh display, call scatter method for each form/subform
     // with recordChanged flag to reset fieldsInitialized parameter set to true
-    if(willPOST) {
-
+    if (willPOST) {
       // call POST method to save postValues
-      console.log("POST Values: ",postValues);
+      console.log('POST Values: ', postValues);
 
       // scatter values on successful posting
-      this.mainFormCollection.forEach(f=>f.Scatter(true));
+      this.mainFormCollection.forEach((f) => f.Scatter(true));
     }
   }
 
   CancelUpdate() {
-    console.log("CancelUpdate:",this.mainFormData);
+    console.log('CancelUpdate:', this.mainFormObject);
     const formVal = this.mainFormObject.value;
 
     let patchValues = {};
