@@ -316,7 +316,7 @@ export class AnomalyComponent extends FormCommon
 
     this.mainFormData = {};
     this.dataSource
-      .OpenPopup('addEditAnomaly', 870, 675, true, {
+      .OpenPopup('addEditAnomaly', 870, 475, true, {
         row: this.currentRow,
         assetLookup: [
           {
