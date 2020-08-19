@@ -20,7 +20,6 @@ import { CoreModule } from './cmp/core.module';
 
 // Application custom components
 
-import { TreeViewSearchResultComponent } from './api/cmp/tree-view/tree-view-search-result/tree-view-search-result.component';
 import { TestDataGridComponent } from './cmp/test-data-grid/test-data-grid.component';
 
 @NgModule({
@@ -29,7 +28,6 @@ import { TestDataGridComponent } from './cmp/test-data-grid/test-data-grid.compo
     AppComponent,
     MainFrameComponent,
 
-    TreeViewSearchResultComponent,
     TestDataGridComponent,
 
     FontAwesomeComponent,

@@ -121,11 +121,12 @@ export class AppMainServiceService {
     // });
   }
 
-  SelectAsset(): Observable<any> {
+  SelectAsset(currentLocation?:string): Observable<any> {
     return this.OpenPopup('assetSelector', 420, 550, false, {
       title: 'Asset Selector',
       icon: 'fa-sitemap',
       dataSource:this,
+      currentLocation:currentLocation,
       buttons: [
         { label: 'Select', value: 'accept', class: 'btn btn-sm btn-warning' },
         { label: 'Close', value: 'close', class: 'btn btn-sm btn-secondary' },

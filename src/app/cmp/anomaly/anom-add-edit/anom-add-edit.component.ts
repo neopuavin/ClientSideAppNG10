@@ -116,14 +116,26 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   ChangeAsset(e: any) {
+    console.log(this.data.assetLookup)
     const currAsset = this.formObject.get('AN_ASSET_ID').value;
     if (currAsset) {
       let lkpItem = this.data.assetLookup.find((i) => i.key == currAsset);
       this.data.currentLocation = lkpItem ? lkpItem.location : null;
     }
-    console.log('Current data:', this.data);
-    this.data.parent.dataSource.SelectAsset().subscribe((result) => {
+    this.data.parent.dataSource.SelectAsset(this.data.currentLocation).subscribe((result) => {
       console.log(`Change asset to:`, result);
+      if(result){
+        if(result.mode=='accept'){
+          const nodeData = result.data;
+          // 1. create another entry in the asset lookup array if not yet existing.
+          if(!this.data.assetLookup.find((i) => i.key == nodeData.dataId)) {
+            // lookup item not yet existing. create and append one
+            this.data.assetLookup.push({key:nodeData.dataId, code:nodeData.code,location:nodeData.location,text:nodeData.text})
+          }
+          // 2. set value of AN_ASSET_ID control to the new asset key (nodeData.dataId)
+          this.formObject.get('AN_ASSET_ID').setValue(nodeData.dataId);
+        }
+      }
     });
   }
 

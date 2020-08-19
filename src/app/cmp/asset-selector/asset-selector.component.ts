@@ -40,20 +40,35 @@ export class AssetSelectorComponent implements OnInit, AfterViewInit {
     this.popUp.data.validate = this.SubmitValidation;
   }
   ngAfterViewInit(): void {
+    const data = this.popUp.data;
+    console.log("ngAfterViewInit popup data:",data)
     if (this.treeData.length == 0)
       // call common GetTreeData function to get data from the server
       this.ds.GetTreeData({
         treeView: this.treeView,
-        onSuccess: (result) => this.treeView.ProcessTree(),
+        onSuccess: (result) => {
+          // if currentLocation is not supplied, execute ProcessTree()
+          if(!data.currentLocation)this.treeView.ProcessTree()
+        },
+        //SetCurrentNode
       });
     else {
       // tree data is available. no need tp initialize
       setTimeout(() => {
         // refresh tree
         // need to use setTimeout method for the treeView.ProcessTree() method to work properly!
-        this.treeView.ProcessTree();
+        // if currentLocation is not supplied, execute ProcessTree()
+          if(!data.currentLocation)this.treeView.ProcessTree()
+
       }, 50);
     }
+
+    // data.currentLocation is supplied, call SetCurrentNode of the treeView component
+    if(data.currentLocation){
+      console.log("data.currentLocation:",data.currentLocation);
+      this.treeView.SetCurrentNode(data.currentLocation,this.treeView);
+    }
+
   }
   TreePMClick(e: any) {
     if (!e.options.childNodesMissing) return;
