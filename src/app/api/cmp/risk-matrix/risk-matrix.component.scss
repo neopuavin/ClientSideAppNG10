@@ -1,59 +1,170 @@
 @import "../../../../appcssvars.scss";
 
-.wrapper {
-  align-items: stretch;
-  font-size: 1.1em;
-  border: 1px solid #c0c0c0;
-  border-radius: 3px;
+:host {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
-  > div#heading {
-    display:flex;
-    background: #28a745;
-    color: white;
-    padding: 0.2em;
-    border-bottom: 1px solid white;
-    span{
-      margin:auto;
-    }
-  }
-  > div {
-    //background: cyan;
-    display: flex;
-    div {
-      // flex: 1 1 0;
-    }
-    div:first-child,
-    div.det_cell,
-    div.hdr_cell {
-      display: flex;
-      box-sizing: border-box;
-      // border: 1px solid $line_very_light_gray;
-      // min-width: 4em;
-      // max-width: 4em;
-      flex: 1 1 0;
-      // min-height: 2em;
-      // max-height: 2em;
-      padding-top: 0.2em;
-      padding-bottom: 0.2em;
-      text-align: center;
-      margin: 0.05em;
+  // align-self: stretch;
+  //align-items: stretch;
+}
+$header_back:$bs_success;
+$header_fore:white;
+#wrapper {
+  display: flex;
+  flex: 1 1 0;
+  align-items: stretch;
+  position: relative;
+  #wrapper_label {
+    background: $bs_success;
+    margin-top: 1px;
+    margin-right: 1px;
+    // margin-right:1.4em;
+    border-left: 1.6em solid $header_back;
+    h5 {
+      /* Abs positioning makes it not take up vert space */
+      position: absolute;
+      top: 100%;
+      padding-left: 0.5em;
+      left: 0;
+      color: $header_fore;
+
+      /* Border is the new background */
+      background: none;
+
+      /* Rotate from top left corner (not default) */
+      transform-origin: 0 0;
+      transform: rotate(-90deg);
+
       cursor: default;
-      p {
-        display: inline-block;
-        vertical-align: middle;
-        margin: auto;
-        flex: 1 1 0;
+
+      >span{
         font-size:0.85em;
       }
     }
-    div.det_cell {
-      border-radius: 0.3em;
-      cursor: pointer;
+  }
+  #wrapper_mtx {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    background: white;
+
+    //background:yellow;
+    > div#heading1,
+    > div#heading2,
+    > div.risk-rows {
+      display: flex;
+      flex: 1 1 0;
+      align-items: stretch;
+      > div {
+        padding: 0px;
+        margin: 0.05em;
+        display: flex;
+        flex: 1;
+        span {
+          margin: auto;
+        }
+        //height:25px;
+      }
+    }
+    > div.risk-rows {
+      > div {
+        border: 1px solid transparent;
+        border-radius: 0.3em;
+        cursor: pointer;
+      }
+      > div:nth-child(1){
+        cursor: default;
+      }
+    }
+
+    > div#heading1 > div,
+    > div#heading2 > div {
+      background: $header_back;
+
+      display: flex;
+      cursor: default;
+      span {
+        margin: auto;
+      }
+    }
+    > div#heading1 {
+      // min-height:1.6em !important;
+      padding: 0px;
+      min-height:3.4em;
+      > div > span {
+        margin:0.3em 0.5em !important;
+        // margin-left: 0.5em !important;
+        // margin-right: 0.5em !important;
+        line-height: .9em;
+        color: $header_fore !important;
+        > span {
+          font-size: 0.85em;
+        }
+      }
+    }
+    > div#heading2 {
+      max-height: 1.6em !important;
     }
   }
 }
 
-::ng-deep .test {
-  white-space: pre-line;
-}
+// .wrapper {
+//   font-size: 1.1em;
+//   border: 1px solid #c0c0c0;
+//   border-radius: 3px;
+//   display: flex;
+//   flex-direction: column;
+//   flex:1 1 0;
+//   align-self:stretch;
+//   align-items: stretch;
+//   background:lime;
+//   > div#heading {
+//     display:flex;
+//     // background: #28a745;
+//     color: white;
+//     // padding: 0.2em;
+//     border-bottom: 1px solid white;
+//     span{
+//       margin:auto;
+//     }
+//   }
+//   > div {
+//     //background: cyan;
+//     display: flex;
+//     div {
+//       // flex: 1 1 0;
+//     }
+//     div:first-child,
+//     div.det_cell,
+//     div.hdr_cell {
+//       display: flex;
+//       box-sizing: border-box;
+//       // border: 1px solid $line_very_light_gray;
+//       // min-width: 4em;
+//       // max-width: 4em;
+//       flex: 1 1 0;
+//       // min-height: 2em;
+//       // max-height: 2em;
+//       // padding-top: 0.2em;
+//       // padding-bottom: 0.2em;
+//       // text-align: center;
+//       // margin: 0.05em;
+//       cursor: default;
+//       p {
+//         display: inline-block;
+//         vertical-align: middle;
+//         margin: auto;
+//         flex: 1 1 0;
+//         font-size:0.85em;
+//       }
+//     }
+//     div.det_cell {
+//       border-radius: 0.3em;
+//       cursor: pointer;
+//     }
+//   }
+// }
+
+// ::ng-deep .test {
+//   white-space: pre-line;
+// }

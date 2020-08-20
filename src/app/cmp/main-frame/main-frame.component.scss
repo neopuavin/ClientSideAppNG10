@@ -18,6 +18,11 @@
     p {
       color: $fore_color_dark;
       text-shadow: gray 1px 1px 1px;
+      span#app-ver{
+        color:gray;
+        font-size:0.7em;
+        margin-left:5px;
+      }
     }
   }
   $sub-menu-height: 24px;

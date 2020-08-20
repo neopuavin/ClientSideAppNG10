@@ -70,6 +70,9 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
     //
     this.activeTab.active = false;
     tab.active = true;
+    const btn = (document.querySelector('#t_'+ tab.id)  as HTMLElement);
+    if(btn)btn.blur();
+    //console.log(btn);
 
     this.tabClicked.emit(tab);
   }

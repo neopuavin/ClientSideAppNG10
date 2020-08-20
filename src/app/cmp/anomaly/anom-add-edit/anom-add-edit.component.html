@@ -109,7 +109,7 @@
         <app-panel-a [PR]="2">
           <app-app-input-a [fieldName]="'AN_RISK_RANK_COMMENTS'" [label]="'Comments'" [rows]="9"></app-app-input-a>
         </app-panel-a>
-        <app-panel-a [PL]="2" [PT]="4" [width]="320">
+        <app-panel-a [PL]="2" [PT]="4" [width]="286" style="display:flex;align-items:stretch;">
           <app-risk-matrix [readOnly]="false"
             [riskMatrixData] = "data.riskMatrixData"
             (riskClick)="RiskClick($event)"

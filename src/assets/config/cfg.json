@@ -132,9 +132,12 @@
     "url_deploy": "http://ngimsa.ivideolib.com/api/app",
     "url_use_deploy": false,
     "app_version": {
-      "ver": "Alpha 1.3.5",
-      "build": "20200819",
+      "ver": "Alpha 1.3.6",
+      "build": "20200820",
       "updates": [
+        "Reformatted risk matrix component",
+        "Adjusted tabs component stylesheet to remove hilight when tab item is made active",
+        "Changed banner layout",
         "Completed Asset Selector function",
         "Worked on data pre POST request routines",
         "Modularized application features for maintainability",
@@ -152,6 +155,14 @@
         "Tested application with larger SEPCo data to determine speed performance especially with tree coloring"
       ],
       "history": [
+        {
+          "ver": "Alpha 1.3.5",
+          "build": "20200819",
+          "updates": [
+            "Completed Asset Selector function"
+          ]
+
+        },
         {
           "ver": "Alpha 1.3.4",
           "build": "20200818",

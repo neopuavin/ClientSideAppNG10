@@ -130,3 +130,9 @@ h2.form-header-text {
     color: #505050;
 }
 
+// Override cdk-global-scrollblock overflow setting
+// because this is cause the body of the size to overflow
+// when a dialog popup is called
+.cdk-global-scrollblock{
+  overflow:hidden !important;
+}

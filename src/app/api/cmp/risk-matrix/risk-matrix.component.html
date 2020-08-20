@@ -1,29 +1,32 @@
 <app-ph-box1 *ngIf="!isReady" [stripHeight]="phHeight" [backSize]="phBackSize" [duration]="phDuration"></app-ph-box1>
-
-<div class="wrapper" *ngIf="isReady">
-  <div id="heading"><span>Severity / Likelihood {{severity}}-{{likelihood}}</span></div>
-  <div style="display:flex;">
-    <div style="background:#28a745;">&nbsp;</div>
-    <div class="hdr_cell" *ngFor="let lik of riskMatrixData.lik"
-    [style.background]="lik.back" [style.color]="lik.fore"
-    matTooltipPosition="above" [matTooltip]="lik.text + '['+ lik.code +']'">
-        <p>{{lik.code}}</p>
-      </div>
-  </div>
-  <div *ngFor="let sev of  riskMatrixData.sev">
-    <div [style.background]="sev.back" [style.color]="sev.fore"
-    matTooltipPosition="right" [matTooltip]="sev.text">
-      <p>{{sev.code}}</p></div>
-    <div class="det_cell" *ngFor="let lik of riskMatrixData.lik"
-      (click)="CellClick(lik.key,sev.key)"
-      [style.background]="riskMatrixData.mtx['M'+lik.key+sev.key].back"
-      [style.color]="riskMatrixData.mtx['M'+lik.key+sev.key].fore"
-      matTooltipPosition="above" [matTooltip]="'Severity: ' + sev.text + ', Likelihood: ' + lik.text">
-      <p *ngIf="isWithData">
-        <i *ngIf="(severity==sev.key && likelihood==lik.key)" class="fa fa-check"></i>
-        <span  *ngIf="(severity!=sev.key || likelihood!=lik.key)" >&nbsp;</span>
-      </p>
-      <p  *ngIf="!isWithData">&nbsp;</p>
+<div id="wrapper">
+  <div class="" id="wrapper_label"><h5>Severity<span *ngIf="severityText">: {{severityText}}</span></h5></div>
+  <div class="" id="wrapper_mtx">
+    <div id="heading1">
+      <div><span>Likelihood<span *ngIf="likelihoodText">: {{likelihoodText}}</span></span></div>
     </div>
-  </div>
+    <div id="heading2">
+      <div class="">&nbsp;</div>
+      <div *ngFor="let lik of riskMatrixData.lik" [style.background]="lik.back" [style.color]="lik.fore"
+        matTooltipPosition="above" [matTooltip]="lik.text + '['+ lik.code +']'">
+        <span>{{lik.code}}</span>
+      </div>
+    </div>
+    <div class="risk-rows" *ngFor="let sev of  riskMatrixData.sev">
+      <div [style.background]="sev.back" [style.color]="sev.fore" matTooltipPosition="right" [matTooltip]="sev.text">
+        <span>{{sev.code}}</span>
+      </div>
+      <div *ngFor="let lik of riskMatrixData.lik" (click)="CellClick(lik.key,sev.key)"
+        [style.background]="riskMatrixData.mtx['M'+lik.key+sev.key].back"
+        [style.color]="riskMatrixData.mtx['M'+lik.key+sev.key].fore" matTooltipPosition="above"
+        [matTooltip]="'Severity: ' + sev.text + ', Likelihood: ' + lik.text">
+        <span *ngIf="isWithData">
+          <i *ngIf="(severity==sev.key && likelihood==lik.key)" class="fa fa-check"></i>
+          <span *ngIf="(severity!=sev.key || likelihood!=lik.key)">&nbsp;</span>
+        </span>
+        <span *ngIf="!isWithData">&nbsp;</span>
+      </div>
+    </div>
+  </div>  <!-- wrapper_mtx -->
 </div>
+

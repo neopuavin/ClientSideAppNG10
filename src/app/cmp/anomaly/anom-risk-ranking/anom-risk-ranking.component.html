@@ -20,8 +20,9 @@
       <!-- <app-app-input-a [fieldName]="'AN_RISK_RANK_SEVERITY'" [label]="'Severity'"></app-app-input-a>
       <app-app-input-a [fieldName]="'AN_RISK_RANK_LIKELIHOOD'" [label]="'Likelihood'"></app-app-input-a> -->
     </app-panel-a>
-    <app-panel-a [PL]="2" [PT]="4" [width]="320">
-      <app-risk-matrix [phHeight]="210"
+    <app-panel-a [PL]="2" [PT]="4" [horizontal]="true" [width]="280"
+      style="display:flex;align-items: stretch;">
+      <app-risk-matrix
         [riskMatrixData] = "module.ds.riskMatrixData"
         [severity]="severity"
         [likelihood]="likelihood"></app-risk-matrix>
