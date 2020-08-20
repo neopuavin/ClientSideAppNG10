@@ -27,6 +27,13 @@
   .form-control option {
     font-size: 0.95em;
     font-family: $form_input_font-family;
+
+  }
+
+  .form-control[type="text"]:focus, select:focus,textarea.form-control:focus{
+    outline:2px solid $bs_warning !important;
+    border:1px solid transparent !important;
+    // outline-offset: 1px;
   }
 
   select.form-control{

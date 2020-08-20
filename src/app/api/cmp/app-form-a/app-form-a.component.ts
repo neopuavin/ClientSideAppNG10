@@ -1,4 +1,4 @@
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { FormGroup, AbstractControl, FormControl } from '@angular/forms';
 import {
   Component,
   OnInit,
@@ -36,7 +36,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
   @Input() excludes: Array<string> = [];
   @Input() readOnly: boolean = false;
 
-
   @Output() afterScatter: EventEmitter<any> = new EventEmitter();
 
   private _sourceRow: any = null;
@@ -53,7 +52,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     return this._sourceRow;
   }
 
-
   private _isDataLoading: boolean = false;
   @Input() set isDataLoading(value: boolean) {
     this._isDataLoading = value;
@@ -62,13 +60,11 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     return this._isDataLoading;
   }
 
-  public fieldsInitialized:Array<string> = [];
-
+  public fieldsInitialized: Array<string> = [];
 
   constructor(@Inject(LOCALE_ID) private locale: string) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
   ngAfterViewInit() {
     // console.log();
     // this.Scatter();
@@ -79,6 +75,38 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     return this._formFields;
   }
 
+  public RegisterField(fieldName: string): FormControl {
+    if (!this.formObject) return null;
+
+    let control: any = this.formObject.get(fieldName);
+
+    if (!control) {
+      // if control is not yet part of the form
+      const colVal = this.sourceRow ? this.sourceRow[fieldName] : null;
+
+      // register field as with initialized value when sourceRow is available
+      // this is a must to prevent reinitialization when Scatter method is called
+      if (this.sourceRow) this.MarkAsInitialized(fieldName);
+
+      control = new FormControl(colVal);
+      this.formObject.addControl(fieldName, control);
+    } else {
+      // control has previously been created
+      // console.log(this.fieldName,"Previously initialized!")
+      this.MarkAsInitialized(fieldName);
+    }
+    return control;
+  }
+
+  public MarkAsNotInitialized(fieldName: string) {
+    const index = this.fieldsInitialized.indexOf(fieldName);
+    if (index != -1) this.fieldsInitialized.splice(index, 1);
+  }
+  public MarkAsInitialized(fieldName: string) {
+    const index = this.fieldsInitialized.indexOf(fieldName);
+    if (index == -1) this.fieldsInitialized.push(fieldName);
+  }
+
   public Scatter(recordChanged?: boolean): void {
     /******************************************************************************
      * Sets the values of form controls to the equivalent field of the source
@@ -86,7 +114,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     if (!this.formObject) return;
 
     if (recordChanged == undefined) recordChanged = false;
-    if( recordChanged ) this.fieldsInitialized = [];
+    if (recordChanged) this.fieldsInitialized = [];
 
     let patchValues: any = {};
     let sourceTable: any = null;
@@ -107,7 +135,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
         if (this.excludes.indexOf(field) != -1) continue;
 
         // check if the field value has already been set initially
-        if(this.fieldsInitialized.indexOf(field) != -1) continue;
+        if (this.fieldsInitialized.indexOf(field) != -1) continue;
 
         let controlEnabled: boolean = true;
         let colValue: any = undefined;
@@ -137,7 +165,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
             if (!ctrl.disabled) ctrl.disable();
           }
         }
-
       } // end of for
     } // end of sourceRow available
 
@@ -161,7 +188,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     // resume control change event
     this.suspendControlChangeEvent = false;
 
-    console.log("AfterScatter, recordChanged",recordChanged)
+    console.log('AfterScatter, recordChanged', recordChanged);
 
     this.afterScatter.emit(this);
   }

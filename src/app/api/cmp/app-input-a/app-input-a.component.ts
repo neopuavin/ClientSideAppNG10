@@ -154,22 +154,24 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     if (!this.fieldName || !this.form.formObject) return;
 
-    let control: any = this.form.formObject.get(this.fieldName);
-    if (!control) {
-      // if control is not yet part of the form
-      const colVal = this.sourceRow ? this.sourceRow[this.fieldName] : null;
+    this.form.RegisterField(this.fieldName);
 
-      // register field as with initialized value when sourceRow is available
-      // this is a must to prevent reinitialization when Scatter method is called
-      if (this.sourceRow) this.MarkAsInitialized();
+    // let control: any = this.form.formObject.get(this.fieldName);
+    // if (!control) {
+    //   // if control is not yet part of the form
+    //   const colVal = this.sourceRow ? this.sourceRow[this.fieldName] : null;
 
-      control = new FormControl(colVal);
-      this.form.formObject.addControl(this.fieldName, control);
-    } else {
-      // control has previously been created
-      // console.log(this.fieldName,"Previously initialized!")
-      this.MarkAsInitialized();
-    }
+    //   // register field as with initialized value when sourceRow is available
+    //   // this is a must to prevent reinitialization when Scatter method is called
+    //   if (this.sourceRow) this.MarkAsInitialized();
+
+    //   control = new FormControl(colVal);
+    //   this.form.formObject.addControl(this.fieldName, control);
+    // } else {
+    //   // control has previously been created
+    //   // console.log(this.fieldName,"Previously initialized!")
+    //   this.MarkAsInitialized();
+    // }
 
 
   }
