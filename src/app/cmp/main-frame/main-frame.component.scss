@@ -1,59 +1,115 @@
 @import "../../../appcssvars.scss";
 
 #nav-main {
-  background-image: linear-gradient($back_color_dark, $back_color_light);
-  //font-family: "Alegreya Sans SC", "Arial";
+  flex-grow: 1 1 0;
+  display: flex;
+  align-items: stretch;
+  background: white;
   font-family: $form_body_font-family;
 
-  height: $header_height;
+  #nav-logo {
+    // background:yellow;
+    padding: 2px 5px;
+  }
+  #nav-title {
+    // background:cyan;
+    padding-top: 12px;
+    white-space: nowrap;
+    p {
+      color: $fore_color_dark;
+      text-shadow: gray 1px 1px 1px;
+    }
+  }
+  $sub-menu-height: 24px;
+  #nav-spacer {
+    // background:magenta;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    #nav-spacer-top {
+      flex: 1 1 0;
+      // background:yellow;
+    }
+    #nav-spacer-bottom {
+      // background:cyan;
+      min-height: $sub-menu-height;
+      max-height: $sub-menu-height;
+      display: flex;
+      #nav-spacer-triangle {
+        flex: 1 1 0;
+        height: 0px;
+        margin-left: 12px;
+        border: 0px;
+        border-left: 50px solid transparent;
+        border-bottom: $sub-menu-height solid $back_color_dark;
+      }
+    }
+  }
+  #nav-menu {
+    display: flex;
+    flex-direction: column;
 
-  p span {
-    color: $fore_color_dark;
-    text-shadow: gray 1px 1px 1px;
-  }
+    #nav-menu-top span,
+    #nav-menu-bottom span {
+      white-space: nowrap;
+      color: $fore_color_dark;
+      font-size: 0.85em;
+      margin-left: 12px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
 
-  #app-ver {
-    color: $fore_color_dark;
-    cursor: default;
-    margin-left: 7px;
-    font-size: 0.65em;
-    font-family: $form_body_font-family;
-    text-shadow: none;
-  }
+    #nav-menu-top span.active,
+    #nav-menu-bottom span.active {
+      border-bottom: 2px solid $menu_undeline;
+      //color: $fore_color_dark;;
+    }
 
-  #menu span.active,
-  #sub-menu span.active {
-    border-bottom: 2px solid $menu_undeline;
-    //color: $fore_color_dark;;
-  }
-  #menu span,
-  #sub-menu span {
-    color: $fore_color_dark;
-    font-size: 0.85em;
-    margin-left: 12px;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-  }
-  #menu span:hover,
-  #sub-menu span:hover {
-    color: $bs_success;
-  }
-  #menu span {
-    font-size: 0.9em;
-  }
-  #menu span#notifiaction{
-    color:#c0c0c0;
-    i.active{
-      color: $bs_danger;
+
+    #nav-menu-top span {
+      font-size: 0.9em;
+    }
+
+    #nav-menu-top span#notifiaction {
+      color: #c0c0c0;
+      i.active {
+        color: $bs_danger;
+      }
+    }
+
+    #nav-menu-top span:hover {
+      color: $bs_success;
+    }
+
+    #nav-menu-top {
+      justify-content: flex-end;
+      align-items: flex-end;
+      flex: 1 1 0;
+      display: flex;
+      padding-right: 5px;
+      padding-bottom: 2px;
+    }
+    #nav-menu-bottom {
+      min-height: $sub-menu-height;
+      max-height: $sub-menu-height;
+      display: flex;
+      justify-content: flex-end;
+      background: $back_color_dark;
+      padding-right: 5px;
     }
   }
 }
 
+
+#sep1 {
+  background: $back_color_dark;
+  height: 2px;
+}
 #detail-container {
   height: calc(100vh - #{$header_height});
   border-radius: 0px;
   border: none;
-  border-top: 2px solid $line_color_dark;
+  border-top: 3px solid $line_color_dark;
   .card-body {
     div {
       //height: 100px;
@@ -126,9 +182,10 @@
     user-select: none;
     -o-user-select: none;
     font-family: $form_footer_font-family;
-    >span:nth-child(1),>span:nth-child(2){
-      margin-top:3px;
-      margin-left:2px;
+    > span:nth-child(1),
+    > span:nth-child(2) {
+      margin-top: 3px;
+      margin-left: 2px;
     }
     span#node-path {
       overflow: hidden;

@@ -1,40 +1,79 @@
-<div class="container-fluid m-0 p-0 flex-column" *ngIf="ds">
-  <nav id="nav-main" class="navbar p-0 px-2">
+<div class="container-fluid m-0 p-0 flex-column" *ngIf="ds" style="overflow: hidden;">
+  <div id="nav-main">
+    <div id="nav-logo"><img src="./assets/shell_logo_d.png" alt="Shell logo"></div>
+    <div class="" id="nav-title">
+      <p class="m-0">
+        <span class="nav-brand noselect h5">{{ds.data["appHeader"]}}</span><br />
+        <span class="nav-brand noselect h6">{{ds.data["appHeaderSub"]}}</span>
+        <span id="app-ver" matTooltipPosition="below" [matTooltip]="appVer.tipText"
+          class="noselect">{{appVer.label}}</span>
+      </p>
+
+    </div>
+    <div class="" id="nav-spacer">
+      <div class="" id="nav-spacer-top"></div>
+      <div class="" id="nav-spacer-bottom">
+        <div class="" id="nav-spacer-triangle"></div>
+      </div>
+    </div>
+    <div class="" id="nav-menu">
+      <div class="" id="nav-menu-top">
+        <span *ngFor="let m of menuList" class="noselect {{m.active ? 'active' : ''}}" (click)="menuClick(m.id)"><i
+            *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''" [class]="m.icon + ' mr-1'"></i>{{m.label}}
+        </span>
+        <span id="notifiaction" class="px-0 m-0 ml-2">
+          <i class="fa active" matTooltipPosition="below" [matTooltip]="notificationTip"
+            [ngClass]="{'fa-flag':!ds.globalMessage['error'],'fa-ban':ds.globalMessage['error']}"></i>
+        </span>
+
+      </div>
+      <div class="" id="nav-menu-bottom">
+        <span *ngFor="let s of subMenu" class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
+          [style.color]="s.ready ? null : 'gray'">{{s.label}}</span>
+      </div>
+    </div>
+  </div>
+  <nav *ngIf="false" id="nav-main" class="navbar p-0">
     <!-- left side of navigation bar -->
-    <img src="./assets/shell_logo_d.png" alt="">
-    <p class="m-0 mx-1">
-      <span class="nav-brand noselect h5">{{ds.data["appHeader"]}}</span><br />
-      <span class="nav-brand noselect h6">{{ds.data["appHeaderSub"]}}</span>
-      <span id="app-ver" matTooltipPosition="below" [matTooltip]="appVer.tipText" class="noselect">{{appVer.label}}</span>
-    </p>
+    <img id="logo" src="./assets/shell_logo_d.png" alt="Shell logo">
+    <div id="app_name">
+      <p class="m-0">
+        <span class="nav-brand noselect h5">{{ds.data["appHeader"]}}</span><br />
+        <span class="nav-brand noselect h6">{{ds.data["appHeaderSub"]}}</span>
+        <span id="app-ver" matTooltipPosition="below" [matTooltip]="appVer.tipText"
+          class="noselect">{{appVer.label}}</span>
+      </p>
+    </div>
+
+    <div id="nav_right">The quick brown fox</div>
 
     <!-- navigation bar middle spacer-->
-    <p style="margin: auto auto;">&nbsp;</p>
+    <!-- <p style="background:magenta;flex-grow: 1 1 0;">&nbsp;</p> -->
 
     <!-- right side of navigation bar -->
-    <div class="d-flex flex-column">
+    <div *ngIf="false" class="d-flex flex-column bg-warning m-0">
       <!--menu start-->
       <div id="menu" class="d-flex text-white justify-content-end">
         <span *ngFor="let m of menuList" class="noselect {{m.active ? 'active' : ''}}" (click)="menuClick(m.id)"><i
             *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''" [class]="m.icon + ' mr-1'"></i>{{m.label}}
         </span>
         <span id="notifiaction" class="px-0 m-0 ml-2">
-          <i class="fa active"  matTooltipPosition="below" [matTooltip]="notificationTip"
+          <i class="fa active" matTooltipPosition="below" [matTooltip]="notificationTip"
             [ngClass]="{'fa-flag':!ds.globalMessage['error'],'fa-ban':ds.globalMessage['error']}"></i>
         </span>
       </div>
 
       <!--sub menu start [style.text-decoration]="s.ready ? null : 'line-through'"-->
-      <div>
+      <div style="background:lime; align-self:stretch;margin:0px;">
         <div id="sub-menu" class="d-flex text-white justify-content-end">
-          <span *ngIf="subMenu.length==0 || !subMenu">&nbsp;</span><span *ngFor="let s of subMenu"
-            class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
-
+          <span *ngIf="subMenu.length==0 || !subMenu">&nbsp;</span>
+          <span *ngFor="let s of subMenu" class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
             [style.color]="s.ready ? null : 'gray'">{{s.label}}</span>
         </div>
       </div>
     </div>
   </nav>
+  <div id="sep1">&nbsp;</div>
   <div id="detail-container" class="card">
     <div *ngIf="false" class="card-header">
       <h1>Header</h1>
@@ -47,10 +86,9 @@
 
 
           <app-tree-view *ngIf="true" #mainTree [treeData]="ds.mainTreeData" [colorDefinitions]="ds.colorDefinitions"
-            [rootId]="ds.rootNodeId" [nodeHeight]="22" (nodeClick)="TreeClick($event)" [rollupColorData]="ds.treeColorData"
-            (searchTreeClick)="this.ds.SearchTree($event)"
-            (selectSearchedItem)="this.ds.SearchTreeDirectChildren($event)"
-            (nodePMClick)="TreePMClick($event)">
+            [rootId]="ds.rootNodeId" [nodeHeight]="22" (nodeClick)="TreeClick($event)"
+            [rollupColorData]="ds.treeColorData" (searchTreeClick)="this.ds.SearchTree($event)"
+            (selectSearchedItem)="this.ds.SearchTreeDirectChildren($event)" (nodePMClick)="TreePMClick($event)">
             <span class="text-center p-3">
               <i class="fa fa-spinner fa-spin fa-3x fa-fw mr-1" [style.font-size.em]="1.6"></i>{{treeLoadingMessage}}
             </span>
@@ -61,16 +99,20 @@
         <div id="pnl-center" [style.width.px]="0">
           <!-- width=0 is necessary to prevent content to control the width of the panel-->
           <!-- Modules -->
-          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1" [sourceTable]="ds.tblAnomalies" [assetField]="'AN_ASSET_ID'"
-            *ngIf="activeModule==1"></app-anomaly>
+          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
+            [sourceTable]="ds.tblAnomalies" [assetField]="'AN_ASSET_ID'" *ngIf="activeModule==1"></app-anomaly>
 
-          <app-design-data [treeView]="setValueTo(treeView,undefined)" [moduleId]="2" [sourceTable]="ds.tblDesignData" [assetField]="''" *ngIf="activeModule==2">
+          <app-design-data [treeView]="setValueTo(treeView,undefined)" [moduleId]="2" [sourceTable]="ds.tblDesignData"
+            [assetField]="''" *ngIf="activeModule==2">
           </app-design-data>
           <app-chemical-database [treeView]="treeView" [moduleId]="3" *ngIf="activeModule==3"></app-chemical-database>
-          <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4"></app-risk-based-inspection>
-          <app-survey-data [treeView]="treeView" [moduleId]="5" [sourceTable]="ds.tblSurveyHeader" *ngIf="activeModule==5"></app-survey-data>
+          <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4">
+          </app-risk-based-inspection>
+          <app-survey-data [treeView]="treeView" [moduleId]="5" [sourceTable]="ds.tblSurveyHeader"
+            *ngIf="activeModule==5"></app-survey-data>
           <app-freespan [treeView]="treeView" [moduleId]="6" *ngIf="activeModule==6"></app-freespan>
-          <app-reference-library [treeView]="treeView" [sourceTable]="ds.tblRefFiles" [moduleId]="7" *ngIf="activeModule==7">
+          <app-reference-library [treeView]="treeView" [sourceTable]="ds.tblRefFiles" [moduleId]="7"
+            *ngIf="activeModule==7">
           </app-reference-library>
           <app-seismic [treeView]="treeView" [moduleId]="8" *ngIf="activeModule==8"></app-seismic>
 
