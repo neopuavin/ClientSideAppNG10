@@ -9,7 +9,8 @@
 
   #nav-logo {
     // background:yellow;
-    padding: 2px 5px;
+    padding: 0px 10px;
+    padding-top:8px;
   }
   #nav-title {
     // background:cyan;
@@ -54,12 +55,20 @@
     display: flex;
     flex-direction: column;
 
+    #nav-menu-bottom{
+      align-items: center;
+    }
+
     #nav-menu-top span,
     #nav-menu-bottom span {
       white-space: nowrap;
       color: $fore_color_dark;
       font-size: 0.85em;
       margin-left: 12px;
+      padding:0px;
+      // background: lime;
+      box-sizing: border-box;
+      height:1.5em;
       cursor: pointer;
       border-bottom: 2px solid transparent;
     }
@@ -91,7 +100,7 @@
       align-items: flex-end;
       flex: 1 1 0;
       display: flex;
-      padding-right: 5px;
+      padding-right: 10px;
       padding-bottom: 2px;
     }
     #nav-menu-bottom {
@@ -100,7 +109,7 @@
       display: flex;
       justify-content: flex-end;
       background: $back_color_dark;
-      padding-right: 5px;
+      padding-right: 10px;
     }
   }
 }

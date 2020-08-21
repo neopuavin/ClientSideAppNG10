@@ -317,7 +317,7 @@ export class AnomalyComponent extends FormCommon
 
 
     this.dataSource
-      .OpenPopup('addEditAnomaly', 870, 475, true, {
+      .OpenPopup('addEditAnomaly', 870, 455, true, {
         row: this.currentRow,
 
         // create single item asset lookup to display asset as a read-only select field

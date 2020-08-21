@@ -4,7 +4,8 @@
 
       <button matTooltipPosition="below" [matTooltip]="SetButtonTitle('show_code')" class="btn btn-sm text-secondary"
         (click)="ToggleCode()">
-        <i class="fa pt-2 pl-1" [ngClass]="{'fa-th-list':showCode,'fa-stream':!showCode}" style="font-size:1.0em;"></i>
+        <i class="fa pl-1 text-secondary" [ngClass]="{'fa-th-list':showCode,'fa-stream':!showCode}"
+          style="font-size:1.2em;margin-top:5px;"></i>
       </button>
 
       <button *ngIf="currNode" matTooltipPosition="below" [matTooltip]="SetButtonTitle('zoom_tree')"

@@ -1,7 +1,25 @@
 @import "../../../appcssvars.scss";
 
-h2{
-  border-bottom:2px solid $bs_danger;
+// h2{
+//   border-bottom:2px solid $bs_danger;
+// }
+
+h1,
+h2,
+h3 {
+  color: $fore_color_dark;
+  font-family: $form_header_font-family;
+  margin: 0px;
+  text-shadow: gray 1px 1px 1px;
+}
+
+h3 {
+  margin: 0px;
+  padding: 0px;
+  height: $form_header_height;
+  border-bottom: 2px solid $bs_danger;
+  font-size: 1.2em;
+  box-sizing: content-box;
 }
 
 button {
@@ -42,6 +60,7 @@ button {
   display: flex !important;
   flex-direction: column !important;
   flex: 1 1 0 !important;
+  padding: 0px;
   // background: red;
 }
 
@@ -49,7 +68,7 @@ button {
   margin: -24px -24px 0px -24px !important;
   padding: 10px 24px;
   background: $bs_warning;
-  color:$fore_color_dark;
+  color: $fore_color_dark;
   cursor: move;
   // text-align: center;
 }
@@ -61,22 +80,20 @@ mat-dialog-content {
 
   display: flex !important;
   flex-direction: column !important;
-  flex:1 1 0 !important;
+  flex: 1 1 0 !important;
 
   overflow: hidden;
 
-//   background: lime;
+  //   background: lime;
 }
- mat-dialog-actions {
+mat-dialog-actions {
   margin-left: -24px !important;
   margin-right: -24px !important;
 
-  margin-top:0px;
-
-  // border-top:1px solid $fore_color_gray;
-  // background:$back_color_gray;
-  //   max-height:50px;
-//   min-height:50px;
-//   background-color: magenta;
-//   // background: olive !important;
- }
+  // background: lime !important;
+  button {
+    height: 30px !important;
+    font-family: $form_button_font-family !important;
+    font-size: .9em !important;
+  }
+}
