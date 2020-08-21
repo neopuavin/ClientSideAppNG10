@@ -10,7 +10,11 @@
   #nav-logo {
     // background:yellow;
     padding: 0px 10px;
-    padding-top:8px;
+    //padding-top:8px;
+    display: flex;
+    img{
+margin:auto;
+    }
   }
   #nav-title {
     // background:cyan;
@@ -101,7 +105,7 @@
       flex: 1 1 0;
       display: flex;
       padding-right: 10px;
-      padding-bottom: 2px;
+      padding-bottom: 5px;
     }
     #nav-menu-bottom {
       min-height: $sub-menu-height;

@@ -25,6 +25,7 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
   @Output() filterClick: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('search') searchTextObj: any;
+  @ViewChild('formHeader') formHeader:any;
   searchText: HTMLElement = null;
 
   constructor() {}
@@ -56,6 +57,10 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
 
   AddClick(event: any) {
     this.addClick.emit(event);
+  }
+
+  onFocus(e:any){
+    e.srcElement.blur();
   }
 
   public get allowEdit(): boolean {

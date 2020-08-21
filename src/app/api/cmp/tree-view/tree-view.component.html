@@ -1,15 +1,15 @@
-<div id="tree-wrapper">
+<div id="tree-wrapper" #treeWrapper>
   <div id="tree-toolbar">
     <div>
 
       <button matTooltipPosition="below" [matTooltip]="SetButtonTitle('show_code')" class="btn btn-sm text-secondary"
-        (click)="ToggleCode()">
+        (click)="ToggleCode()" (focus)="onFocus($event)" >
         <i class="fa pl-1 text-secondary" [ngClass]="{'fa-th-list':showCode,'fa-stream':!showCode}"
           style="font-size:1.2em;margin-top:5px;"></i>
       </button>
 
       <button *ngIf="currNode" matTooltipPosition="below" [matTooltip]="SetButtonTitle('zoom_tree')"
-        class="btn btn-sm text-secondary" (click)="NodeZoomClick()">
+        class="btn btn-sm text-secondary" (focus)="onFocus($event)" (click)="NodeZoomClick()">
         <span class="fa-stack fa-2x m-0 p-0">
           <i class="fa fa-stream fa-stack-2x"></i>
           <i class="fa fa-search-plus fa-stack-2x"></i>
@@ -17,7 +17,7 @@
       </button>
 
       <button *ngIf="rootNode" matTooltipPosition="below" [matTooltip]="SetButtonTitle('unzoom_tree')"
-        class="btn btn-sm text-secondary" (click)="NodeUnZoomClick()">
+        class="btn btn-sm text-secondary"  (focus)="onFocus($event)" (click)="NodeUnZoomClick()">
         <span class="fa-stack fa-2x m-0 p-0">
           <i class="fa fa-stream fa-stack-2x"></i>
           <i class="fa fa-search-minus fa-stack-2x"></i>

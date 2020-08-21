@@ -20,6 +20,7 @@ import {
 })
 export class TreeViewComponent implements OnInit, AfterViewInit {
 
+  @ViewChild('treeWrapper') treeWrapper:any;
   @ViewChild('searchInput') searchInput:any;
   @ViewChild('searchGrid') searchGrid: DataGridComponent;
   @ViewChild('treeViewPort') treeViewPort: CdkVirtualScrollViewport;
@@ -85,6 +86,7 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
       .AddColumn({ caption: 'Code', fieldName: 'code', maxWidth: 80 })
       .AddColumn({ caption: 'Name', fieldName: 'text', minWidth: 80 })
       .SetKeyColumnName('id');
+
   }
 
   private _rootNode: TreeViewNode = null;
@@ -463,6 +465,10 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
         tree.searchGrid.Refresh();
       }, 50);
     }
+  }
+
+  onFocus(e:any){
+    e.srcElement.blur();
   }
 
   public get searchCount(): number {
