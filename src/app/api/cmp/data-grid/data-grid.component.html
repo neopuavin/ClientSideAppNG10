@@ -41,6 +41,7 @@
         <!-- <i class="pointer fa fa-pen"></i> -->
         <!-- <i class="pointer fa fa-lock"></i> -->
         <i class="pointer fa fa-caret-right"></i>
+        <i *ngIf="isRowWaiting" [style.visible]="isRowWaiting ? 'visible': 'hidden'" class="wait fa fa-spinner fa-spin fa-1x fa-fw"></i>
         <input class="row-focus" type="text" (keyup)="KeyUp($event,r)" [id]="'row_focus_' + r[options.keyColumnName]" />
         <!-- <i class="pointer fa fa-chevron-right"></i> -->
       </div>

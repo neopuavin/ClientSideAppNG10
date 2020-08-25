@@ -289,6 +289,6 @@
     "tree_location_filter_pattern_deploy": "aa,aa__",
     "tree_extract_node_fields": "REC_TAG`NODE_ID`NODE_DESC",
     "tree_extract_tree_fields": "TRE_NOD_TAG`TRE_NOD_TAG_PAR`TRE_NOD_LOC`TRE_DAT_TAG",
-    "tree_child_extract_levels": 2
+    "tree_child_extract_levels": 1
   }
 }

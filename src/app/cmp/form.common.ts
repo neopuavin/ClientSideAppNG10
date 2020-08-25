@@ -44,6 +44,7 @@ export class FormCommon {
   public mainTabsOptions = new DataTabsOption([]);
   public mainFormCollection: Array<AppFormAComponent> = [];
   public mainFormObject: FormGroup = new FormGroup({});
+  public mainRecordsBuffer: Array<any> = [];
 
   public suppressPendingRequestFlag: boolean = false;
 
@@ -127,6 +128,11 @@ export class FormCommon {
 
   public get isLoadingData(): boolean {
     return this.sourceTable.pendingRequest && !this.suppressPendingRequestFlag;
+  }
+
+  private _isRowWaiting: boolean = false;
+  public get isRowWaiting(): boolean {
+    return this._isRowWaiting;
   }
 
   public get promptLoadingData(): string {
@@ -306,10 +312,21 @@ export class FormCommon {
 
     const keyName = tbl.keyName;
     const key = row[keyName];
+
+    //if row is already in the buffer array,
+    // set to buffer record to current row and exit this method
+    const buf = this.mainRecordsBuffer.find((br) => br[keyName] == key);
+
+    if (buf) {
+      // triggers form scatter
+      this._currentRow = buf;
+      this._sourceRow = this._currentRow;
+      // console.log("Get from buffer! ",this.mainRecordsBuffer.length);
+      return;
+    }
+
     let assetKey: number = null;
-
     if (this.assetField) {
-
       // if asset fieldname is defined, get asset information infomation
       // from related tables (ie. asset code, desctription)
       assetKey = row[this.assetField];
@@ -326,6 +343,7 @@ export class FormCommon {
     // set all isDataLoading flag to true
     this._loadingTimeoutHandle = setTimeout(() => {
       this.mainFormCollection.forEach((f) => (f.isDataLoading = true));
+      this._isRowWaiting = true;
     }, this._loadingTimeout);
 
     this.ds.Get(
@@ -348,7 +366,6 @@ export class FormCommon {
       {
         onSuccess: (e) => {
           if (e.processed.data[0].length) {
-
             // set details current row data
             this._currentRow = e.processed.data[0].length
               ? e.processed.data[0][0]
@@ -360,14 +377,17 @@ export class FormCommon {
                 ? e.processed.data[1][0]['TRE_NOD_LOC']
                 : null,
             };
-
           }
+
+          // add currentRow to buffer
+          this.mainRecordsBuffer.push(this._currentRow);
 
           // triggers form scatter
           this._sourceRow = this._currentRow;
 
           // call module's local override function
           this.GridRowClickLocal(e);
+          // console.log("this.mainRecordsBuffer.length: ",this.mainRecordsBuffer.length);
 
           // if timeout for loading mask is not reached before data is received,
           // cancel timeout set!
@@ -377,6 +397,7 @@ export class FormCommon {
           // set all isDataLoading flag to false
           this.mainFormCollection.forEach((f) => (f.isDataLoading = false));
 
+          this._isRowWaiting = false;
           this.suppressPendingRequestFlag = false;
         },
         onError: (err) => {

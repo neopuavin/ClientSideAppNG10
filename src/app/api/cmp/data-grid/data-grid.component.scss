@@ -81,6 +81,12 @@ $test_col_with: 400px;
         > i.pointer{
           display: none;
         }
+        > i.wait{
+          visibility:hidden;
+          font-size: 0.7em;
+        }
+
+
       }
 
       .row-focus{
@@ -101,9 +107,12 @@ $test_col_with: 400px;
       background-color: $grid_row_selected_color;
       > div.row-header {
         background-color: $bs_warning_light !important;
-        > i.pointer {
+        > i.pointer  {
           display: inline;
           color: $bs_primary;
+        }
+        > i.fa-spinner{
+          visibility:visible;
         }
       }
     }

@@ -79,6 +79,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() isLoadingData: boolean = false;
   @Input() promptLoadingData: string = 'Loading...';
 
+  @Input() isRowWaiting:boolean = false;
+
   @Input() promptNoRecords: string = 'No record(s) found.';
   @Input() promptRefresh: string = 'Refreshing display.';
 

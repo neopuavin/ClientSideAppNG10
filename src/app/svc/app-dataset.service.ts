@@ -305,7 +305,7 @@ export class AppDataset extends DatasetBase {
             code: 'tre|-an,TRE_DAT_TAG,AN_ASSET_ID',
             includedFields:
               'TRE_NOD_LOC`max(AN_ORIG_CLASS)@MAX_ORIG`max(AN_CURR_CLASS)@MAX_CURR',
-            filter: '{TRE_DAT_TYPE|1}',
+            filter: `{TRE_DAT_TYPE|${this.currentTreeId}}`,
             snapshot: true,
           },
         ],

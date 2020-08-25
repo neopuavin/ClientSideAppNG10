@@ -188,7 +188,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     // resume control change event
     this.suspendControlChangeEvent = false;
 
-    console.log('AfterScatter, recordChanged', recordChanged);
+    // console.log('AfterScatter, recordChanged', recordChanged);
 
     this.afterScatter.emit(this);
   }
