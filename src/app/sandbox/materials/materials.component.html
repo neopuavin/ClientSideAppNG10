@@ -23,17 +23,52 @@
   </mat-form-field>
 </p>
 <p class="m-3">
-  <mat-form-field  id="outline" appearance="outline">
+  <mat-form-field id="outline" appearance="outline">
     <mat-label>M-Outline form field</mat-label>
     <input matInput placeholder="Placeholder">
     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
     <!-- <mat-hint>Hint</mat-hint> -->
   </mat-form-field>
 </p>
-<!--
-<mat-form-field appearance="fill">
+
+<!-- <mat-form-field appearance="fill">
   <mat-label>Choose a date</mat-label>
   <input matInput [matDatepicker]="picker">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
 </mat-form-field> -->
+
+<!-- <mat-form-field appearance="fill"> -->
+<!-- <mat-label>Choose a date</mat-label> -->
+<!-- <input class="form-control form-control-sm" [matDatepicker]="picker"> -->
+<div class="input-group d-flex">
+  <input class="form-control form-control-sm" [matDatepicker]="picker">
+  <div class="input-group-append">
+    <div class="input-group-text p-0 d-flex">
+      <i [class]="'fa fa-calendar px-2'"
+      (click)="picker.open();"
+      style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"></i>
+    </div>
+  </div>
+  <mat-datepicker #picker></mat-datepicker>
+</div>
+<!-- </mat-form-field> -->
+
+
+<!--
+
+  <div class="input-group" *ngIf="isInput &&  !isDataLoading" style="white-space: nowrap;display:flex;"
+    [style.width.px]="inputWidth">
+
+    <input #input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
+      [style.background]="background" [formControlName]="fieldName" [readonly]="isReadOnly || actionIcon"
+      class="form-control flex-grow-1 form-control-sm py-0 my-0">
+    <div *ngIf="actionIcon" class="input-group-append">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <i [class]="'fa ' + actionIcon" style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"
+          (click)="ActionClick($event)" [matTooltip]="actionTip"></i>
+      </div>
+    </div>
+  </div>
+
+-->

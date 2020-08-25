@@ -449,7 +449,7 @@ export class FormCommon {
   }
 
   CancelUpdate() {
-    console.log('CancelUpdate:', this.mainFormObject);
+    console.log('CancelUpdate:',this._currentRow, this.mainFormObject);
     const formVal = this.mainFormObject.value;
 
     let patchValues = {};

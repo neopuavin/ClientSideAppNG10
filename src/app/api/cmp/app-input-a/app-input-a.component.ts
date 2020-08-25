@@ -1,4 +1,4 @@
-import { FieldInfo } from './../../mod/app-column.model';
+import * as moment from 'moment/moment'
 import { PanelAComponent } from './../panel-a/panel-a.component';
 import { AppFormAComponent } from './../app-form-a/app-form-a.component';
 import {
@@ -23,6 +23,8 @@ import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 export class AppInputAComponent implements OnInit, AfterViewInit {
   @ViewChild('input') _input: ElementRef;
   input: HTMLElement;
+
+  @ViewChild('picker') picker:any;
 
   @Input() type: string = null;
 
@@ -330,6 +332,20 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     return ctrl;
   }
 
+  public get displayDate():string{
+    if(!this.form) return null;
+    if(!this.form.formObject) return null;
+
+    const ctrl = this.form.formObject.get(this.fieldName);
+    if(!ctrl) return null;
+    //return new Date(ctrl.value);
+    if(!ctrl.value) return null;
+    const dt = new Date(ctrl.value)
+    let fmt = 'DD-MMM-YYYY';
+    if(dt.getSeconds()!=0 || dt.getMinutes()!=0) fmt+= ', h:mm:ss a';
+    return moment(dt).format(fmt);
+  }
+
   public get displayValue(): string {
     if (!this._changeValueNow) return null;
 
@@ -365,6 +381,7 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   }
 
   ActionClick(e: any) {
+    //this.picker.open();
     this.actionClick.emit({ e: e, source: this });
   }
 }

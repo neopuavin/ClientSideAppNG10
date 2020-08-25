@@ -32,7 +32,7 @@
 
   <!-- isDate   -->
 
-  <div class="input-group" *ngIf="isDate && !isDataLoading" style="white-space: nowrap;display:flex;"
+  <!-- <div class="input-group" *ngIf="isDate && !isDataLoading" style="white-space: nowrap;display:flex;"
     [style.width.px]="inputWidth">
 
     <input #input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
@@ -44,14 +44,45 @@
           (click)="ActionClick($event)" [matTooltip]="actionTip ? actionTip : 'Click to select date/time...'"></i>
       </div>
     </div>
+  </div> -->
+
+  <div class="input-group" *ngIf="isDate && !isDataLoading" style="white-space: nowrap;display:flex;position:relative;"
+    [style.width.px]="inputWidth">
+
+    <input type="text" [style.height.px]="controlHeight" sytle="flex:1 1 0;" [placeholder]="placeHolder"
+      [style.background]="background" [readonly]="true" [value]="displayDate"
+      class="form-control flex-grow-1 form-control-sm py-0 my-0">
+    <!--make actual date field as hidden but also make it's origin the same as the display field so that the date picker will appear at the bottom of the display field-->
+    <input #input type="text" style="visibility:hidden;position:absolute;background:yellow;z-index:-1"
+      [formControlName]="fieldName" [matDatepicker]="picker">
+    <div *ngIf="!isReadOnly" class="input-group-append">
+      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+        <i class="fa fa-calendar-alt" style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"
+          (click)="picker.open()" [matTooltip]="actionTip ? actionTip : 'Click to select date/time...'"></i>
+      </div>
+    </div>
+    <mat-datepicker #picker></mat-datepicker>
   </div>
+
+  <!--
+
+  <input class="form-control form-control-sm" [matDatepicker]="picker">
+  <div class="input-group-append">
+    <div class="input-group-text p-0 d-flex">
+      <i [class]="'fa fa-calendar px-2'"
+      (click)="picker.open();"
+      style="font-size:.8em;cursor:pointer;margin:auto;" matTooltipPosition="below"></i>
+    </div>
+  </div>
+  <mat-datepicker #picker></mat-datepicker>
+
+   -->
 
   <!-- Select input, not readonly -->
   <div class="input-group" *ngIf="isSelect && !isReadOnly && !isDataLoading" style="white-space: nowrap;display:flex;"
     [style.width.px]="inputWidth">
 
-    <select #input *ngIf="actionClick.observers.length==0"
-      [formControlName]="fieldName"
+    <select #input *ngIf="actionClick.observers.length==0" [formControlName]="fieldName"
       [style.height.px]="controlHeight" [style.width.px]="inputWidth"
       class="form-control form-control-sm py-0 my-0 select">
       <option *ngFor="let item of fieldLookup" [value]="item.key">{{item.text}}</option>

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-materials',
@@ -6,6 +6,8 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
   styleUrls: ['./materials.component.scss']
 })
 export class MaterialsComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('picker') picker:any;
 
   constructor() { }
 

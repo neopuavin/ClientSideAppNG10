@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'NG10App';
-  public showMaterials:boolean =false;
+  public showMaterials:boolean =true;
   public showFontAwesome:boolean =false;
 
   constructor(
