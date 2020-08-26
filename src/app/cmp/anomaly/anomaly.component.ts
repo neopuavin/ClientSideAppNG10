@@ -70,112 +70,10 @@ export class AnomalyComponent extends FormCommon
 
   SetupGridColumns() {
 
-    // // Setup grid
-    // this.mainGridOptions
-    //   // Data grid UI definition *****************************************
-    //   .RowHeight(22)
-
-    //   // add data grid columns *****************************************
-    //   .AddColumn({
-    //     fieldName: 'AN_ID',
-    //     width: 50,
-    //     caption: 'ID',
-    //     align: CellTextAlign.CENTER,
-    //     isKey: true,
-    //   })
-    //   .AddColumn({ fieldName: 'AN_ASSET_ID', minWidth: 200 })
-    //   .AddColumn({
-    //     fieldName: 'AN_STATUS',
-    //     width: 80,
-    //     caption: 'Status',
-    //     align: 'center',
-    //   })
-    //   .AddColumn({
-    //     fieldName: 'AN_ORIG_CLASS',
-    //     width: 80,
-    //     align: 'center',
-    //     colorParams: {
-    //       foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
-    //       backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
-    //     },
-    //   })
-    //   .AddColumn({
-    //     fieldName: 'AN_CURR_CLASS',
-    //     width: 80,
-    //     align: 'center',
-    //     colorParams: {
-    //       foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
-    //       backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
-    //     },
-    //   })
-    //   .SetKeyColumnName('AN_ID')
-
-    //   // module-specific join statement *****************************************
-    //   .LeftJoin({
-    //     code: 'node',
-    //     alias: 'alkp',
-    //     localField: 'AN_ASSET_ID',
-    //   })
-    //   .LeftJoin({
-    //     code: 'lkp',
-    //     alias: 'ocls',
-    //     localField: 'AN_ORIG_CLASS',
-    //   })
-    //   .LeftJoin({
-    //     code: 'lkp',
-    //     alias: 'ccls',
-    //     localField: 'AN_CURR_CLASS',
-    //   })
-    //   .LeftJoin({
-    //     code: 'lkp',
-    //     alias: 'stat',
-    //     localField: 'AN_STATUS',
-    //   })
-
-    //   // request includedFields - ****************************************************
-    //   .AddField('AN_ID')
-    //   .AddField('AN_REF')
-    //   .AddField('AN_TYPE')
-    //   .AddFieldWithOptions({
-    //     fieldName: 'AN_STATUS',
-    //     displayField: 'STATUS',
-    //   })
-    //   .AddFieldWithOptions({
-    //     fieldName: 'AN_ASSET_ID',
-    //     displayField: 'ASSETNAME',
-    //   })
-    //   .AddFieldWithOptions({
-    //     fieldName: 'AN_ORIG_CLASS',
-    //     displayField: 'OCLS',
-    //   })
-    //   .AddFieldWithOptions({
-    //     fieldName: 'AN_CURR_CLASS',
-    //     displayField: 'CCLS',
-    //   })
-
-    //   // ******************** Lookups ***************************************
-    //   .AddFieldWithOptions({
-    //     fieldName: 'NODE_DESC',
-    //     fieldAlias: 'ASSETNAME',
-    //     tableAlias: 'alkp',
-    //   })
-    //   .AddFieldWithOptions({
-    //     fieldName: 'LKP_DESC_B',
-    //     fieldAlias: 'STATUS',
-    //     tableAlias: 'stat',
-    //   })
-    //   .AddFieldWithOptions({
-    //     fieldName: 'LKP_DESC_B',
-    //     fieldAlias: 'CCLS',
-    //     tableAlias: 'ccls',
-    //   })
-    //   .AddFieldWithOptions({
-    //     fieldName: 'LKP_DESC_B',
-    //     fieldAlias: 'OCLS',
-    //     tableAlias: 'ocls',
-    //   });
-
-    // return;
+    const center=CellTextAlign.CENTER;
+    const minShort = 80;
+    const minLong = 180;
+    const minMemo = 250;
 
     // Setup grid
     this.mainGridOptions
@@ -190,29 +88,36 @@ export class AnomalyComponent extends FormCommon
         fieldName: 'AN_ID',
         width: 50,
         caption: 'ID',
-        align: CellTextAlign.CENTER,
+        align: center,
         isKey: true,
       })
-      // .AddColumn({ fieldName: 'AN_REF',width: 80,caption:'Ref.No.',align:CellTextAlign.CENTER })
-      // .AddColumn({ fieldName: 'AN_REVNO',width: 50,caption:'Rev#' ,align:CellTextAlign.CENTER})
-      // .AddColumn({ fieldName: 'AN_TITLE',caption:'Title' })
+      .AddColumn({ fieldName: 'AN_REF',width: 60,caption:'Ref.No.',align: center})
+      .AddColumn({ fieldName: 'AN_REVNO',width: 40,caption:'Rev#' ,align:center})
+      .AddColumn({ fieldName: 'AN_TITLE',caption:'Title' })
+      .AddColumn({ fieldName: 'AN_ATTACHMENTS',caption:'Att#',width: 40,align:center })
+      // still to formulate how to link anomaly table to  anomaly action records
+      //.AddColumn({ fieldName: 'AI_TARGET_DATE',caption:'Action Date',width: 80,align:center })
+      .AddColumn({ fieldName: 'AN_DESC',caption:'Description',minWidth:minMemo })
+      .AddColumn({ fieldName: 'AN_MAINT_REQ',displayField:'MAREQ',caption:'Ma.Req.',width: 80 ,align:center})
+      .AddColumn({ fieldName: 'AN_ACT_PARTY',caption:'Action Party',minWidth: minShort })
+
       .AddColumn({
         fieldName: 'AN_ASSET_ID',
         displayField: 'ASSETNAME',
-        minWidth: 200,
+        minWidth: minLong,
       })
       .AddColumn({
         fieldName: 'AN_STATUS',
         displayField: 'STATUS',
-        width: 80,
+        width: 60,
         caption: 'Status',
-        align: 'center',
+        align: center,
       })
       .AddColumn({
         fieldName: 'AN_ORIG_CLASS',
         displayField: 'OCLASS',
-        width: 80,
-        align: 'center',
+        width: 60,
+        align:center,
         colorParams: {
           foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
           backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
@@ -221,8 +126,8 @@ export class AnomalyComponent extends FormCommon
       .AddColumn({
         fieldName: 'AN_CURR_CLASS',
         displayField: 'CCLASS',
-        width: 80,
-        align: 'center',
+        width: 60,
+        align: center,
         colorParams: {
           foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
           backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
@@ -250,6 +155,11 @@ export class AnomalyComponent extends FormCommon
         alias: 'stat',
         localField: 'AN_STATUS',
       })
+      .LeftJoin({
+        code: 'lkp',
+        alias: 'mareq',
+        localField: 'AN_MAINT_REQ',
+      })
 
       // ******************** Inline Lookup Definitions ***********************
       .AddFieldWithOptions({
@@ -274,6 +184,12 @@ export class AnomalyComponent extends FormCommon
         fieldName: 'LKP_DESC_B',
         fieldAlias: 'OCLASS',
         tableAlias: 'ocls',
+        forLookup:true
+      })
+      .AddFieldWithOptions({
+        fieldName: 'LKP_DESC_B',
+        fieldAlias: 'MAREQ',
+        tableAlias: 'mareq',
         forLookup:true
       });
 

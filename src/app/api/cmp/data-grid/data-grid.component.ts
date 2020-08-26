@@ -14,6 +14,7 @@ import {
   OnDestroy,
   Output,
   EventEmitter,
+  HostListener,
 } from '@angular/core';
 
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -25,6 +26,15 @@ import { Data } from '@angular/router';
   styleUrls: ['./data-grid.component.scss'],
 })
 export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @HostListener('window:resize', ['$event']) handleResize(event: any) {
+    // simply adding this event declaration, triggers recalculation of column widths
+    // when the browser window is resized!
+
+    // a method can also be called within this event handler...
+    // this.RefreshGridDisplay();
+  }
+
   // object with 'rows' property which is an array of object!
   @Input() sourceTable: any = null;
   @Input() sourceRows: any = null;
@@ -312,6 +322,10 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       // finally display the requested data
       this._sourceProcessing = false;
     }, 10);
+  }
+
+  RefreshGridDisplay(){
+    // console.log("Rsizing!");
   }
 
   private _sourceProcessing: boolean = false;
