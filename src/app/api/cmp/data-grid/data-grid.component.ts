@@ -587,10 +587,17 @@ export class DataGridOption extends DataOption {
   public AddColumn(args: IDataGridColumn): DataGridOption {
     if (args.visible == undefined) args.visible = true;
 
+    // create column entry
     const col = new DataGridColum(args);
     col.parentOption = this;
     col.order = this.columns.length;
     this.columns.push(col);
+
+    // create field entry based on parameter(s) supplied for the grid column
+    let fldOpt:IDataColumn = {fieldName:args.fieldName}
+    if(args.displayField)fldOpt.displayField = args.displayField;
+    this.AddFieldWithOptions(fldOpt)
+
     return this;
   }
 }

@@ -7,11 +7,12 @@ import {
 export interface IDataColumn {
   // [tableAlias.]<fieldName>[@<fieldAlias>]
   // [aggregateFuction]([tableAlias.]<fieldName>)[@<fieldAlias>]
-  fieldName: string;
+  fieldName?: string;
   fieldAlias?: string;
   tableAlias?: string;
   caption?: string;
   aggregateFuction?: string;
+  forLookup?: boolean;
 
   // when supplied, inline lookup will be generated. Object of key-value pairs
   // which will be used to search for display text of data field.
@@ -21,7 +22,7 @@ export interface IDataColumn {
   // returnObject.lookups.FIELD_NAME_DISPLAY_FIELD.key#
   displayField?: string;
   visible?: boolean;
-  isKey?:boolean;
+  isKey?: boolean;
 }
 
 export interface IProcessRequestData {
@@ -63,13 +64,13 @@ export interface ISnapshot {
   rows: Array<any>;
 }
 
-export interface ILookupItem{
-  key:number;
-  text?:string;
-  code?:string;
-  group?:number;
-  back?:string;
-  fore?:string;
+export interface ILookupItem {
+  key: number;
+  text?: string;
+  code?: string;
+  group?: number;
+  back?: string;
+  fore?: string;
 }
 
 export class DataColumn {
@@ -132,11 +133,18 @@ export class DataOption {
     // find existing column where field definition properties will be set on
     // same as in the processed field object
 
-    if(this.columns){
+    if (this.columns) {
       const col = this.columns.find((c) => c.fieldName == args.fieldName);
       // cascade field definition properties to column properties
       if (col) col.displayField = args.displayField;
     }
+
+    // if field already exist, double call to field definition and therefore
+    // no further action is necessary. This is just for backward compatibility
+    // when field definition is not yet part of the column definition!
+    // WARNING: activating this line may cause inline lookup to fail!
+    if (!args.forLookup)
+      if (this.fields.find((f) => f.fieldName == args.fieldName)) return this;
 
     const fld = new DataColumn(args);
     fld.parentOption = this;
@@ -367,7 +375,7 @@ export class DataOption {
       } else if (e.fieldParam) {
         ret += `${this.GetLogicalOperator(ret, e)}{${this.GetFieldExpression(
           e.fieldParam
-        )}${e.operator ? '|' + e.operator: ''}|${this.GetValueString(e)}}`;
+        )}${e.operator ? '|' + e.operator : ''}|${this.GetValueString(e)}}`;
       } else {
       }
     });
@@ -379,7 +387,6 @@ export class DataOption {
   private _CurrParentExprBase: IFieldExpression = null;
 
   private PushExpression(expr: IFieldExpression) {
-
     // positions filter expression to the correct place in the filter heirarchy
 
     let collection: Array<IFieldExpression>;
@@ -439,7 +446,7 @@ export class DataOption {
     values?: any,
     clearFilter?: boolean
   ): DataOption {
-    return this.PushLinkFilter(tableCode, values, clearFilter,true);
+    return this.PushLinkFilter(tableCode, values, clearFilter, true);
   }
   private PushLinkFilter(
     tableCode: string,

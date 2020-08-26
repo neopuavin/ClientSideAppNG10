@@ -49,10 +49,141 @@ export class AnomalyComponent extends FormCommon
     // Set Common Data Settings
     this.CommonFormInit();
 
+    this.SetupGridColumns();
+
+    // setup tab
+    this.mainTabsOptions
+      .AddTab({
+        id: 1,
+        label: 'General Information',
+        icon: 'fa fa-info-circle',
+        active: true,
+      })
+      .AddTab({ id: 2, label: 'Assessment', icon: '', active: false })
+      .AddTab({ id: 3, label: 'Recommendations', icon: '', active: false })
+      .AddTab({ id: 4, label: 'Risk Ranking', icon: '', active: false })
+      .AddTab({ id: 5, label: 'Failure Threats', icon: '', active: false })
+      .AddTab({ id: 6, label: 'Attachments', icon: '', active: false })
+      .AddTab({ id: 7, label: 'Actions', icon: '', active: false })
+      .AddTab({ id: 8, label: 'Related Anomalies', icon: '', active: false });
+  }
+
+  SetupGridColumns() {
+
+    // // Setup grid
+    // this.mainGridOptions
+    //   // Data grid UI definition *****************************************
+    //   .RowHeight(22)
+
+    //   // add data grid columns *****************************************
+    //   .AddColumn({
+    //     fieldName: 'AN_ID',
+    //     width: 50,
+    //     caption: 'ID',
+    //     align: CellTextAlign.CENTER,
+    //     isKey: true,
+    //   })
+    //   .AddColumn({ fieldName: 'AN_ASSET_ID', minWidth: 200 })
+    //   .AddColumn({
+    //     fieldName: 'AN_STATUS',
+    //     width: 80,
+    //     caption: 'Status',
+    //     align: 'center',
+    //   })
+    //   .AddColumn({
+    //     fieldName: 'AN_ORIG_CLASS',
+    //     width: 80,
+    //     align: 'center',
+    //     colorParams: {
+    //       foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
+    //       backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
+    //     },
+    //   })
+    //   .AddColumn({
+    //     fieldName: 'AN_CURR_CLASS',
+    //     width: 80,
+    //     align: 'center',
+    //     colorParams: {
+    //       foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
+    //       backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
+    //     },
+    //   })
+    //   .SetKeyColumnName('AN_ID')
+
+    //   // module-specific join statement *****************************************
+    //   .LeftJoin({
+    //     code: 'node',
+    //     alias: 'alkp',
+    //     localField: 'AN_ASSET_ID',
+    //   })
+    //   .LeftJoin({
+    //     code: 'lkp',
+    //     alias: 'ocls',
+    //     localField: 'AN_ORIG_CLASS',
+    //   })
+    //   .LeftJoin({
+    //     code: 'lkp',
+    //     alias: 'ccls',
+    //     localField: 'AN_CURR_CLASS',
+    //   })
+    //   .LeftJoin({
+    //     code: 'lkp',
+    //     alias: 'stat',
+    //     localField: 'AN_STATUS',
+    //   })
+
+    //   // request includedFields - ****************************************************
+    //   .AddField('AN_ID')
+    //   .AddField('AN_REF')
+    //   .AddField('AN_TYPE')
+    //   .AddFieldWithOptions({
+    //     fieldName: 'AN_STATUS',
+    //     displayField: 'STATUS',
+    //   })
+    //   .AddFieldWithOptions({
+    //     fieldName: 'AN_ASSET_ID',
+    //     displayField: 'ASSETNAME',
+    //   })
+    //   .AddFieldWithOptions({
+    //     fieldName: 'AN_ORIG_CLASS',
+    //     displayField: 'OCLS',
+    //   })
+    //   .AddFieldWithOptions({
+    //     fieldName: 'AN_CURR_CLASS',
+    //     displayField: 'CCLS',
+    //   })
+
+    //   // ******************** Lookups ***************************************
+    //   .AddFieldWithOptions({
+    //     fieldName: 'NODE_DESC',
+    //     fieldAlias: 'ASSETNAME',
+    //     tableAlias: 'alkp',
+    //   })
+    //   .AddFieldWithOptions({
+    //     fieldName: 'LKP_DESC_B',
+    //     fieldAlias: 'STATUS',
+    //     tableAlias: 'stat',
+    //   })
+    //   .AddFieldWithOptions({
+    //     fieldName: 'LKP_DESC_B',
+    //     fieldAlias: 'CCLS',
+    //     tableAlias: 'ccls',
+    //   })
+    //   .AddFieldWithOptions({
+    //     fieldName: 'LKP_DESC_B',
+    //     fieldAlias: 'OCLS',
+    //     tableAlias: 'ocls',
+    //   });
+
+    // return;
+
     // Setup grid
     this.mainGridOptions
       // Data grid UI definition *****************************************
       .RowHeight(22)
+
+      // Set key column name
+      .SetKeyColumnName('AN_ID')
 
       // add data grid columns *****************************************
       .AddColumn({
@@ -62,15 +193,24 @@ export class AnomalyComponent extends FormCommon
         align: CellTextAlign.CENTER,
         isKey: true,
       })
-      .AddColumn({ fieldName: 'AN_ASSET_ID', minWidth: 200 })
+      // .AddColumn({ fieldName: 'AN_REF',width: 80,caption:'Ref.No.',align:CellTextAlign.CENTER })
+      // .AddColumn({ fieldName: 'AN_REVNO',width: 50,caption:'Rev#' ,align:CellTextAlign.CENTER})
+      // .AddColumn({ fieldName: 'AN_TITLE',caption:'Title' })
+      .AddColumn({
+        fieldName: 'AN_ASSET_ID',
+        displayField: 'ASSETNAME',
+        minWidth: 200,
+      })
       .AddColumn({
         fieldName: 'AN_STATUS',
+        displayField: 'STATUS',
         width: 80,
         caption: 'Status',
         align: 'center',
       })
       .AddColumn({
         fieldName: 'AN_ORIG_CLASS',
+        displayField: 'OCLASS',
         width: 80,
         align: 'center',
         colorParams: {
@@ -80,6 +220,7 @@ export class AnomalyComponent extends FormCommon
       })
       .AddColumn({
         fieldName: 'AN_CURR_CLASS',
+        displayField: 'CCLASS',
         width: 80,
         align: 'center',
         colorParams: {
@@ -87,7 +228,6 @@ export class AnomalyComponent extends FormCommon
           backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
         },
       })
-      .SetKeyColumnName('AN_ID')
 
       // module-specific join statement *****************************************
       .LeftJoin({
@@ -111,64 +251,40 @@ export class AnomalyComponent extends FormCommon
         localField: 'AN_STATUS',
       })
 
-      // request includedFields - ****************************************************
-      .AddField('AN_ID')
-      .AddField('AN_REF')
-      .AddField('AN_TYPE')
-      .AddFieldWithOptions({
-        fieldName: 'AN_STATUS',
-        displayField: 'STATUS',
-      })
-      .AddFieldWithOptions({
-        fieldName: 'AN_ASSET_ID',
-        displayField: 'ASSETNAME',
-      })
-      .AddFieldWithOptions({
-        fieldName: 'AN_ORIG_CLASS',
-        displayField: 'OCLS',
-      })
-      .AddFieldWithOptions({
-        fieldName: 'AN_CURR_CLASS',
-        displayField: 'CCLS',
-      })
-
-      // ******************** Lookups ***************************************
+      // ******************** Inline Lookup Definitions ***********************
       .AddFieldWithOptions({
         fieldName: 'NODE_DESC',
         fieldAlias: 'ASSETNAME',
         tableAlias: 'alkp',
+        forLookup:true
       })
       .AddFieldWithOptions({
         fieldName: 'LKP_DESC_B',
         fieldAlias: 'STATUS',
         tableAlias: 'stat',
+        forLookup:true
       })
       .AddFieldWithOptions({
         fieldName: 'LKP_DESC_B',
-        fieldAlias: 'CCLS',
+        fieldAlias: 'CCLASS',
         tableAlias: 'ccls',
+        forLookup:true
       })
       .AddFieldWithOptions({
         fieldName: 'LKP_DESC_B',
-        fieldAlias: 'OCLS',
+        fieldAlias: 'OCLASS',
         tableAlias: 'ocls',
+        forLookup:true
       });
 
-    // setup tab
-    this.mainTabsOptions
-      .AddTab({
-        id: 1,
-        label: 'General Information',
-        icon: 'fa fa-info-circle',
-        active: true,
-      })
-      .AddTab({ id: 2, label: 'Assessment', icon: '', active: false })
-      .AddTab({ id: 3, label: 'Recommendations', icon: '', active: false })
-      .AddTab({ id: 4, label: 'Risk Ranking', icon: '', active: false })
-      .AddTab({ id: 5, label: 'Failure Threats', icon: '', active: false })
-      .AddTab({ id: 6, label: 'Attachments', icon: '', active: false })
-      .AddTab({ id: 7, label: 'Actions', icon: '', active: false })
-      .AddTab({ id: 8, label: 'Related Anomalies', icon: '', active: false });
+    console.log(
+      '\nselect:',
+      this.mainGridOptions.FieldList,
+      '\nfrom:',
+      this.mainGridOptions.fromClauseCode,
+      '\nwhere:',
+      this.mainGridOptions.whereClause,
+    );
   }
 
   SetFilterParams(): void {
@@ -314,8 +430,6 @@ export class AnomalyComponent extends FormCommon
       return;
     }
 
-
-
     this.dataSource
       .OpenPopup('addEditAnomaly', 870, 455, true, {
         row: this.currentRow,
@@ -354,10 +468,9 @@ export class AnomalyComponent extends FormCommon
         ],
       })
       .subscribe((result) => {
-        if(result){
+        if (result) {
           if (result.mode == 'accept') this.SaveRecord();
-        }else
-          this.CancelUpdate();
+        } else this.CancelUpdate();
       });
   }
 
