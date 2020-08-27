@@ -209,6 +209,13 @@ export class AnomalyComponent extends FormCommon
         dateFormat: 'default',
       })
       .AddColumn({
+        fieldName: 'AN_DATE_IDENT',
+        caption: 'Date Identified',
+        width: wd5,
+        dateFormat: 'default',
+      })
+
+      .AddColumn({
         fieldName: 'AN_RAISED_BY',
         caption: 'Raised By',
         width: wd5,
@@ -258,7 +265,7 @@ export class AnomalyComponent extends FormCommon
         fieldName: 'AN_ORIG_CLASS',
         width: wd3,
         align: center,
-        colorParams:colorParams,
+        colorParams: colorParams,
         lookupParams: {
           inlineLookupFieldAlias: 'OCLASS',
           inlineLookupTableAlias: 'ocls',
@@ -269,7 +276,7 @@ export class AnomalyComponent extends FormCommon
         fieldName: 'AN_CURR_CLASS',
         width: wd3,
         align: center,
-        colorParams:colorParams,
+        colorParams: colorParams,
         lookupParams: {
           inlineLookupFieldAlias: 'CCLASS',
           inlineLookupTableAlias: 'ccls',
@@ -281,8 +288,8 @@ export class AnomalyComponent extends FormCommon
         fieldName: 'AN_ORIG_AVAIL_CLASS',
         width: wd3,
         align: center,
-        caption:'Orig.Avail.',
-        colorParams:colorParams,
+        caption: 'Orig.Avail.',
+        colorParams: colorParams,
         lookupParams: {
           inlineLookupFieldAlias: 'OACLASS',
           inlineLookupTableAlias: 'oacls',
@@ -293,14 +300,22 @@ export class AnomalyComponent extends FormCommon
         fieldName: 'AN_CURR_AVAIL_CLASS',
         width: wd3,
         align: center,
-        caption:'Curr.Avail.',
-        colorParams:colorParams,
+        caption: 'Curr.Avail.',
+        colorParams: colorParams,
         lookupParams: {
           inlineLookupFieldAlias: 'CACLASS',
           inlineLookupTableAlias: 'cacls',
           inlineLookupTableField: 'LKP_DESC_B',
         },
       })
+
+      // set mandatory field(s) needed to be extracted from the database
+      // even if the grid column(s)'s visibility mode is set to hidden
+      .AddRequiredDataFields(['AN_ID','AN_ASSET_ID'])
+
+      // show only selected fields to display
+      // .ShowColumns(['AN_REF','AN_REVNO','AN_TITLE','AN_DESC','AN_DATE_IDENT','AN_RAISED_DATE','AN_RAISED_BY','AN_STATUS','AN_ORIG_CLASS','AN_CURR_CLASS'])
+      .HideColumns(['AN_ID'])
 
       // module-specific join statement *****************************************
       .LeftJoin({
@@ -550,6 +565,21 @@ export class AnomalyComponent extends FormCommon
     console.log('PrintRecordEvent', args, 'Current row:', this.currentRow);
     this.dataSource.SelectAsset().subscribe((result) => {
       console.log('Dialog result:', result);
+    });
+  }
+
+  SearchEvent(args: any) {
+    this.dataSource.OpenPopup('alert', 550, 200, false, {
+      title: 'Feature not available',
+      icon: 'fa-exclamation-circle',
+      message: 'Sorry. Search function is not yet available.',
+      buttons: [
+        {
+          label: 'Close',
+          value: 'close',
+          class: 'btn btn-sm btn-warning',
+        },
+      ],
     });
   }
 

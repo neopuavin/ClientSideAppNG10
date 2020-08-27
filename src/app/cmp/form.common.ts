@@ -193,6 +193,7 @@ export class FormCommon {
     //http://ngimsa.ivideolib.com/api/app/svyhdr/-/@tre|TRE_NOD_LOC/-/-/-/1/10000?key=$$$$$;,$$$$$;%25
 
     const fieldList = this.mainGridOptions.FieldList;
+    console.log("SetupData:...",fieldList);
     if (fieldList.length == 0) {
       console.log('DATA FIELD NOT SET');
       return;

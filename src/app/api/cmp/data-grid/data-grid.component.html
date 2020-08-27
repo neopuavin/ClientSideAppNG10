@@ -4,11 +4,17 @@
     [style.max-height.px]="headerHeight">
 
     <!-- actual visible column headers -->
-    <div class="grid-header-row" [style.margin-left.px]="leftScrollOffset"
+    <div class="grid-header-row" [style.margin-left.px]="leftScrollOffset" [style.padding-left.px]="RowHeaderWidth" style="position:relative;"
       [style.min-height.px]="rowHeaderHeight" [style.max-height.px]="rowHeaderHeight">
-      <div class="row-header" [style.border-bottom]="'none'" [style.max-width.px]="RowHeaderWidth"
-        [style.min-width.px]="RowHeaderWidth">&nbsp;</div>
-      <div *ngFor="let h of options.columns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)" class="noselect"
+
+      <div class="row-header" [style.max-width.px]="RowHeaderWidth"
+        [style.left.px]="-leftScrollOffset"
+        [style.min-width.px]="RowHeaderWidth" style="border-bottom:none;position:absolute;z-index:1">
+        <i id="barMenu" *ngIf="showMenu" class="fa fa-bars"></i>
+        <span *ngIf="!showMenu">&nbsp;</span>
+      </div>
+
+      <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)" class="noselect"
         [style.max-width.px]="cellWidth(h,ci)">{{h.caption}}</div>
       <div *ngIf="headerPadWidth!=0" [style.min-width.px]="headerPadWidth" [style.max-width.px]="headerPadWidth">&nbsp;
       </div>
@@ -17,7 +23,7 @@
     <!-- hidden row which is used for column widths of visible header and details -->
     <div #gridHeaderWidthGuide class="grid-header-row" [style.height.px]="0">
       <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth">.</div>
-      <div *ngFor="let h of options.columns" [style.min-width.px]="headerWidth(h,{min:true})"
+      <div *ngFor="let h of options.visibleColumns" [style.min-width.px]="headerWidth(h,{min:true})"
         [style.max-width.px]="headerWidth(h,{max:true})">
         {{h.minWidth}} : {{headerWidth(h,{max:true})}} : {{h.width}}</div>
       <div
@@ -34,9 +40,13 @@
     <div class="grid-prompt noselect" *ngIf="isLoadingData"><i
         class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
 
-    <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;" [style.height.px]="options.rowHeight"
-      (click)="RowClick($event,r)" [ngClass]="RowClass(r)">
-      <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth">
+    <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;"
+      [style.height.px]="options.rowHeight" [style.padding-left.px]="RowHeaderWidth"
+      (click)="RowClick($event,r)" [ngClass]="RowClass(r)" style="position:relative;">
+
+      <!-- Detail Row Header Start -->
+      <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth"
+        style="position: absolute;" [style.left.px]="-leftScrollOffset">
 
         <!-- <i class="pointer fa fa-pen"></i> -->
         <!-- <i class="pointer fa fa-lock"></i> -->
@@ -45,7 +55,9 @@
         <input class="row-focus" type="text" (keyup)="KeyUp($event,r)" [id]="'row_focus_' + r[options.keyColumnName]" />
         <!-- <i class="pointer fa fa-chevron-right"></i> -->
       </div>
-      <div *ngFor="let c of options.columns;let ci=index;" [class]="'grid-cell'+(isCurrRow(r) ? '' : ' noselect')" [style.text-align]="c.align"
+      <!-- Detail Row Header End -->
+
+      <div *ngFor="let c of options.visibleColumns;let ci=index;" [class]="'grid-cell'+(isCurrRow(r) ? '' : ' noselect')" [style.text-align]="c.align"
         [style.min-width.px]="cellWidth(c,ci)" [style.max-width.px]="cellWidth(c,ci)" [style.color]="cellColor(r,c)"
         [style.background]="cellBack(r,c)" (mouseenter)="OnCellMouse($event,r,c)" (mouseleave)="OnCellMouse($event,r,c)"
         matTooltipPosition="below" [matTooltip]="cellTip">

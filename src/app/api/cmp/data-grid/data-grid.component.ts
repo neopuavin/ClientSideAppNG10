@@ -1,4 +1,4 @@
-import * as moment from 'moment/moment'
+import * as moment from 'moment/moment';
 import { AppDataset } from './../../../svc/app-dataset.service';
 import {
   DataColumn,
@@ -38,6 +38,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() sourceTable: any = null;
   @Input() sourceRows: any = null;
   @Input() sourceLookups: any = null;
+
+  @Input() showMenu: boolean = false;
 
   @Input() set currentRow(value: any) {
     const keyName = this.options.keyColumnName;
@@ -443,10 +445,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
             : c.dateFormat;
 
         return moment(dt).format(fmt);
-
       }
 
-      if(c.noZero && !isNaN(value)){
+      if (c.noZero && !isNaN(value)) {
         return +value != 0 ? value : '';
       }
 
@@ -566,7 +567,8 @@ export interface IDataGridColumn extends IDataColumn {
   colorParams?: IColorParams;
   lookupParams?: ILookupParams;
   dateFormat?: string;
-  noZero?:boolean;
+  noZero?: boolean;
+  order?: number;
 }
 
 export class DataGridColum extends DataColumn {
@@ -583,6 +585,7 @@ export class DataGridColum extends DataColumn {
     this.visible = args.visible;
     this.dateFormat = args.dateFormat;
     this.noZero = args.noZero;
+    this.order = args.order ? args.order : 1;
   }
 
   public isKey: boolean = true;
@@ -593,11 +596,10 @@ export class DataGridColum extends DataColumn {
   public maxWidth: number;
   public width: number;
   public dateFormat: string;
-  public noZero:boolean;
+  public noZero: boolean;
+  public order: number;
   public colorParams: IColorParams;
   public lookupParams: ILookupParams;
-
-  public order: number = -1;
 }
 
 export class DataGridOption extends DataOption {
@@ -619,10 +621,28 @@ export class DataGridOption extends DataOption {
   public noFooter: boolean = false;
   public keyColumnName: string = '';
 
+  private _requiredFields: Array<string> = [];
+
   public SetKeyColumnName(value: string): DataGridOption {
     this.keyColumnName = value;
+
+    // include key field as required field to be extracted from the database
+    if (this._requiredFields.indexOf(value) == -1)
+      this._requiredFields.push(value);
+
     return this;
   }
+
+  public AddRequiredDataFields(fieldNames: Array<string>): DataGridOption {
+    if (fieldNames) {
+      fieldNames.forEach((f) => {
+        if (this._requiredFields.indexOf(f) == -1) this._requiredFields.push(f);
+      });
+    }
+    console.log("this._requiredFields:",this._requiredFields);
+    return this;
+  }
+
   public RowHeight(rowHeight: number): DataGridOption {
     this.rowHeight = rowHeight;
     return this;
@@ -646,6 +666,88 @@ export class DataGridOption extends DataOption {
   public get WithFooter(): DataGridOption {
     this.noFooter = false;
     return this;
+  }
+
+  public SetColumnVisibility(column: DataGridColum, visible: boolean) {
+    // Sets visibility mode of a column and its matching data and inline lookup fields
+    column.visible = visible;
+    // check field and if exist set the field's visible property to false
+    const fld = this.fields.find((f) => f.fieldName == column.fieldName);
+    if (fld) {
+      if (!visible) {
+        if (this._requiredFields.indexOf(fld.fieldName) == -1)
+          fld.visible = false;
+      } else {
+        fld.visible = true;
+      }
+    }
+
+    const lkp = column.lookupParams;
+    if (lkp && column.displayField) {
+      // check if an inline lookup is defined
+      if (lkp.inlineLookupFieldAlias) {
+        const lkpFld = this.fields.find(
+          (f) => f.fieldAlias == column.displayField
+        );
+        if (lkpFld) {
+          if (!visible) {
+            if (this._requiredFields.indexOf(lkpFld.fieldAlias) == -1)
+            lkpFld.visible = false;
+          } else {
+            lkpFld.visible = true;
+          }
+        }
+      }
+    }
+  }
+
+  public HideColumns(
+    columnNames: Array<string>,
+    hideOnly?: boolean
+  ): DataGridOption {
+    if (hideOnly == undefined) hideOnly = true;
+    if (hideOnly)
+      this.columns.forEach((c) => this.SetColumnVisibility(c, true));
+
+    columnNames.forEach((cn) => {
+      const col = this.columns.find((c) => c.fieldName == cn);
+      if (col) this.SetColumnVisibility(col, false);
+    });
+
+    this._visibleColumns = null;
+    return this;
+  }
+
+  public ShowColumns(
+    columnNames: Array<string>,
+    showOnly?: boolean
+  ): DataGridOption {
+    if (showOnly == undefined) showOnly = true;
+
+    if (showOnly)
+      this.columns.forEach((c) => this.SetColumnVisibility(c, false));
+
+    let order: number = 1;
+    columnNames.forEach((cn) => {
+      const col = this.columns.find((c) => c.fieldName == cn);
+      if (col) {
+        this.SetColumnVisibility(col, true);
+        col.order = order;
+        order++;
+      }
+    });
+
+    this._visibleColumns = null;
+    return this;
+  }
+
+  private _visibleColumns: Array<DataGridColum> = null;
+  public get visibleColumns(): Array<DataGridColum> {
+    //return
+    if (!this._visibleColumns) {
+      this._visibleColumns = this.columns.filter((c) => c.visible); //.sort((a,b)=>{return b.order<a.order});
+    }
+    return this._visibleColumns;
   }
 
   public AddColumn(args: IDataGridColumn): DataGridOption {

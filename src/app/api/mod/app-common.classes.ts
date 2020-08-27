@@ -82,6 +82,9 @@ export class DataColumn {
     this.displayField = args.displayField ? args.displayField : '';
     this.aggregateFunction = args.aggregateFuction ? args.aggregateFuction : '';
     this.isKey = !args.isKey ? false : args.isKey;
+
+    // override default visibility value only if args.visibility is defined
+    if (args.visible != undefined) this.visible = args.visible;
   }
 
   public parentOption: DataOption = null;
@@ -92,6 +95,7 @@ export class DataColumn {
   public aggregateFunction: string;
   public caption: string;
   public isKey: boolean;
+  public visible: boolean = true;
 }
 
 export class DataOption {
@@ -761,8 +765,12 @@ export class DataOption {
   }
 
   public get FieldList(): string {
+    const visibleFields = this.fields.filter((f) => f.visible);
+
     let ret: string = '';
-    this.fields.forEach((c) => {
+
+    visibleFields.forEach((c) => {
+      // this.fields.forEach((c) => {
       const fldExpr = this.GetFieldExpression(c);
       // if field expression is not yet in the return list string
       // append fldExpr
@@ -770,6 +778,16 @@ export class DataOption {
         ret += (ret.length == 0 ? '' : '`') + fldExpr;
     });
 
+    console.log(
+      'FieldList COLUMNS:',
+      this.columns,
+      'All fields:',
+      this.fields,
+      'Visible Fields:',
+      visibleFields,
+      'FieldList:',
+      ret
+    );
     return ret;
   }
 }

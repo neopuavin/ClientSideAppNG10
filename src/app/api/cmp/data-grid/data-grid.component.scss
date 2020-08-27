@@ -48,6 +48,13 @@ $test_col_with: 400px;
         //background-color: red;
       }
     }
+    #barMenu{
+      margin-top:5px;
+      //padding-top:0px 0px;
+      cursor: pointer;
+      font-size:1.2em;
+      //background:red;
+    }
   }
   #grid-view-port {
     .grid-row:first-child {
