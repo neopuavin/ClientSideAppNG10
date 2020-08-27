@@ -69,8 +69,7 @@ export class AnomalyComponent extends FormCommon
   }
 
   SetupGridColumns() {
-
-    const center=CellTextAlign.CENTER;
+    const center = CellTextAlign.CENTER;
     const minShort = 80;
     const minLong = 180;
     const minMemo = 250;
@@ -91,46 +90,96 @@ export class AnomalyComponent extends FormCommon
         align: center,
         isKey: true,
       })
-      .AddColumn({ fieldName: 'AN_REF',width: 60,caption:'Ref.No.',align: center})
-      .AddColumn({ fieldName: 'AN_REVNO',width: 40,caption:'Rev#' ,align:center})
-      .AddColumn({ fieldName: 'AN_TITLE',caption:'Title' })
-      .AddColumn({ fieldName: 'AN_ATTACHMENTS',caption:'Att#',width: 40,align:center })
-      // still to formulate how to link anomaly table to  anomaly action records
-      //.AddColumn({ fieldName: 'AI_TARGET_DATE',caption:'Action Date',width: 80,align:center })
-      .AddColumn({ fieldName: 'AN_DESC',caption:'Description',minWidth:minMemo })
-      .AddColumn({ fieldName: 'AN_MAINT_REQ',displayField:'MAREQ',caption:'Ma.Req.',width: 80 ,align:center})
-      .AddColumn({ fieldName: 'AN_ACT_PARTY',caption:'Action Party',minWidth: minShort })
-
       .AddColumn({
-        fieldName: 'AN_ASSET_ID',
-        displayField: 'ASSETNAME',
-        minWidth: minLong,
-      })
-      .AddColumn({
-        fieldName: 'AN_STATUS',
-        displayField: 'STATUS',
+        fieldName: 'AN_REF',
         width: 60,
-        caption: 'Status',
+        caption: 'Ref.No.',
         align: center,
       })
       .AddColumn({
-        fieldName: 'AN_ORIG_CLASS',
-        displayField: 'OCLASS',
+        fieldName: 'AN_REVNO',
+        width: 40,
+        caption: 'Rev#',
+        align: center,
+      })
+      .AddColumn({ fieldName: 'AN_TITLE', caption: 'Title', minWidth: minLong })
+      .AddColumn({
+        fieldName: 'AN_ATTACHMENTS',
+        caption: 'Att#',
+        width: 40,
+        align: center,
+      })
+      // still to formulate how to link anomaly table to  anomaly action records
+      //.AddColumn({ fieldName: 'AI_TARGET_DATE',caption:'Action Date',width: 80,align:center })
+      .AddColumn({
+        fieldName: 'AN_DESC',
+        caption: 'Description',
+        minWidth: minMemo,
+      })
+      .AddColumn({
+        fieldName: 'AN_MAINT_REQ',
+        caption: 'Ma.Req.',
+        width: 80,
+        align: center,
+        lookupParams: {
+          inlineLookupFieldAlias: 'MAREQ',
+          inlineLookupTableAlias: 'mareq',
+          inlineLookupTableField: 'LKP_DESC_B',
+        },
+      })
+      .AddColumn({
+        fieldName: 'AN_ACT_PARTY',
+        caption: 'Action Party',
+        minWidth: minShort,
+      })
+
+      .AddColumn({
+        fieldName: 'AN_ASSET_ID',
+        // displayField: 'ASSETNAME',
+        minWidth: minLong,
+        lookupParams: {
+          inlineLookupTableAlias: 'alkp',
+          inlineLookupTableField: 'NODE_DESC',
+          inlineLookupFieldAlias: 'ASSETNAME',
+        },
+      })
+      .AddColumn({
+        fieldName: 'AN_STATUS',
         width: 60,
-        align:center,
+        caption: 'Status',
+        align: center,
+        lookupParams: {
+          inlineLookupFieldAlias: 'STATUS',
+          inlineLookupTableAlias: 'stat',
+          inlineLookupTableField: 'LKP_DESC_B',
+        },
+      })
+      .AddColumn({
+        fieldName: 'AN_ORIG_CLASS',
+        width: 60,
+        align: center,
         colorParams: {
           foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
           backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
         },
+        lookupParams: {
+          inlineLookupFieldAlias: 'OCLASS',
+          inlineLookupTableAlias: 'ocls',
+          inlineLookupTableField: 'LKP_DESC_B',
+        },
       })
       .AddColumn({
         fieldName: 'AN_CURR_CLASS',
-        displayField: 'CCLASS',
         width: 60,
         align: center,
         colorParams: {
           foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
           backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
+        },
+        lookupParams: {
+          inlineLookupFieldAlias: 'CCLASS',
+          inlineLookupTableAlias: 'ccls',
+          inlineLookupTableField: 'LKP_DESC_B',
         },
       })
 
@@ -161,45 +210,13 @@ export class AnomalyComponent extends FormCommon
         localField: 'AN_MAINT_REQ',
       })
 
-      // ******************** Inline Lookup Definitions ***********************
-      .AddFieldWithOptions({
-        fieldName: 'NODE_DESC',
-        fieldAlias: 'ASSETNAME',
-        tableAlias: 'alkp',
-        forLookup:true
-      })
-      .AddFieldWithOptions({
-        fieldName: 'LKP_DESC_B',
-        fieldAlias: 'STATUS',
-        tableAlias: 'stat',
-        forLookup:true
-      })
-      .AddFieldWithOptions({
-        fieldName: 'LKP_DESC_B',
-        fieldAlias: 'CCLASS',
-        tableAlias: 'ccls',
-        forLookup:true
-      })
-      .AddFieldWithOptions({
-        fieldName: 'LKP_DESC_B',
-        fieldAlias: 'OCLASS',
-        tableAlias: 'ocls',
-        forLookup:true
-      })
-      .AddFieldWithOptions({
-        fieldName: 'LKP_DESC_B',
-        fieldAlias: 'MAREQ',
-        tableAlias: 'mareq',
-        forLookup:true
-      });
-
     console.log(
       '\nselect:',
       this.mainGridOptions.FieldList,
       '\nfrom:',
       this.mainGridOptions.fromClauseCode,
       '\nwhere:',
-      this.mainGridOptions.whereClause,
+      this.mainGridOptions.whereClause
     );
   }
 

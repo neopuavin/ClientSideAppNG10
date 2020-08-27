@@ -48,6 +48,10 @@ export interface ILookupParams {
   subLookupParams?: ILookupParams;
   formXTRA?:string;
   lookupSource?:Array<ILookupSource>;
+
+  inlineLookupTableAlias?:string;  // lookup table alias as defined in the call to join methods
+  inlineLookupTableField?:string;  // display field from the linked lookup table
+  inlineLookupFieldAlias?:string;  // lookup field which will be used as source display field of the column
 }
 
 export interface IColorParams {

@@ -26,11 +26,9 @@ import { Data } from '@angular/router';
   styleUrls: ['./data-grid.component.scss'],
 })
 export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @HostListener('window:resize', ['$event']) handleResize(event: any) {
     // simply adding this event declaration, triggers recalculation of column widths
     // when the browser window is resized!
-
     // a method can also be called within this event handler...
     // this.RefreshGridDisplay();
   }
@@ -89,7 +87,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() isLoadingData: boolean = false;
   @Input() promptLoadingData: string = 'Loading...';
 
-  @Input() isRowWaiting:boolean = false;
+  @Input() isRowWaiting: boolean = false;
 
   @Input() promptNoRecords: string = 'No record(s) found.';
   @Input() promptRefresh: string = 'Refreshing display.';
@@ -111,7 +109,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor() {}
 
-  private _changeValuesNow:boolean = false;
+  private _changeValuesNow: boolean = false;
   ngAfterViewInit() {
     setTimeout(() => {
       this.gridHeader = this.gridHeaderObj.nativeElement;
@@ -124,7 +122,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       );
 
-      setTimeout(()=>this._changeValuesNow =true,12);
+      setTimeout(() => (this._changeValuesNow = true), 12);
     }, 10);
   }
 
@@ -161,18 +159,18 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   KeyUp(evt: any, row: any) {
-    if(!row) return;
+    if (!row) return;
 
     const rowIndex = this.sourceRows.indexOf(row);
 
     // current row is the first or the last record of the sourceRows
     switch (evt.code) {
       case 'ArrowUp':
-        if(rowIndex == 0)return;
+        if (rowIndex == 0) return;
         this.currentRow = this.sourceRows[rowIndex - 1];
         break;
       case 'ArrowDown':
-        if(rowIndex == this.sourceRows.length - 1)return;
+        if (rowIndex == this.sourceRows.length - 1) return;
         this.currentRow = this.sourceRows[rowIndex + 1];
         break;
       default:
@@ -191,13 +189,13 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     this.currentRow = row;
   }
 
-  public get headerHeight():number{
-    if(!this._changeValuesNow)return 0;
-    return this.options.rowHeaderHeight+1;
+  public get headerHeight(): number {
+    if (!this._changeValuesNow) return 0;
+    return this.options.rowHeaderHeight + 1;
   }
-  public get rowHeaderHeight():number{
-    if(!this._changeValuesNow)return 0;
-    return this.options.rowHeaderHeight
+  public get rowHeaderHeight(): number {
+    if (!this._changeValuesNow) return 0;
+    return this.options.rowHeaderHeight;
   }
 
   public RowClass(row: any) {
@@ -273,7 +271,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _leftScrollOffset: number = 0;
   public get leftScrollOffset(): number {
-    if(!this._changeValuesNow)return 0;
+    if (!this._changeValuesNow) return 0;
     return this._leftScrollOffset;
   }
 
@@ -324,7 +322,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 10);
   }
 
-  RefreshGridDisplay(){
+  RefreshGridDisplay() {
     // console.log("Rsizing!");
   }
 
@@ -489,7 +487,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public get RowHeaderWidth(): number {
-    if(!this._changeValuesNow)return 6;
+    if (!this._changeValuesNow) return 6;
 
     if (this.options.rowHeaderWidth != undefined) {
       return this.options.rowHeaderWidth;
@@ -498,8 +496,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  public setValueTo(trueValue:any,defaultValue:any){
-    if(!this._changeValuesNow)return defaultValue;
+  public setValueTo(trueValue: any, defaultValue: any) {
+    if (!this._changeValuesNow) return defaultValue;
     return trueValue;
   }
 
@@ -607,10 +605,34 @@ export class DataGridOption extends DataOption {
     col.order = this.columns.length;
     this.columns.push(col);
 
+    let displayField = args.displayField;
+
+    // check if lookup parameter exist
+    const lkp = args.lookupParams;
+    if (lkp) {
+
+      // if display field is not defined at the colum root parameter
+      if (!displayField) displayField = lkp.inlineLookupFieldAlias;
+      // if inline lookup definition is complete
+      if (
+        lkp.inlineLookupTableAlias &&
+        lkp.inlineLookupTableField &&
+        displayField
+      ) {
+        // only define a lookup field if all inline lookup parameters are present
+        this.AddFieldWithOptions({
+          fieldName: lkp.inlineLookupTableField,
+          fieldAlias: displayField,
+          tableAlias: lkp.inlineLookupTableAlias,
+          forLookup: true,
+        });
+      }
+    }
+
     // create field entry based on parameter(s) supplied for the grid column
-    let fldOpt:IDataColumn = {fieldName:args.fieldName}
-    if(args.displayField)fldOpt.displayField = args.displayField;
-    this.AddFieldWithOptions(fldOpt)
+    let fldOpt: IDataColumn = { fieldName: args.fieldName };
+    if (displayField) fldOpt.displayField = displayField;
+    this.AddFieldWithOptions(fldOpt);
 
     return this;
   }
