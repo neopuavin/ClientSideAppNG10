@@ -11,18 +11,21 @@
     </div>
     <div id="right-header" class="d-flex">
       <ng-content select="#before-actions"></ng-content>
-      <button *ngIf="addClick.observers.length" (focus)="onFocus($event)" (click)="AddClick($event)" [disabled]="!allowAdd"
-        class="btn btn-sm btn-link m-0" matTooltipPosition="below" [matTooltip]="SetButtonTitle('add')"><i
-          class="fa fa-plus mr-1"></i>Add</button>
-      <button *ngIf="editClick.observers.length" [disabled]="!allowEdit" (focus)="onFocus($event)" (click)="EditClick($event)"
-        class="btn btn-sm btn-link m-0" matTooltipPosition="below" [matTooltip]="SetButtonTitle('edit')"><i
-          class="fa fa-edit mr-1 text-success"></i>Edit</button>
-      <button *ngIf="deleteClick.observers.length" [disabled]="!allowDelete" (focus)="onFocus($event)" (click)="DeleteClick($event)"
-        class="btn btn-sm btn-link m-0" matTooltipPosition="below" [matTooltip]="SetButtonTitle('delete')"><i
-          class="fa fa-times mr-1 text-danger"></i>Delete</button>
-      <button *ngIf="printClick.observers.length" [disabled]="!allowPrint" (focus)="onFocus($event)" (click)="PrintClick($event)"
-        class="btn btn-sm btn-link m-0" matTooltipPosition="below" [matTooltip]="SetButtonTitle('print')"><i
-          class="fa fa-print mr-1 text-info"></i>Print</button>
+      <button *ngIf="addClick.observers.length" (focus)="onFocus($event)" (click)="AddClick($event)"
+        [disabled]="!allowAdd" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
+        [matTooltip]="SetButtonTitle('add')"><i class="fa fa-plus mr-1"></i>Add</button>
+      <button *ngIf="editClick.observers.length" [disabled]="!allowEdit" (focus)="onFocus($event)"
+        (click)="EditClick($event)" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
+        [matTooltip]="SetButtonTitle('edit')"><i class="fa fa-edit mr-1 text-success"></i>Edit</button>
+      <button *ngIf="deleteClick.observers.length" [disabled]="!allowDelete" (focus)="onFocus($event)"
+        (click)="DeleteClick($event)" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
+        [matTooltip]="SetButtonTitle('delete')"><i class="fa fa-times mr-1 text-danger"></i>Delete</button>
+      <button *ngIf="printClick.observers.length" [disabled]="!allowPrint" (focus)="onFocus($event)"
+        (click)="PrintClick($event)" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
+        [matTooltip]="SetButtonTitle('print')"><i class="fa fa-print mr-1 text-info"></i>Print</button>
+      <button *ngIf="printClick.observers.length" [disabled]="!allowPrint" (focus)="onFocus($event)"
+        (click)="ExcelClick($event)" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
+        [matTooltip]="SetButtonTitle('excel')"><i class="far fa-file-excel mr-1 text-success"></i>Excel</button>
       <ng-content select="#after-actions"></ng-content>
     </div>
   </div>

@@ -38,6 +38,9 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   @Input() phBackSize: number = -1;
   @Input() phDuration: number = -1;
 
+  @Input() dateFormat: string = "DD-MMM-YYYY";
+  @Input() dateTimeFormat: string = "DD-MMM-YYYY, hh:mm:ss a";
+
   @Input() fieldName: string = 'TBA';
 
   @Input() actionIcon: string = '';
@@ -49,7 +52,7 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   @Input() LPL: number = -1;
   @Input() LPR: number = -1;
 
-  @Input() toggleDisplay: Array<string> = null;
+  @Input() toggleDisplay: Array<any> = null;
   @Input() radioData: Array<any> = null;
 
   // expects {key1,value2,key2,value2,..,..,key#,value#},
@@ -340,27 +343,25 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     if(!ctrl) return null;
     //return new Date(ctrl.value);
     if(!ctrl.value) return null;
+
     const dt = new Date(ctrl.value)
-    let fmt = 'DD-MMM-YYYY';
-    if(dt.getSeconds()!=0 || dt.getMinutes()!=0) fmt+= ', h:mm:ss a';
+    const fmt = (dt.getSeconds()!=0 || dt.getMinutes()!=0) ? this.dateTimeFormat : this.dateFormat;
+
     return moment(dt).format(fmt);
   }
 
   public get displayValue(): string {
+    // display value when a toggle or select type control is readonly
+
     if (!this._changeValueNow) return null;
 
     const ctrl = this.getFormControl;
     if (!ctrl) return '';
     if (this.isToggle) {
       //console.log("this.getFormControl:",ctrl,ctrl.value);
-      switch (ctrl.value) {
-        case -1:
-          return this.toggleDisplay[0];
-        case 0:
-          return this.toggleDisplay[1];
-        default:
-          return '';
-      }
+      const tgl = this.toggleDisplay.find(t=>t.value==ctrl.value)
+      return tgl ? tgl.display : `x-${ctrl.value + (JSON.stringify(this.toggleDisplay))}`;
+
     } else {
       if (this.fieldLookup) {
         const lkpItem = this.fieldLookup.find((i) => i.key == ctrl.value);
@@ -368,7 +369,6 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
       }
       return ctrl.value;
     }
-    return '';
   }
 
   MarkAsNotInitialized() {

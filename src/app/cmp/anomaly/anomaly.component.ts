@@ -27,6 +27,7 @@ export class AnomalyComponent extends FormCommon
         { filterValue: 147 }, // Anomaly risk ranking Livelihood
         { filterValue: 148 }, // Anomaly risk ranking Severity
         { filterValue: 149 }, // Anomaly Type Group
+        { filterValue: 190 }, // SAP Status
         { tableCode: 'mtx' }, // Anomaly Risk Matrix data
         { tableCode: 'antype' }, // Anomaly Type
         // { filterValue: 156 }, // Survey Data Class
@@ -41,6 +42,7 @@ export class AnomalyComponent extends FormCommon
         this.AnomalyLookup(147);
         this.AnomalyLookup(148);
         this.AnomalyLookup(149);
+        this.AnomalyLookup(190);
         this.AnomalyLookup('antype');
         this.ds.riskMatrixData;
       }
@@ -69,10 +71,23 @@ export class AnomalyComponent extends FormCommon
   }
 
   SetupGridColumns() {
-    const center = CellTextAlign.CENTER;
-    const minShort = 80;
-    const minLong = 180;
-    const minMemo = 250;
+    const {
+      center,
+      minShort,
+      minLong,
+      minMemo,
+      wd1,
+      wd2,
+      wd3,
+      wd4,
+      wd5,
+      wd6,
+    } = this.ds.constUISettings;
+
+    const colorParams = {
+      foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
+      backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
+    };
 
     // Setup grid
     this.mainGridOptions
@@ -85,20 +100,20 @@ export class AnomalyComponent extends FormCommon
       // add data grid columns *****************************************
       .AddColumn({
         fieldName: 'AN_ID',
-        width: 50,
+        width: wd2,
         caption: 'ID',
         align: center,
         isKey: true,
       })
       .AddColumn({
         fieldName: 'AN_REF',
-        width: 60,
+        width: wd3,
         caption: 'Ref.No.',
         align: center,
       })
       .AddColumn({
         fieldName: 'AN_REVNO',
-        width: 40,
+        width: wd1,
         caption: 'Rev#',
         align: center,
       })
@@ -106,8 +121,9 @@ export class AnomalyComponent extends FormCommon
       .AddColumn({
         fieldName: 'AN_ATTACHMENTS',
         caption: 'Att#',
-        width: 40,
+        width: wd1,
         align: center,
+        noZero: true,
       })
       // still to formulate how to link anomaly table to  anomaly action records
       //.AddColumn({ fieldName: 'AI_TARGET_DATE',caption:'Action Date',width: 80,align:center })
@@ -119,7 +135,7 @@ export class AnomalyComponent extends FormCommon
       .AddColumn({
         fieldName: 'AN_MAINT_REQ',
         caption: 'Ma.Req.',
-        width: 80,
+        width: wd4,
         align: center,
         lookupParams: {
           inlineLookupFieldAlias: 'MAREQ',
@@ -135,7 +151,6 @@ export class AnomalyComponent extends FormCommon
 
       .AddColumn({
         fieldName: 'AN_ASSET_ID',
-        // displayField: 'ASSETNAME',
         minWidth: minLong,
         lookupParams: {
           inlineLookupTableAlias: 'alkp',
@@ -145,7 +160,7 @@ export class AnomalyComponent extends FormCommon
       })
       .AddColumn({
         fieldName: 'AN_STATUS',
-        width: 60,
+        width: wd3,
         caption: 'Status',
         align: center,
         lookupParams: {
@@ -155,13 +170,95 @@ export class AnomalyComponent extends FormCommon
         },
       })
       .AddColumn({
-        fieldName: 'AN_ORIG_CLASS',
-        width: 60,
-        align: center,
-        colorParams: {
-          foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
-          backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
+        fieldName: 'AN_WO_REF',
+        caption: 'SAP#',
+        width: wd4,
+      })
+      .AddColumn({
+        fieldName: 'AN_WO_STATUS',
+        caption: 'SAP Status',
+        width: wd5,
+        lookupParams: {
+          inlineLookupTableField: 'LKP_DESC_B',
+          inlineLookupTableAlias: 'sapstat',
+          inlineLookupFieldAlias: 'SAPSTAT',
         },
+      })
+      .AddColumn({
+        fieldName: 'AN_ASIS',
+        caption: 'OTR',
+        width: wd1,
+        align: center,
+        lookupParams: { toggleDisplay: this.ds.toggleYesNoNA },
+      })
+
+      .AddColumn({
+        fieldName: 'AN_ASSMNT',
+        caption: 'Assessment',
+        minWidth: minMemo,
+      })
+      .AddColumn({
+        fieldName: 'AN_ASS_BY',
+        caption: 'Assessed By',
+        width: wd5,
+      })
+      .AddColumn({
+        fieldName: 'AN_ASS_DATE',
+        caption: 'Assessed Date',
+        width: wd5,
+        dateFormat: 'default',
+      })
+      .AddColumn({
+        fieldName: 'AN_RAISED_BY',
+        caption: 'Raised By',
+        width: wd5,
+      })
+      .AddColumn({
+        fieldName: 'AN_RAISED_DATE',
+        caption: 'Raised Date',
+        width: wd5,
+        dateFormat: 'default',
+      })
+      .AddColumn({
+        fieldName: 'AN_UPD_BY',
+        caption: 'Updated By',
+        width: wd5,
+      })
+      .AddColumn({
+        fieldName: 'AN_UPD_DATE',
+        caption: 'Updated Date',
+        width: wd5,
+        dateFormat: 'default',
+      })
+      .AddColumn({
+        fieldName: 'AN_RECCMD',
+        caption: 'Recommendation',
+        minWidth: minMemo,
+      })
+      .AddColumn({
+        fieldName: 'AN_TA_APPROVED',
+        caption: 'TA Approved',
+        width: wd1,
+        align: center,
+        lookupParams: { toggleDisplay: this.ds.toggleYesNoNA },
+      })
+      .AddColumn({
+        fieldName: 'AN_TA_NAME',
+        caption: 'Updated By',
+        width: wd5,
+      })
+      .AddColumn({
+        fieldName: 'AN_TA_APPR_DATE',
+        caption: 'Updated Date',
+        width: wd5,
+        dateFormat: 'default',
+      })
+
+      .AddColumn({
+        fieldName: 'AN_ORIG_CLASS',
+        width: wd3,
+        align: center,
+        colorParams:colorParams,
         lookupParams: {
           inlineLookupFieldAlias: 'OCLASS',
           inlineLookupTableAlias: 'ocls',
@@ -170,15 +267,37 @@ export class AnomalyComponent extends FormCommon
       })
       .AddColumn({
         fieldName: 'AN_CURR_CLASS',
-        width: 60,
+        width: wd3,
         align: center,
-        colorParams: {
-          foreGround: { 8470: '#fff', 8471: '#000', 8472: '#fff' },
-          backGround: { 8470: '#28a745', 8471: '#ffc107', 8472: '#dc3545' },
-        },
+        colorParams:colorParams,
         lookupParams: {
           inlineLookupFieldAlias: 'CCLASS',
           inlineLookupTableAlias: 'ccls',
+          inlineLookupTableField: 'LKP_DESC_B',
+        },
+      })
+
+      .AddColumn({
+        fieldName: 'AN_ORIG_AVAIL_CLASS',
+        width: wd3,
+        align: center,
+        caption:'Orig.Avail.',
+        colorParams:colorParams,
+        lookupParams: {
+          inlineLookupFieldAlias: 'OACLASS',
+          inlineLookupTableAlias: 'oacls',
+          inlineLookupTableField: 'LKP_DESC_B',
+        },
+      })
+      .AddColumn({
+        fieldName: 'AN_CURR_AVAIL_CLASS',
+        width: wd3,
+        align: center,
+        caption:'Curr.Avail.',
+        colorParams:colorParams,
+        lookupParams: {
+          inlineLookupFieldAlias: 'CACLASS',
+          inlineLookupTableAlias: 'cacls',
           inlineLookupTableField: 'LKP_DESC_B',
         },
       })
@@ -201,6 +320,16 @@ export class AnomalyComponent extends FormCommon
       })
       .LeftJoin({
         code: 'lkp',
+        alias: 'oacls',
+        localField: 'AN_ORIG_AVAIL_CLASS',
+      })
+      .LeftJoin({
+        code: 'lkp',
+        alias: 'cacls',
+        localField: 'AN_CURR_AVAIL_CLASS',
+      })
+      .LeftJoin({
+        code: 'lkp',
         alias: 'stat',
         localField: 'AN_STATUS',
       })
@@ -209,6 +338,11 @@ export class AnomalyComponent extends FormCommon
         alias: 'mareq',
         localField: 'AN_MAINT_REQ',
       })
+      .LeftJoin({
+        code: 'lkp',
+        alias: 'sapstat',
+        localField: 'AN_WO_STATUS',
+      });
 
     console.log(
       '\nselect:',
@@ -416,6 +550,21 @@ export class AnomalyComponent extends FormCommon
     console.log('PrintRecordEvent', args, 'Current row:', this.currentRow);
     this.dataSource.SelectAsset().subscribe((result) => {
       console.log('Dialog result:', result);
+    });
+  }
+
+  SendToExcelEvent(args: any) {
+    this.dataSource.OpenPopup('alert', 550, 200, false, {
+      title: 'Feature not available',
+      icon: 'fa-exclamation-circle',
+      message: 'Sorry. Send to excel funtion is not yet available.',
+      buttons: [
+        {
+          label: 'Close',
+          value: 'close',
+          class: 'btn btn-sm btn-warning',
+        },
+      ],
     });
   }
 }

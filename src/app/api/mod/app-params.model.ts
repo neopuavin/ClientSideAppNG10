@@ -49,6 +49,8 @@ export interface ILookupParams {
   formXTRA?:string;
   lookupSource?:Array<ILookupSource>;
 
+  toggleDisplay?:Array<any>;
+
   inlineLookupTableAlias?:string;  // lookup table alias as defined in the call to join methods
   inlineLookupTableField?:string;  // display field from the linked lookup table
   inlineLookupFieldAlias?:string;  // lookup field which will be used as source display field of the column

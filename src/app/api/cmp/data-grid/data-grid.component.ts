@@ -1,3 +1,4 @@
+import * as moment from 'moment/moment'
 import { AppDataset } from './../../../svc/app-dataset.service';
 import {
   DataColumn,
@@ -88,6 +89,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() promptLoadingData: string = 'Loading...';
 
   @Input() isRowWaiting: boolean = false;
+
+  @Input() dateFormat: string = 'DD-MMM-YYYY';
+  @Input() dateTimeFormat: string = 'DD-MMM-YYYY, hh:mm:ss a';
 
   @Input() promptNoRecords: string = 'No record(s) found.';
   @Input() promptRefresh: string = 'Refreshing display.';
@@ -413,21 +417,63 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   public cellText(r: any, c: DataGridColum): string {
     const value = r[c.fieldName];
     if (c.displayField && this.sourceLookups[c.displayField]) {
+      // if sourceLookups and displayField are defined
+      // sourceLookups - set of inline lookups
+      // where groupname is displayField and value is the item key
+
       return this.sourceLookups[c.displayField][value];
     }
-    if (!c.lookupParams) return value;
+    // if sourceLookups is not defined, the value will still have the
+    // raw field value
 
+    // if lookup params parameter is not defined, return the raw value
+    if (!c.lookupParams) {
+      // here is where the raw value will fall if no lookup parameters is deifned
+      // check if field is a date
+      if (c.dateFormat && value) {
+        const isDefault = c.dateFormat == 'default';
+        const dt = new Date(value);
+        const fmt =
+          dt.getMinutes() != 0 || dt.getSeconds() != 0
+            ? isDefault
+              ? this.dateTimeFormat
+              : c.dateFormat
+            : isDefault
+            ? this.dateFormat
+            : c.dateFormat;
+
+        return moment(dt).format(fmt);
+
+      }
+
+      if(c.noZero && !isNaN(value)){
+        return +value != 0 ? value : '';
+      }
+
+      return value;
+    }
+
+    // if value is empty
     if ((value + '').length == 0) return '';
 
-    const tbl = c.lookupParams.table;
+    // get lookup definition parameters
     const lkpPrm = c.lookupParams;
 
     if (lkpPrm.lookupSource) {
+      // if array of objects is supplied as lookupSource
       const lkpElem = lkpPrm.lookupSource.find((e) => e.value == value);
       return lkpElem ? lkpElem.display : lkpPrm.notFoundDislay;
     } else if (lkpPrm.formXTRA) {
+      // if display value is taken from a field in the row's XTRA property
       return r.XTRA[lkpPrm.formXTRA];
+    } else if (lkpPrm.toggleDisplay) {
+      // if display value will be taken from a string array
+      const tgl = lkpPrm.toggleDisplay.find((t) => t.value == value);
+      return tgl ? tgl.display : value;
     }
+
+    // get lookup table object
+    const tbl = c.lookupParams.table;
 
     let dispVal: any = tbl.LookupText(
       value,
@@ -519,6 +565,8 @@ export interface IDataGridColumn extends IDataColumn {
   fromLookup?: boolean;
   colorParams?: IColorParams;
   lookupParams?: ILookupParams;
+  dateFormat?: string;
+  noZero?:boolean;
 }
 
 export class DataGridColum extends DataColumn {
@@ -533,6 +581,8 @@ export class DataGridColum extends DataColumn {
     this.colorParams = args.colorParams;
     this.isKey = args.isKey;
     this.visible = args.visible;
+    this.dateFormat = args.dateFormat;
+    this.noZero = args.noZero;
   }
 
   public isKey: boolean = true;
@@ -542,6 +592,8 @@ export class DataGridColum extends DataColumn {
   public minWidth: number;
   public maxWidth: number;
   public width: number;
+  public dateFormat: string;
+  public noZero:boolean;
   public colorParams: IColorParams;
   public lookupParams: ILookupParams;
 
@@ -610,7 +662,6 @@ export class DataGridOption extends DataOption {
     // check if lookup parameter exist
     const lkp = args.lookupParams;
     if (lkp) {
-
       // if display field is not defined at the colum root parameter
       if (!displayField) displayField = lkp.inlineLookupFieldAlias;
       // if inline lookup definition is complete

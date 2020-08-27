@@ -21,6 +21,8 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
   @Output() editClick: EventEmitter<any> = new EventEmitter();
   @Output() deleteClick: EventEmitter<any> = new EventEmitter();
   @Output() printClick: EventEmitter<any> = new EventEmitter();
+  @Output() excelClick: EventEmitter<any> = new EventEmitter();
+
   @Output() searchKeyEvent: EventEmitter<any> = new EventEmitter();
   @Output() filterClick: EventEmitter<any> = new EventEmitter();
 
@@ -37,6 +39,8 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
       return 'Edit selected record';
     } else if (type == 'delete') {
       return 'Delete selected record(s)';
+    } else if (type == 'excel') {
+      return 'Extract list to Excel';
     }
     return 'Sorry. This action is not yet avialable...';
   }
@@ -84,6 +88,11 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
   PrintClick(event: any) {
     this.printClick.emit(event);
   }
+
+  ExcelClick(event: any) {
+    this.excelClick.emit(event);
+  }
+
 
 
   FilterClick(event: any) {

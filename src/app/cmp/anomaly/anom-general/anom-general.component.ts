@@ -20,5 +20,9 @@ export class AnomGeneralComponent extends AnomalyCommon
 
   }
 
+  public get toggleDisplay():Array<any>{
+    return this.module.ds.toggleYesNoNA;
+  }
+
 
 }

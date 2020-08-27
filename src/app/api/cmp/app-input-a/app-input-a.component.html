@@ -103,23 +103,57 @@
   </div>
 
   <div class="input-group" *ngIf="isToggle && !isReadOnly">
-    <div class="input-group-prepend">
-      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
-        <input [formControlName]="fieldName" [attr.id]="fieldName+'_1'" type="radio" [value]="-1" style="margin:auto;">
+    <!-- <div *ngFor="let tgl of toggleDisplay;let idx=index;">
+      <div class="input-group-prepend">
+        <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+          <input [formControlName]="fieldName" [attr.id]="fieldName+'_'+idx" type="radio" [value]="tgl.value"
+            style="margin:auto;">
+        </div>
       </div>
-    </div>
-    <div class="form-control px-1" [style.height.px]="controlHeight">
-      <label [attr.for]="fieldName + '_1'">{{toggleDisplay[0]}}</label>
-    </div>
+      <div class="form-control px-1" [style.height.px]="controlHeight">
+        <label [attr.for]="fieldName + '_'+idx">{{tgl.display}}</label>
+      </div>
+    </div> -->
 
-    <div class="input-group-prepend">
-      <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
-        <input [formControlName]="fieldName" [attr.id]="fieldName+'_0'" type="radio" [value]="0" style="margin:auto;">
+    <!-- <div *ngFor="let tgl of toggleDisplay;let idx=index;">
+      <div class="input-group-prepend">
+        <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+          <input [formControlName]="fieldName" [attr.id]="fieldName+'_'+(toggleDisplay.length - idx -1)" type="radio" [value]="+tgl.value"
+            style="margin:auto;">
+        </div>
       </div>
-    </div>
-    <div class="form-control px-1" [style.height.px]="controlHeight">
-      <label [attr.for]="fieldName + '_0'">{{toggleDisplay[1]}}</label>
-    </div>
+      <div class="form-control px-1" [style.height.px]="controlHeight">
+        <label [attr.for]="fieldName + '_'+(toggleDisplay.length - idx -1)">{{tgl.display}}</label>
+      </div>
+    </div> -->
+
+      <div class="input-group-prepend">
+        <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+          <input [formControlName]="fieldName" [attr.id]="fieldName+'_0'" type="radio" [value]="toggleDisplay[0].value"
+            style="margin:auto;">
+        </div>
+      </div>
+      <div class="form-control px-1" [style.height.px]="controlHeight">
+        <label [attr.for]="fieldName + '_0'">{{toggleDisplay[0].display}}</label>
+      </div>
+
+      <div class="input-group-prepend">
+        <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+          <input [formControlName]="fieldName" [attr.id]="fieldName+'_1'" type="radio" [value]="toggleDisplay[1].value" style="margin:auto;">
+        </div>
+      </div>
+      <div class="form-control px-1" [style.height.px]="controlHeight">
+        <label [attr.for]="fieldName + '_1'">{{toggleDisplay[1].display}}</label>
+      </div>
+
+      <div *ngIf="toggleDisplay.length>=3" class="input-group-prepend">
+        <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">
+          <input [formControlName]="fieldName" [attr.id]="fieldName+'_2'" type="radio" [value]="toggleDisplay[2].value" style="margin:auto;">
+        </div>
+      </div>
+      <div *ngIf="toggleDisplay.length>=3" class="form-control px-1" [style.height.px]="controlHeight">
+        <label [attr.for]="fieldName + '_2'">{{toggleDisplay[2].display}}</label>
+      </div>
 
     <!-- <input type="text" class="form-control px-1" onfocus="this.blur()" [readonly]="true" [style.background]="'white'" [value]="toggleDisplay[1]" [style.height.px]="controlHeight" aria-label="Text input with radio button"> -->
   </div>

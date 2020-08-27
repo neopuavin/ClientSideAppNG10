@@ -1,6 +1,6 @@
 <app-form-header [title]="moduleTitle" (editClick)="EditRecordEvent($event)" (addClick)="AddRecordEvent($event)"
   (deleteClick)="DeleteRecordEvent($event)" (searchKeyEvent)="SearchEvent($event)"
-  (printClick)="PrintRecordEvent($event)"
+  (printClick)="PrintRecordEvent($event)" (excelClick)="SendToExcelEvent($event)"
   [rights]="rights">
   <div *ngIf="false" id="after-title" class="p-1 pl-2 pt-1">
     <i class="fa fa-spinner fa-spin fa-3x fa-fw mr-1" style="font-size:.9em;"></i><span>Loading Data. Please

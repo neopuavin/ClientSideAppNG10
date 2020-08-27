@@ -45,7 +45,7 @@
         <input class="row-focus" type="text" (keyup)="KeyUp($event,r)" [id]="'row_focus_' + r[options.keyColumnName]" />
         <!-- <i class="pointer fa fa-chevron-right"></i> -->
       </div>
-      <div *ngFor="let c of options.columns;let ci=index;" class="grid-cell" [style.text-align]="c.align"
+      <div *ngFor="let c of options.columns;let ci=index;" [class]="'grid-cell'+(isCurrRow(r) ? '' : ' noselect')" [style.text-align]="c.align"
         [style.min-width.px]="cellWidth(c,ci)" [style.max-width.px]="cellWidth(c,ci)" [style.color]="cellColor(r,c)"
         [style.background]="cellBack(r,c)" (mouseenter)="OnCellMouse($event,r,c)" (mouseleave)="OnCellMouse($event,r,c)"
         matTooltipPosition="below" [matTooltip]="cellTip">
