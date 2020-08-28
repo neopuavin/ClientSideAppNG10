@@ -17,7 +17,7 @@
       [sourceLookups]="gridSourceLookups" [sourceTable]="sourceTable" [showMenu]="true"
       [promptNoRecords]="'No record(s) found. Please click a node on the tree to get data.'"
       [isLoadingData]="isLoadingData" [promptLoadingData]="promptLoadingData" (rowClick)="GridRowClick($event)"
-      [isRowWaiting] = "isRowWaiting"
+      [isRowWaiting] = "isRowWaiting" [ManagmentOpener]="dataSource.OpenPopup"
       (pageSizeChange)="PageSizeChange($event)" (pageClick)="ChangePage($event)" [options]="mainGridOptions">
     </app-data-grid>
   </div>

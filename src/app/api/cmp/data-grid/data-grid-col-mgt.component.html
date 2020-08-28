@@ -1,0 +1,46 @@
+<h3 #heading mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="noselect p-0 m-0"><i
+    *ngIf="data.icon" [class]="'ml-2 fa ' + data.icon"></i><span
+    class="ml-2">{{data.title ? data.title : 'No Title'}}</span>
+</h3>
+<mat-dialog-content #contentSection class="mat-typography">
+  <div class="d-flex" style="flex:1 1 0">
+
+    <div class="card" style="flex:1 1 0;" [style.height.px]="contentHeight">
+      <div class="card-header">Avaiable Grid Columns</div>
+      <div class="card-body p-0" style="overflow-y: auto;">
+        <!-- <button>Left</button> -->
+        <ul class="list-group">
+          <li *ngFor="let col of columns" class="list-group-item">
+            {{col.caption}}
+          </li>
+        </ul>
+      </div>
+      <!-- <div class="card-footer">Card Footer</div> -->
+    </div>
+    <div id="middleSection" class="bg-light">
+      <button class="btn btn-secondary p-0"><i class="fa fa-angle-double-right" style="margin-top:auto;"></i></button>
+      <button class="btn btn-secondary p-0 my-2"><i class="fa fa-angle-right"></i></button>
+      <button class="btn btn-secondary p-0 my-2"><i class="fa fa-angle-left"></i></button>
+      <button class="btn btn-secondary p-0"><i class="fa fa-angle-double-left" style="margin-bottom:auto;"></i></button>
+    </div>
+    <div class="card" style="flex:1 1 0;"  [style.height.px]="contentHeight">
+      <div class="card-header">Visible Grid Columns</div>
+      <div class="card-body p-0" style="overflow-y: auto;">
+        <button>Right</button>
+
+      </div>
+      <!-- <div class="card-footer">Card Footer</div> -->
+    </div>
+  </div>
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions #actions *ngIf="data.buttons" align="center" class="p-0" style="max-height:35px;">
+  <!-- <button mat-button *ngFor="let btn of this.data.buttons" [mat-dialog-close]="{value:btn.value,response:data.response}"
+    [class]="btn.class + ' m-0 p-0 ml-2'">{{btn.label}}</button> -->
+  <button *ngFor="let btn of this.data.buttons" [class]="btn.class + ' m-0 ml-2'"
+    (click)="this.clickAction(btn.value)">{{btn.label}}</button>
+  <!-- <button mat-button class="btn btn-warning m-0 p-0 ml-2" (click)="this.acceptAndClose()">Save</button> -->
+</mat-dialog-actions>

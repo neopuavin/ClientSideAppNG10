@@ -1,17 +1,17 @@
-<div id="grid-wrapper" *ngIf="isReady">
+<div id="grid-wrapper" *ngIf="isReady ">
   <div *ngIf="false" id="grid-toolbar">Toolbar</div>
   <div #gridHeader id="grid-header" [style.min-height.px]="headerHeight"
     [style.max-height.px]="headerHeight">
 
     <!-- actual visible column headers -->
-    <div class="grid-header-row" [style.margin-left.px]="leftScrollOffset" [style.padding-left.px]="RowHeaderWidth" style="position:relative;"
+    <div *ngIf="isWithVisibleColumns" class="grid-header-row" [style.margin-left.px]="leftScrollOffset" [style.padding-left.px]="RowHeaderWidth" style="position:relative;"
       [style.min-height.px]="rowHeaderHeight" [style.max-height.px]="rowHeaderHeight">
 
-      <div class="row-header" [style.max-width.px]="RowHeaderWidth"
+      <div #rowHeader class="row-header" [style.max-width.px]="RowHeaderWidth"
         [style.left.px]="-leftScrollOffset"
-        [style.min-width.px]="RowHeaderWidth" style="border-bottom:none;position:absolute;z-index:1">
-        <i id="barMenu" *ngIf="showMenu" class="fa fa-bars"></i>
-        <span *ngIf="!showMenu">&nbsp;</span>
+        [style.min-width.px]="RowHeaderWidth" style="border-bottom:none;position:absolute;z-index:1;">
+        <i id="barMenu" (click)="ManageGrid($event)" *ngIf="ManagmentOpener" class="fa fa-bars"></i>
+        <span *ngIf="!ManagmentOpener">&nbsp;</span>
       </div>
 
       <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)" class="noselect"
@@ -34,7 +34,7 @@
     </div>
   </div>
 
-  <cdk-virtual-scroll-viewport id="grid-view-port" #gridViewPort [style.height.%]="100" [itemSize]="options.rowHeight">
+  <cdk-virtual-scroll-viewport *ngIf="isWithVisibleColumns" id="grid-view-port" #gridViewPort [style.height.%]="100" [itemSize]="options.rowHeight">
     <div class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
     <div class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
     <div class="grid-prompt noselect" *ngIf="isLoadingData"><i
@@ -46,7 +46,7 @@
 
       <!-- Detail Row Header Start -->
       <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth"
-        style="position: absolute;" [style.left.px]="-leftScrollOffset">
+        style="position: absolute;" [style.left.px]="barMenuLeft">
 
         <!-- <i class="pointer fa fa-pen"></i> -->
         <!-- <i class="pointer fa fa-lock"></i> -->

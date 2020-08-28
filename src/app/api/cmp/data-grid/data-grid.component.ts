@@ -1,3 +1,6 @@
+import { DataGridColMgtComponent } from './data-grid-col-mgt.component';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import * as moment from 'moment/moment';
 import { AppDataset } from './../../../svc/app-dataset.service';
 import {
@@ -40,6 +43,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() sourceLookups: any = null;
 
   @Input() showMenu: boolean = false;
+  @Input() ManagmentOpener: any = null;
 
   @Input() set currentRow(value: any) {
     const keyName = this.options.keyColumnName;
@@ -107,13 +111,14 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('gridViewPort') gridViewPortElem: any;
   @ViewChild('gridHeader') gridHeaderObj: any;
   @ViewChild('gridHeaderWidthGuide') gridHeaderGuideObj: any;
+  @ViewChild('rowHeader') rowHeader: any;
 
   gridHeaderGuide: HTMLElement = null;
   gridHeader: HTMLElement = null;
 
   public cellTip: string = null;
 
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
 
   private _changeValuesNow: boolean = false;
   ngAfterViewInit() {
@@ -127,6 +132,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
           this._leftScrollOffset = -e.srcElement.scrollLeft;
         }
       );
+
+      console.log('Set SCROLL EVENT!');
 
       setTimeout(() => (this._changeValuesNow = true), 12);
     }, 10);
@@ -185,9 +192,70 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     //this.currentRow = this.sourceRows[]
   }
 
+  ManageGrid(event: any) {
+    this.OpenPopup(500, 530, false, {
+      parent: this,
+
+      // Dialog title
+      title: 'Manage Data Grid Columns',
+      // dialog title icon
+      icon: 'fa-table',
+      // dialog action buttons
+      buttons: [
+        {
+          label: 'Cancel',
+          value: 'cancel',
+          class: 'btn btn-sm btn-secondary',
+        },
+        {
+          label: 'Accept',
+          value: 'accept',
+          class: 'btn btn-sm btn-warning',
+        },
+      ],
+    }).subscribe((result) => {
+      console.log('Result:', result);
+    });
+
+  }
+
+  OpenPopup(
+    width?: number,
+    height?: number,
+    disableClose?: boolean,
+    data?: {}
+  ): Observable<any> {
+    if (!width) width = 300;
+    if (!height) height = 200;
+    if (!disableClose) disableClose = false;
+
+    if (!data) data = {};
+    let ref: MatDialogRef<DataGridColMgtComponent, any>;
+    data['ref'] = ref;
+
+    ref = this.dialog.open(DataGridColMgtComponent, {
+      minWidth: `${width}px`,
+      minHeight: `${height}px`,
+      disableClose: disableClose,
+      data: data,
+    });
+
+    return ref.afterClosed();
+
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   console.log(`Dialog result: ${result}`);
+    // });
+  }
+
   private _isReady: boolean = true;
   public get isReady() {
     return this._isReady;
+  }
+
+  public get isWithVisibleColumns(): boolean {
+    if (!this.options) return false;
+    if (!this.options.visibleColumns) return false;
+    return true;
   }
 
   private _currentRow: any = null;
@@ -279,6 +347,10 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   public get leftScrollOffset(): number {
     if (!this._changeValuesNow) return 0;
     return this._leftScrollOffset;
+  }
+
+  public get barMenuLeft(): number {
+    return this.rowHeader.nativeElement.offsetLeft;
   }
 
   private _processed: boolean = false;
@@ -417,7 +489,15 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public cellText(r: any, c: DataGridColum): string {
+    // NOTE: If this will affect the performance of the grid because of resolving lookups,
+    // first time display lookup result can be stored in a collection inside the
+    // row object and can be subsequently used to render text instead of actively
+    // going through the process of looking up texts.
+
     const value = r[c.fieldName];
+
+    return value;
+
     if (c.displayField && this.sourceLookups[c.displayField]) {
       // if sourceLookups and displayField are defined
       // sourceLookups - set of inline lookups
@@ -639,7 +719,7 @@ export class DataGridOption extends DataOption {
         if (this._requiredFields.indexOf(f) == -1) this._requiredFields.push(f);
       });
     }
-    console.log("this._requiredFields:",this._requiredFields);
+    console.log('this._requiredFields:', this._requiredFields);
     return this;
   }
 
@@ -692,7 +772,7 @@ export class DataGridOption extends DataOption {
         if (lkpFld) {
           if (!visible) {
             if (this._requiredFields.indexOf(lkpFld.fieldAlias) == -1)
-            lkpFld.visible = false;
+              lkpFld.visible = false;
           } else {
             lkpFld.visible = true;
           }
@@ -746,6 +826,7 @@ export class DataGridOption extends DataOption {
     //return
     if (!this._visibleColumns) {
       this._visibleColumns = this.columns.filter((c) => c.visible); //.sort((a,b)=>{return b.order<a.order});
+      this._visibleColumns.sort((a, b) => a.order - b.order);
     }
     return this._visibleColumns;
   }

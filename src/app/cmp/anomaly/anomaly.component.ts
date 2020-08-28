@@ -2,7 +2,6 @@ import { DataOption, ILookupItem } from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { FormCommon } from './../form.common';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { CellTextAlign } from 'src/app/api/cmp/data-grid/data-grid.component';
 
 @Component({
   selector: 'app-anomaly',
@@ -314,8 +313,8 @@ export class AnomalyComponent extends FormCommon
       .AddRequiredDataFields(['AN_ID','AN_ASSET_ID'])
 
       // show only selected fields to display
-      // .ShowColumns(['AN_REF','AN_REVNO','AN_TITLE','AN_DESC','AN_DATE_IDENT','AN_RAISED_DATE','AN_RAISED_BY','AN_STATUS','AN_ORIG_CLASS','AN_CURR_CLASS'])
-      .HideColumns(['AN_ID'])
+      .ShowColumns(['AN_REVNO','AN_REF','AN_TITLE','AN_DESC','AN_DATE_IDENT','AN_RAISED_DATE','AN_RAISED_BY','AN_STATUS','AN_ORIG_CLASS','AN_CURR_CLASS'])
+      // .HideColumns(['AN_ID'])
 
       // module-specific join statement *****************************************
       .LeftJoin({

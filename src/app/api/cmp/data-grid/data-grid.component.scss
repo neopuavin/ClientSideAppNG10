@@ -17,6 +17,11 @@ $test_col_with: 400px;
     // font-size: 0.65em;
     cursor: default;
   }
+  div.row-header:hover{
+    //background:red !important;
+    color: $bs_info !important;
+    background:$bs_warning_light !important;
+  }
   #grid-header {
     overflow: hidden;
     > div {

@@ -9,6 +9,7 @@ import { AppInputAModule } from './cmp/app-input-a/app-input-a.module';
 import { DatePickerAComponent } from './cmp/date-picker-a/date-picker-a.component';
 import { TreeViewComponent } from './cmp/tree-view/tree-view.component';
 import { DataGridComponent } from './cmp/data-grid/data-grid.component';
+import { DataGridColMgtComponent } from './cmp/data-grid/data-grid-col-mgt.component';
 import { RiskMatrixComponent } from './cmp/risk-matrix/risk-matrix.component';
 import { DataTabsComponent } from './cmp/data-tabs/data-tabs.component';
 import { PanelAComponent } from './cmp/panel-a/panel-a.component';
@@ -24,6 +25,7 @@ const declare = [
   DataGridComponent,
   TreeViewComponent,
   FormHeaderComponent,
+  DataGridColMgtComponent
 ];
 
 @NgModule({
