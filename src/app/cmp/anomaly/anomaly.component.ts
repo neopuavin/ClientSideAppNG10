@@ -250,12 +250,12 @@ export class AnomalyComponent extends FormCommon
       })
       .AddColumn({
         fieldName: 'AN_TA_NAME',
-        caption: 'Updated By',
+        caption: 'TA Name',
         width: wd5,
       })
       .AddColumn({
         fieldName: 'AN_TA_APPR_DATE',
-        caption: 'Updated Date',
+        caption: 'TA Approve Date',
         width: wd5,
         dateFormat: 'default',
       })

@@ -4,7 +4,7 @@ import { AppMainServiceService } from './../svc/app-main-service.service';
 import { RequestParams } from './../api/mod/app-params.model';
 
 import { DataTab } from './../api/cmp/data-tabs/data-tabs.component';
-import { DataGridComponent } from './../api/cmp/data-grid/data-grid.component';
+import { DataGridComponent, DataGridColum } from './../api/cmp/data-grid/data-grid.component';
 
 import {
   TreeViewNode,
@@ -193,7 +193,7 @@ export class FormCommon {
     //http://ngimsa.ivideolib.com/api/app/svyhdr/-/@tre|TRE_NOD_LOC/-/-/-/1/10000?key=$$$$$;,$$$$$;%25
 
     const fieldList = this.mainGridOptions.FieldList;
-    console.log("SetupData:...",fieldList);
+
     if (fieldList.length == 0) {
       console.log('DATA FIELD NOT SET');
       return;
@@ -213,7 +213,7 @@ export class FormCommon {
       ? this.rootLocation
       : this.ds.currTreeNode.loc + ',' + this.ds.currTreeNode.loc + '%';
 
-    location = `"${location.replace(',', '","')}"`;
+    location = `"${location.replace(/,/gi, '","')}"`;
 
     let filter: string = `{TRE_NOD_LOC|${location}}`;
     this.SetFilterParams();
@@ -246,6 +246,7 @@ export class FormCommon {
         // console.log('RETURN DATA:', data, 'ROW:', row);
 
         this.ResetCurrentRow(row);
+        this.mainGridOptions.RecordExtractedDataFieldnames();
       },
     });
   }

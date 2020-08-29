@@ -778,16 +778,16 @@ export class DataOption {
         ret += (ret.length == 0 ? '' : '`') + fldExpr;
     });
 
-    console.log(
-      'FieldList COLUMNS:',
-      this.columns,
-      'All fields:',
-      this.fields,
-      'Visible Fields:',
-      visibleFields,
-      'FieldList:',
-      ret
-    );
+    // console.log(
+    //   'FieldList COLUMNS:',
+    //   this.columns,
+    //   'All fields:',
+    //   this.fields,
+    //   'Visible Fields:',
+    //   visibleFields,
+    //   'FieldList:',
+    //   ret
+    // );
     return ret;
   }
 }

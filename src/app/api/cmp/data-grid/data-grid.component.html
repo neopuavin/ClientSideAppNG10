@@ -10,7 +10,8 @@
       <div #rowHeader class="row-header" [style.max-width.px]="RowHeaderWidth"
         [style.left.px]="-leftScrollOffset"
         [style.min-width.px]="RowHeaderWidth" style="border-bottom:none;position:absolute;z-index:1;">
-        <i id="barMenu" (click)="ManageGrid($event)" *ngIf="ManagmentOpener" class="fa fa-bars"></i>
+        <i id="barMenu" matTooltipPosition="right" matTooltip="Click to manage grid columns"
+        (click)="ManageGrid($event)" *ngIf="ManagmentOpener" class="fa fa-bars"></i>
         <span *ngIf="!ManagmentOpener">&nbsp;</span>
       </div>
 

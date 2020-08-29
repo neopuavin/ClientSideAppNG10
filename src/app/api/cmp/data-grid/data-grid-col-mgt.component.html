@@ -1,46 +1,65 @@
-<h3 #heading mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="noselect p-0 m-0"><i
-    *ngIf="data.icon" [class]="'ml-2 fa ' + data.icon"></i><span
+<h3 #heading mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
+  class="noselect p-0 m-0 d-flex"><i *ngIf="data.icon" [class]="'mt-2 ml-2 fa ' + data.icon"></i><span
     class="ml-2">{{data.title ? data.title : 'No Title'}}</span>
+    <i class="fa fa-question-circle mt-2 mr-2"
+      matTooltipPosition="left"
+      matTooltip="Click list item(s) to mark as selected or drag-and-drop an item to sort or move to the other list."
+      style="margin-left:auto;cursor:default;"></i>
 </h3>
 <mat-dialog-content #contentSection class="mat-typography">
+
   <div class="d-flex" style="flex:1 1 0">
 
     <div class="card" style="flex:1 1 0;" [style.height.px]="contentHeight">
-      <div class="card-header">Avaiable Grid Columns</div>
+      <div class="card-header">Grid Hidden Columns ({{hidden.length}})</div>
       <div class="card-body p-0" style="overflow-y: auto;">
-        <!-- <button>Left</button> -->
-        <ul class="list-group">
-          <li *ngFor="let col of columns" class="list-group-item">
-            {{col.caption}}
+        <ul class="list-group" cdkDropList #hiddenList="cdkDropList" [cdkDropListData]="hidden"
+          [cdkDropListConnectedTo]="[visibleList]" (cdkDropListDropped)="drop($event)">
+          <li *ngFor="let col of hidden" [attr.id]="col.id" class="list-group-item item-box noselect"
+            (click)="itemClicked(col,$event)" cdkDrag
+            >
+            <span>{{col.caption}}</span><i *ngIf="col.selected" class="far fa-check-square"></i>
           </li>
         </ul>
       </div>
-      <!-- <div class="card-footer">Card Footer</div> -->
     </div>
+    <!-- matTooltipPosition="right" matTooltip="Click to mark as selected or click and drag to change order or make visible" -->
+
     <div id="middleSection" class="bg-light">
-      <button class="btn btn-secondary p-0"><i class="fa fa-angle-double-right" style="margin-top:auto;"></i></button>
-      <button class="btn btn-secondary p-0 my-2"><i class="fa fa-angle-right"></i></button>
-      <button class="btn btn-secondary p-0 my-2"><i class="fa fa-angle-left"></i></button>
-      <button class="btn btn-secondary p-0"><i class="fa fa-angle-double-left" style="margin-bottom:auto;"></i></button>
+      <button class="btn btn-secondary p-0" (click)="ShowHideAll()" matTooltipPosition="left"
+        matTooltip="Make all columns visible"><i class="fa fa-angle-double-right" style="margin-top:auto;"></i></button>
+      <button class="btn btn-secondary p-0 my-2" (click)="ShowHideSelected()" matTooltipPosition="left"
+        matTooltip="Make selected column(s) visible"><i class="fa fa-angle-right"></i></button>
+      <button class="btn btn-secondary p-0 my-2" (click)="ShowHideSelected(false)" matTooltipPosition="right"
+        matTooltip="Make selected column(s) invisible"><i class="fa fa-angle-left"></i></button>
+      <button class="btn btn-secondary p-0" (click)="ShowHideAll(false)" matTooltipPosition="right"
+        matTooltip="Make all columns invisible"><i class="fa fa-angle-double-left"
+          style="margin-bottom:auto;"></i></button>
     </div>
-    <div class="card" style="flex:1 1 0;"  [style.height.px]="contentHeight">
-      <div class="card-header">Visible Grid Columns</div>
+
+    <div class="card" style="flex:1 1 0;" [style.height.px]="contentHeight">
+      <div class="card-header">Grid Visible Columns ({{visible.length}})</div>
       <div class="card-body p-0" style="overflow-y: auto;">
-        <button>Right</button>
+
+        <ul cdkDropList #visibleList="cdkDropList" [cdkDropListData]="visible" [cdkDropListConnectedTo]="[hiddenList]"
+          class="list-group" (cdkDropListDropped)="drop($event)">
+          <li *ngFor="let col of visible" [attr.id]="col.id" (click)="itemClicked(col,$event)"
+            class="list-group-item item-box noselect" cdkDrag>
+            <span>{{col.caption}}</span><i *ngIf="col.selected" class="far fa-check-square"></i>
+          </li>
+        </ul>
+
 
       </div>
-      <!-- <div class="card-footer">Card Footer</div> -->
     </div>
   </div>
-
-
 
 </mat-dialog-content>
 
 <mat-dialog-actions #actions *ngIf="data.buttons" align="center" class="p-0" style="max-height:35px;">
   <!-- <button mat-button *ngFor="let btn of this.data.buttons" [mat-dialog-close]="{value:btn.value,response:data.response}"
     [class]="btn.class + ' m-0 p-0 ml-2'">{{btn.label}}</button> -->
-  <button *ngFor="let btn of this.data.buttons" [class]="btn.class + ' m-0 ml-2'"
-    (click)="this.clickAction(btn.value)">{{btn.label}}</button>
+  <button *ngFor="let btn of this.data.buttons" [class]="btn.class + ' m-0 ml-2'" (click)="this.clickAction(btn.value)"
+    matTooltipPosition="above" [matTooltip]="btn.toolTip">{{btn.label}}</button>
   <!-- <button mat-button class="btn btn-warning m-0 p-0 ml-2" (click)="this.acceptAndClose()">Save</button> -->
 </mat-dialog-actions>

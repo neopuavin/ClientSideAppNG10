@@ -132,29 +132,26 @@
     "url_deploy": "http://ngimsa.ivideolib.com/api/app",
     "url_use_deploy": false,
     "app_version": {
-      "ver": "Alpha 1.3.6",
-      "build": "20200820",
+      "ver": "Alpha 1.3.7",
+      "build": "20200829",
       "updates": [
+        "Completed data grid column management feature",
+        "Configured anomaly module data grid columns",
+        "Fixed data formatting on data grid and forms",
+        "Activated form date selector",
         "Reformatted risk matrix component",
         "Adjusted tabs component stylesheet to remove hilight when tab item is made active",
-        "Changed banner layout",
-        "Completed Asset Selector function",
-        "Worked on data pre POST request routines",
-        "Modularized application features for maintainability",
-        "Set delays on propery value assignment to prevent UI rendering errors",
-        "Migrated from Angular 9 to Angular 10 to take advantage of new features and bug fixes",
-        "Enabled up/down arrow key navigation on data grid/list",
-        "Implemented asset tree search feature",
-        "Implemented Integrity Status Tree Coloring",
-        "Activated Anomaly Edit Feature (no saving yet)",
-        "Created Asset Selector",
-        "Implemented common popup component",
-        "Started working on custom date picker",
-        "Enhanced Reactive Form input component for auto detection of data type and format UI accordingly",
-        "Fixed pagination issue",
-        "Tested application with larger SEPCo data to determine speed performance especially with tree coloring"
-      ],
+        "Changed banner layout"      ],
       "history": [
+        {
+          "ver": "Alpha 1.3.6",
+          "build": "20200820",
+          "updates": [
+            "Reformatted risk matrix component",
+            "Adjusted tabs component stylesheet to remove hilight when tab item is made active",
+            "Changed banner layout"
+          ]
+        },
         {
           "ver": "Alpha 1.3.5",
           "build": "20200819",

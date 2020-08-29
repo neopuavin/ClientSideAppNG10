@@ -106,6 +106,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() pageSizeChange: EventEmitter<any> = new EventEmitter();
 
   @Output() rowClick: EventEmitter<any> = new EventEmitter();
+  @Output() onColumnsChanged: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('gridViewPort') gridViewPort: CdkVirtualScrollViewport;
   @ViewChild('gridViewPort') gridViewPortElem: any;
@@ -161,6 +162,39 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   PageClick(event: any, page: number) {
     this.pageClick.emit({ page: page, e: event });
   }
+
+  AcceptColumnSetup(fieldsArray: Array<string>) {
+    // check if set of fields selected were part of the original (SetupData is called)
+    // set of visible fields. if not onColumnsChanged must be fired!
+
+    this.options.ShowColumns(fieldsArray)
+
+    if(this.options.columnsDataNotAvailable){
+      this.onColumnsChanged.emit();
+      //this.options.RecordExtractedDataFieldnames();
+    }
+
+    return;
+    //RecordExtractedDataFieldnames
+
+    const visible = this.options.visibleColumns;
+    let changed: boolean = visible.length != fieldsArray.length;
+
+    if (!changed) {
+      // for(let col in visible){
+      //   if(fieldsArray.indexOf(col.fieldName)==-1){
+      //   }
+      // }
+      // visible.forEach((col) => {
+      //   if(fieldsArray.indexOf(col.fieldName)==-1){
+      //     changed = true;
+      //     break;
+      //   }
+      // });
+    }
+    if (changed) this.onColumnsChanged.emit();
+  }
+
   PageSizeChange(event: any) {
     //this.pageSize
     this.pageSizeChange.emit({ pageSize: +event.srcElement.value, e: event });
@@ -193,7 +227,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ManageGrid(event: any) {
-    this.OpenPopup(500, 530, false, {
+    this.OpenPopup(500, 523, false, {
       parent: this,
 
       // Dialog title
@@ -204,19 +238,31 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       buttons: [
         {
           label: 'Cancel',
+          toolTip: 'Ignore changes and close',
           value: 'cancel',
           class: 'btn btn-sm btn-secondary',
         },
         {
+          label: 'Reset',
+          toolTip: 'Revert back to original setting',
+          value: 'reset',
+          class: 'btn btn-sm btn-secondary',
+        },
+        {
           label: 'Accept',
+          toolTip: 'Accept new grid column setting',
           value: 'accept',
           class: 'btn btn-sm btn-warning',
         },
       ],
     }).subscribe((result) => {
       console.log('Result:', result);
+      if (!result) return;
+      if (result.mode == 'accept') {
+        // accept mode result comes with fields return parameter
+        this.AcceptColumnSetup(result.fields);
+      }
     });
-
   }
 
   OpenPopup(
@@ -496,7 +542,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const value = r[c.fieldName];
 
-    return value;
+    // return value;
 
     if (c.displayField && this.sourceLookups[c.displayField]) {
       // if sourceLookups and displayField are defined
@@ -829,6 +875,27 @@ export class DataGridOption extends DataOption {
       this._visibleColumns.sort((a, b) => a.order - b.order);
     }
     return this._visibleColumns;
+  }
+
+  private _extractedColumns:Array<string>=[];
+  public get columnsDataNotAvailable():boolean{
+    // this is to check if data on visible columns were all included in the last data extraction
+    let missingData:boolean = false;
+    const visible  = this.visibleColumns;
+    for(let idx=0;idx < visible.length ; idx++){
+      if(this._extractedColumns.indexOf(visible[idx].fieldName)==-1){
+        missingData = true;
+        break;
+      }
+    }
+    return missingData;
+  }
+
+  public RecordExtractedDataFieldnames(){
+    this._extractedColumns = [];
+    this.visibleColumns.forEach(col=>{
+      this._extractedColumns.push(col.fieldName);
+    })
   }
 
   public AddColumn(args: IDataGridColumn): DataGridOption {
