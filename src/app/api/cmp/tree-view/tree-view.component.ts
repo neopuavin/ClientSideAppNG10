@@ -83,8 +83,9 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
       //   isKey: true,
       //   width:1
       // })
-      .AddColumn({ caption: 'Code', fieldName: 'code', maxWidth: 80 })
-      .AddColumn({ caption: 'Name', fieldName: 'text', minWidth: 80 })
+      .AddColumn({ caption: 'Code', fieldName: 'code', maxWidth: 100 })
+      .AddColumn({ caption: 'Name', fieldName: 'text', minWidth: 100 })
+      .ShowColumns(['code','text'])
       .SetKeyColumnName('id');
 
   }

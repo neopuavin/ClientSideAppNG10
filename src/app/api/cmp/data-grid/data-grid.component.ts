@@ -708,7 +708,9 @@ export class DataGridColum extends DataColumn {
     this.lookupParams = args.lookupParams;
     this.colorParams = args.colorParams;
     this.isKey = args.isKey;
-    this.visible = args.visible;
+
+    if(args.visible!=undefined) this.visible = args.visible;
+
     this.dateFormat = args.dateFormat;
     this.noZero = args.noZero;
     this.order = args.order ? args.order : 1;
