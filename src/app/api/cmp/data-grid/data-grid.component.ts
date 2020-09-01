@@ -304,10 +304,12 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return true;
   }
 
-  private _currentRow: any = null;
+  public _currentRow: any = null;
+
   public RowClick(event: any, row: any) {
     this.currentRow = row;
   }
+
 
   public get headerHeight(): number {
     if (!this._changeValuesNow) return 0;

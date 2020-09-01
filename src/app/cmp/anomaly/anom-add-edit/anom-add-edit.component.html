@@ -65,7 +65,8 @@
           </app-app-input-a>
           <app-app-input-a [fieldName]="'AN_ACT_PARTY'" [label]="'Action Party'"></app-app-input-a>
           <app-app-input-a [fieldName]="'AN_WO_REF'" [label]="'SAP WO No.'"></app-app-input-a>
-          <app-app-input-a [fieldName]="'AN_WO_STATUS'" [label]="'SAP Status'" [lookupSource]="this.AnomalyLookup(190)"></app-app-input-a>
+          <app-app-input-a [fieldName]="'AN_WO_STATUS'" [label]="'SAP Status'" [lookupSource]="this.AnomalyLookup(190)">
+          </app-app-input-a>
           <app-app-input-a [fieldName]="'AN_PT_SUPPORT'" [label]="'P&T Support'" [toggleDisplay]="toggleDisplay">
           </app-app-input-a>
           <app-app-input-a [fieldName]="'AN_PORTFOLIO_APPL'" [label]="'Port Application'"
@@ -82,10 +83,12 @@
         </app-panel-a>
         <app-panel-a [PL]="2" [width]="300" [labelWidth]="100">
           <app-app-input-a [fieldName]="'AN_RAISED_BY'" [label]="'Raised By'" [readOnly]="true"></app-app-input-a>
-          <app-app-input-a [fieldName]="'AN_RAISED_DATE'" [label]="'Raised Date'"  [readOnly]="true" (actionClick)="ChangeDate($event)">
+          <app-app-input-a [fieldName]="'AN_RAISED_DATE'" [label]="'Raised Date'" [readOnly]="true"
+            (actionClick)="ChangeDate($event)">
           </app-app-input-a>
           <app-app-input-a [fieldName]="'AN_ASS_BY'" [label]="'Assessed By'" [readOnly]="true"></app-app-input-a>
-          <app-app-input-a [fieldName]="'AN_ASS_DATE'" [label]="'Assessed Date'"  [readOnly]="true" (actionClick)="ChangeDate($event)">
+          <app-app-input-a [fieldName]="'AN_ASS_DATE'" [label]="'Assessed Date'" [readOnly]="true"
+            (actionClick)="ChangeDate($event)">
           </app-app-input-a>
           <app-app-input-a [fieldName]="'AN_UPD_BY'" [label]="'Updated By'" [readOnly]="true"></app-app-input-a>
           <app-app-input-a [fieldName]="'AN_UPD_DATE'" [label]="'Update Date'" [readOnly]="true"></app-app-input-a>
@@ -112,10 +115,8 @@
           <app-app-input-a [fieldName]="'AN_RISK_RANK_COMMENTS'" [label]="'Comments'" [rows]="9"></app-app-input-a>
         </app-panel-a>
         <app-panel-a [PL]="2" [PT]="4" [width]="286" style="display:flex;align-items:stretch;">
-          <app-risk-matrix [readOnly]="false" [riskMatrixData]="data.riskMatrixData" (riskClick)="RiskClick($event)"
-            [severityField]="'AN_RISK_RANK_SEVERITY'"
-            [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'"
-            [phHeight]="210">
+          <app-risk-matrix [readOnly]="false" (riskClick)="RiskClick($event)" [riskMatrixData]="data.riskMatrixData"
+            [severityField]="'AN_RISK_RANK_SEVERITY'" [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'" [phHeight]="210">
           </app-risk-matrix>
         </app-panel-a>
       </app-panel-a>

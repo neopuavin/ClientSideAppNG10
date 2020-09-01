@@ -8,7 +8,8 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
   templateUrl: './anomaly.component.html',
   styleUrls: ['./anomaly.component.scss', '../form.common.scss'],
 })
-export class AnomalyComponent extends FormCommon
+export class AnomalyComponent
+  extends FormCommon
   implements OnInit, AfterViewInit {
   constructor(public dataSource: AppMainServiceService) {
     super(dataSource);
@@ -310,10 +311,24 @@ export class AnomalyComponent extends FormCommon
 
       // set mandatory field(s) needed to be extracted from the database
       // even if the grid column(s)'s visibility mode is set to hidden
-      .AddRequiredDataFields(['AN_ID','AN_ASSET_ID'])
+      .AddRequiredDataFields(['AN_ID', 'AN_ASSET_ID'])
 
       // show only selected fields to display
-      .ShowColumns(['AN_REVNO','AN_REF','AN_TITLE','AN_DESC','AN_DATE_IDENT','AN_RAISED_DATE','AN_RAISED_BY','AN_STATUS','AN_ORIG_CLASS','AN_CURR_CLASS'])
+      .ShowColumns([
+        'AN_ID',
+        'AN_REF',
+        'AN_REVNO',
+        'AN_TITLE',
+        'AN_DESC',
+        'AN_STATUS',
+        'AN_ORIG_CLASS',
+        'AN_CURR_CLASS',
+        'AN_ORIG_AVAIL_CLASS',
+        'AN_CURR_AVAIL_CLASS',
+        'AN_DATE_IDENT',
+        'AN_RAISED_DATE',
+        'AN_RAISED_BY',
+      ])
       // .HideColumns(['AN_ID'])
 
       // module-specific join statement *****************************************
@@ -495,19 +510,11 @@ export class AnomalyComponent extends FormCommon
 
   EditRecordEvent(args: any) {
     // override function
+
     if (!this.currentRow) {
-      this.dataSource.OpenPopup('alert', 450, 200, false, {
-        title: 'No Current Record',
-        icon: 'fa-exclamation-circle',
-        message: 'Please select an Anomaly record to edit',
-        buttons: [
-          {
-            label: 'Close',
-            value: 'close',
-            class: 'btn btn-sm btn-warning',
-          },
-        ],
-      });
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm("No current record",
+      "Please select an Anomaly record to edit");
       return;
     }
 
@@ -525,7 +532,8 @@ export class AnomalyComponent extends FormCommon
           },
         ],
         // use common form object from the FormCommon base class
-        formObject: this.mainFormObject,
+        //formObject: this.mainFormObject,
+        formObject: this.GetRowFormObject(),
         //
         riskMatrixData: this.ds.riskMatrixData,
         // set AnomalyComponent as the parent component reference
@@ -542,16 +550,21 @@ export class AnomalyComponent extends FormCommon
             class: 'btn btn-sm btn-secondary',
           },
           {
+            label: 'Reset',
+            value: 'reset',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
             label: 'Save',
-            value: 'accept',
+            value: 'save',
             class: 'btn btn-sm btn-warning',
           },
         ],
       })
       .subscribe((result) => {
-        if (result) {
-          if (result.mode == 'accept') this.SaveRecord();
-        } else this.CancelUpdate();
+        // if (result) {
+        //   if (result.mode == 'accept') this.SaveRecord(result);
+        // } else this.CancelUpdate();
       });
   }
 

@@ -1,10 +1,11 @@
+import { ColumnInfo } from './../api/mod/app-column.model';
 import { AppFormAComponent } from './../api/cmp/app-form-a/app-form-a.component';
 import { AppDataset, IAccessRights } from './../svc/app-dataset.service';
 import { AppMainServiceService } from './../svc/app-main-service.service';
 import { RequestParams } from './../api/mod/app-params.model';
 
 import { DataTab } from './../api/cmp/data-tabs/data-tabs.component';
-import { DataGridComponent, DataGridColum } from './../api/cmp/data-grid/data-grid.component';
+import { DataGridComponent } from './../api/cmp/data-grid/data-grid.component';
 
 import {
   TreeViewNode,
@@ -17,7 +18,7 @@ import {
   ComponentFactoryResolver,
 } from '@angular/core';
 
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { DataGridOption } from '../api/cmp/data-grid/data-grid.component';
 import { DataTabsOption } from '../api/cmp/data-tabs/data-tabs.component';
 import { JsonPipe } from '@angular/common';
@@ -76,7 +77,9 @@ export class FormCommon {
       console.log('from clause not set!', this.sourceTable != null);
     }
 
-    // this.onChanges();
+    // create all controls in main form object
+    this.mainFormObject = this.GetRowFormObject(true);
+    console.log('Initial this.mainFormObject:', this.mainFormObject);
   }
 
   public get ds(): AppDataset {
@@ -281,6 +284,142 @@ export class FormCommon {
     console.log('SearchEvent', args);
   }
 
+  public GetRowFormObject(blankForm?: boolean): FormGroup {
+    // create form object containing controls based on the entire
+    // table field definitions which contains values from the current row.
+
+    if (!blankForm) blankForm = false;
+
+    if (!this.sourceTable || (!this.currentRow && !blankForm)) return null;
+
+    const form: FormGroup = new FormGroup({});
+    const cols: Array<ColumnInfo> = this.sourceTable.columns;
+    const row = this.currentRow;
+
+    // loop through the table's column definitions
+    cols.forEach((c) => {
+      const fieldName = c.name;
+      const ctrl: AbstractControl = new FormControl(
+        blankForm ? null : row[fieldName]
+      );
+      form.addControl(fieldName, ctrl);
+    });
+
+    //this.sourceTable.fields
+    // clone
+    //this._currentRow
+    return form;
+  }
+
+  DataChanged(form: FormGroup, row: any): any {
+    let ret: any = null;
+
+    // get table defintion of the row
+    const tbl = row.parentTable;
+    if (!tbl) return null;
+    const cols = tbl.columns;
+    if (!cols) return null;
+
+    for (const field in form.controls) {
+      // 'field' is a string
+      const ctrl: AbstractControl = form.get(field); // 'control' is a FormControl
+      const col = cols.find((c) => c.name == field);
+      if (col && ctrl.value != row[field]) {
+        // field value changed
+        if (!ret) ret = {};
+        ret[field] = ctrl.value;
+      }
+    }
+    return ret;
+  }
+
+  SaveData(form: FormGroup, row: any, dialogRef?: any) {
+    const changed = this.DataChanged(form, row);
+    if (changed) {
+      this.dataSource
+        .Confirm(
+          'Confirm Save',
+          'This action will overwite previously saved field values.<br/><br/>Do you want to continue?',
+          { width: 500, height: 230, labelYes: 'Continue', labelNo: 'Abort' }
+        )
+        .subscribe((result) => {
+          if (result.mode == 'yes') {
+            // call post method here, then apply client update
+            this.UpdateClient(changed);
+            if(dialogRef)dialogRef.close({mode:'saved'});
+
+            this.dataSource.openSnackBar(
+              'Start data posting process.',
+              'X',
+              1500
+            );
+          } else {
+            this.dataSource.openSnackBar('Posting cancelled.', 'X', 1500);
+          }
+        });
+      return;
+    } else {
+      this.dataSource.Confirm(
+        'Nothing to change',
+        'No modifications made to the current record.',
+        { width: 450, height: 180 }
+      );
+    }
+  }
+
+  UpdateClient(data: any) {
+    // post changed data taken from the add/edit form object
+
+    for (let field in data) {
+      const value = data[field];
+
+      // update main form obj value
+      const ctrl = this.mainFormObject.get(field);
+      if (ctrl) {
+        ctrl.setValue(value);
+      } else {
+        console.log(`Control ${field} not found.`);
+      }
+
+      // update currentRow value
+      this.currentRow[field] = value;
+
+      // update grid value
+      if (this.mainGrid._currentRow[field] != undefined)
+        this.mainGrid._currentRow[field] = value;
+    }
+    console.log(
+      'UpdateClient data:',
+      data,
+      'this.mainFormObject',
+      this.mainFormObject
+    );
+  }
+
+  ResetData(form: FormGroup, row: any) {
+    if (!this.DataChanged(form, row)) return;
+    this.dataSource
+      .Confirm(
+        'Confirm Reset',
+        'Resetting will discard all changes made and will restore original values.<br/><br/>Do you want to continue?',
+        { width: 550, height: 230, labelYes: 'Yes', labelNo: 'No' }
+      )
+      .subscribe((result) => {
+        if (result.mode == 'yes') {
+          for (const field in form.controls) {
+            // 'field' is a string
+            const ctrl: AbstractControl = form.get(field); // 'control' is a FormControl
+            if (ctrl) ctrl.setValue(row[field]);
+          }
+          this.dataSource.openSnackBar(
+            'Restored original field values reset.',
+            'Close',
+            2000
+          );
+        }
+      });
+  }
+
   public GridRowClickLocal(data: any): void {
     /*interface function*/
   }
@@ -425,8 +564,10 @@ export class FormCommon {
   //   });
   // }
 
-  SaveRecord() {
-    console.log('Save updates:', this.mainFormObject);
+  SaveRecord(result: any) {
+    console.log('Save updates:', result);
+
+    return;
 
     const formVal = this.mainFormObject.value;
     let postValues = {};
@@ -451,7 +592,9 @@ export class FormCommon {
   }
 
   CancelUpdate() {
-    console.log('CancelUpdate:',this._currentRow, this.mainFormObject);
+    console.log('CancelUpdate:', this._currentRow);
+    return;
+    console.log('CancelUpdate:', this._currentRow, this.mainFormObject);
     const formVal = this.mainFormObject.value;
 
     let patchValues = {};

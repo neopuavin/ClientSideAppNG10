@@ -21,22 +21,36 @@ export class CommonPopupComponent implements OnInit {
 
   clickAction(mode: string) {
     switch (mode) {
-      case 'close':
+      case 'reset':
+        if(this.subComponent.Reset)this.subComponent.Reset(this.dialogRef);
+        break;
+      case 'save':
+        if(this.subComponent.Save)this.subComponent.Save(this.dialogRef);
+        break;
+      break;
+        case 'close':
       case 'cancel':
         this.dialogRef.close(null);
         break;
       case 'accept':
         this.acceptAndClose();
         break;
+      default:
+        this.dialogRef.close({mode:mode});
     }
   }
 
   acceptAndClose() {
     if (!this.data.validate) {
+      // if form validation listener is not set
       if (!this.data) {
         this.dialogRef.close(null);
       } else {
-        this.dialogRef.close({ mode: 'accept', data: this.data.response });
+        this.dialogRef.close({
+          mode: 'accept',
+          form: this.data.formObject,
+          data: this.data.response,
+        });
       }
       return;
     }
@@ -75,9 +89,8 @@ export class CommonPopupComponent implements OnInit {
   private get dataSource() {
     // find dataSource property in popup's data property and return it
     if (!this.data) return null;
-    if(this.data.dataSource)return this.data.dataSource;
-    if(this.data.parent)return this.data.parent.dataSource;
+    if (this.data.dataSource) return this.data.dataSource;
+    if (this.data.parent) return this.data.parent.dataSource;
     return null;
-
   }
 }

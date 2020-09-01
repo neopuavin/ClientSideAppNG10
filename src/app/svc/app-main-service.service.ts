@@ -1,6 +1,13 @@
+import { FormGroup, AbstractControl } from '@angular/forms';
 import { CommonPopupComponent } from './../cmp/common-popup/common-popup.component';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 import { AppDataset } from './app-dataset.service';
 import { AppCommonMethodsService } from './../api/svc/app-common-methods.service';
@@ -49,7 +56,8 @@ export class AppMainServiceService {
     public http: HttpClient,
     public apiCommon: AppCommonMethodsService,
     public dialog: MatDialog,
-    private titleService: Title
+    private titleService: Title,
+    private _snackBar: MatSnackBar
   ) {
     // declare datasets for each configured OpCo
     appConfig.DataSources.forEach((e: IDataSource) => {
@@ -91,6 +99,23 @@ export class AppMainServiceService {
     // to be developed and used to set current application DataSet ...
   }
 
+  openSnackBar(
+    message: string,
+    action?: string,
+    duration?: number,
+    horizontalPosition?: any,
+    verticalPosition?: any
+  ) {
+    if (!horizontalPosition) horizontalPosition = 'end';
+    if (!verticalPosition) verticalPosition = 'bottom';
+    if (!duration) duration = 500;
+    this._snackBar.open(message, action ? action : '', {
+      duration: duration,
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+    });
+  }
+
   OpenPopup(
     component: string,
     width?: number,
@@ -104,14 +129,14 @@ export class AppMainServiceService {
 
     if (!data) data = {};
     if (!data['component']) data['component'] = component;
-    let ref:MatDialogRef<CommonPopupComponent,any>;
+    let ref: MatDialogRef<CommonPopupComponent, any>;
     data['ref'] = ref;
 
     ref = this.dialog.open(CommonPopupComponent, {
       width: `${width}px`,
       height: `${height}px`,
       disableClose: disableClose,
-      data: data
+      data: data,
     });
 
     return ref.afterClosed();
@@ -121,16 +146,81 @@ export class AppMainServiceService {
     // });
   }
 
-  SelectAsset(currentLocation?:string): Observable<any> {
+  SelectAsset(currentLocation?: string): Observable<any> {
     return this.OpenPopup('assetSelector', 420, 550, false, {
       title: 'Asset Selector',
       icon: 'fa-sitemap',
-      dataSource:this,
-      currentLocation:currentLocation,
+      dataSource: this,
+      currentLocation: currentLocation,
       buttons: [
         { label: 'Select', value: 'accept', class: 'btn btn-sm btn-warning' },
         { label: 'Close', value: 'close', class: 'btn btn-sm btn-secondary' },
       ],
+    });
+  }
+
+  Confirm(
+    title?: string,
+    message?: string,
+    options?: {
+      icon?: string;
+      labelNo?: string;
+      labelYes?: string;
+      labelContinue?: string;
+      width?: number;
+      height?: number;
+    }
+  ): Observable<any> {
+    // confirm actions - Ignore
+    let buttons: Array<any> = []; // default labels
+    let icon: string;
+    let width: number = 550;
+    let height: number = 150;
+
+    if (!title) title = 'Alert';
+    if (!message) message = 'Please confirm';
+
+    if (options) {
+      if (options.width) width = options.width;
+      if (options.height) height = options.height;
+      if (options.height) icon = options.icon;
+
+      if (options.labelContinue)
+        buttons.push({
+          label: options.labelContinue,
+          value: 'continue',
+          class: 'btn btn-sm btn-secondary',
+        });
+      if (options.labelNo)
+        buttons.push({
+          label: options.labelNo,
+          value: 'no',
+          class: 'btn btn-sm btn-secondary',
+        });
+      if (options.labelYes)
+        buttons.push({
+          label: options.labelYes,
+          value: 'yes',
+          class: 'btn btn-sm btn-warning',
+        });
+    }
+
+    if (buttons.length == 0) {
+      buttons.push({
+        label: 'Ok',
+        value: 'ok',
+        class: 'btn btn-sm btn-warning',
+      });
+      if (!icon) icon = 'fa-info-circle';
+    } else if (buttons.length == 1 && !icon)  icon = 'fa-info-circle';
+    else if(!icon) icon = 'fa-question-circle';
+
+    return this.OpenPopup('alert', width, height, false, {
+      title: title,
+      message: message,
+      icon: icon,
+      buttons: buttons,
+      disableClose: true,
     });
   }
 

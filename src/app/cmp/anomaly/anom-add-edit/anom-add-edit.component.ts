@@ -12,7 +12,7 @@ import {
   Input,
   Inject,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl } from '@angular/forms';
 import { EventEmitter } from 'protractor';
 
 @Component({
@@ -51,7 +51,12 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   public AfterScatter(evt: any) {
-    console.log('AfterScatter(this.data.formData):', this.data.formData,"toggleDisplay:",this.toggleDisplay);
+    console.log(
+      'AfterScatter(this.data.formData):',
+      this.data.formData,
+      'toggleDisplay:',
+      this.toggleDisplay
+    );
   }
 
   public get AssetInfo(): { code: string; desc: string } {
@@ -62,7 +67,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     };
   }
 
-  public get toggleDisplay():Array<any>{
+  public get toggleDisplay(): Array<any> {
     return this.data.parent.ds.toggleYesNoNA;
     return this.data.parent.ds.toggleYesNo;
   }
@@ -122,6 +127,20 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  Save(dialogRef:any) {
+    this.data.parent.SaveData(this.data.formObject,this.data.row,dialogRef);
+  }
+
+  Reset(dialogRef:any) {
+    this.data.parent.ResetData(this.data.formObject, this.data.row);
+  }
+
+  private get dataSource(): any {
+    if (!this.data) return null;
+    if (!this.data.parent) return null;
+    return this.data.parent.dataSource;
+  }
+
   ChangeAsset(e: any) {
     console.log(this.data.assetLookup);
     const currAsset = this.formObject.get('AN_ASSET_ID').value;
@@ -129,7 +148,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
       let lkpItem = this.data.assetLookup.find((i) => i.key == currAsset);
       this.data.currentLocation = lkpItem ? lkpItem.location : null;
     }
-    this.data.parent.dataSource
+    this.dataSource
       .SelectAsset(this.data.currentLocation)
       .subscribe((result) => {
         console.log(`Change asset to:`, result);
@@ -154,7 +173,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   ChangeDate(e: any) {
-    this.data.parent.dataSource.SelectDate(e.source).subscribe((result) => {
+    this.dataSource.SelectDate(e.source).subscribe((result) => {
       console.log(`Dialog result: ${result}`, e);
     });
   }
@@ -165,19 +184,23 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   public get severity(): number {
-    if (!this.data.row) return 0;
-    return this.data.row.AN_RISK_RANK_SEVERITY;
+    if (!this.data) return 0;
+    if (!this.formObject) return 0;
+    return this.formObject.get('AN_RISK_RANK_SEVERITY').value;
   }
   public set severity(value: number) {
-    this.data.row.AN_RISK_RANK_SEVERITY = value;
+    if (!this.formObject) return;
+    this.formObject.get('AN_RISK_RANK_SEVERITY').setValue(value);
   }
 
   public get likelihood(): number {
-    if (!this.data.row) return 0;
-    return this.data.row.AN_RISK_RANK_LIKELIHOOD;
+    if (!this.data) return 0;
+    if (!this.formObject) return 0;
+    return this.formObject.get('AN_RISK_RANK_LIKELIHOOD').value;
   }
   public set likelihood(value: number) {
-    this.data.row.AN_RISK_RANK_LIKELIHOOD = value;
+    if (!this.formObject) return;
+    this.formObject.get('AN_RISK_RANK_LIKELIHOOD').setValue(value);
   }
 
   RiskClick(risk: { likelihood: number; severity: number }) {

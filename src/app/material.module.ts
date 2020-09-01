@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+
 // Datepicker deependencies
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from '@angular/material-moment-adapter'
@@ -37,7 +39,8 @@ const MaterialModules = [
   MatDatepickerModule,
   MatMomentDateModule,
   MatNativeDateModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatSnackBarModule
 ];
 
 @NgModule({
