@@ -32,10 +32,12 @@ export class AppMainServiceService {
   //   name: 'spex',
   //   appDataset: new AppDataset(this.http, this.apiCommon, ''),
   // };
+
   private _ActiveSource: IAppDataset = null;
   public get ActiveSource(): IAppDataset {
     return this._ActiveSource;
   }
+
   public set SourceName(name: string) {
     // set active source by name
     // assignment of source name will be done on initial load
@@ -43,12 +45,15 @@ export class AppMainServiceService {
     // if no default OpCo is configured, then the name
     // of the first OpCo in the stack will be set
 
+    // deactivate current active data source
     const aDS = this.DataSources.find((d) => d.active);
     if (aDS) aDS.active = false;
 
+    // activate selected data source
     const sDS = this.DataSources.find((d) => d.name == name);
     sDS.active = true;
 
+    // set local variable to the selected data source
     this._ActiveSource = sDS;
   }
 

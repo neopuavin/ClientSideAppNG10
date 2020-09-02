@@ -16,7 +16,7 @@ export class CommonPopupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('DATA', this.data);
+    // console.log('DATA', this.data);
   }
 
   clickAction(mode: string) {

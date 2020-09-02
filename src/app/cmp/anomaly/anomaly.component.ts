@@ -513,8 +513,10 @@ export class AnomalyComponent
 
     if (!this.currentRow) {
       // prompt to select a record if currentRow is null
-      this.dataSource.Confirm("No current record",
-      "Please select an Anomaly record to edit");
+      this.dataSource.Confirm(
+        'No current record',
+        'Please select an Anomaly record to edit'
+      );
       return;
     }
 
@@ -596,6 +598,26 @@ export class AnomalyComponent
   }
 
   SendToExcelEvent(args: any) {
+    //let yourDate = new Date('08/08/2019 12:22:48 PM UTC');
+    let yourDate = new Date();
+    let yourUTCDate = yourDate.toUTCString();
+    let utcDate = new Date(
+      yourDate.toLocaleDateString() +
+        ' ' +
+        yourDate.toLocaleTimeString() +
+        ' UTC'
+    );
+
+    console.log('\nUTC yourDate.toString()', new Date(yourDate.toString()));
+    console.log('\nyourUTCDate', new Date(yourUTCDate),"\nRaw yourUTCDate:", yourUTCDate);
+
+    console.log('\nutcDate()', utcDate.toString());
+    console.log(
+      '\nyourDate.toLocaleDateString()',
+      yourDate.toLocaleDateString(),
+      yourDate.toLocaleTimeString()
+    );
+
     this.dataSource.OpenPopup('alert', 550, 200, false, {
       title: 'Feature not available',
       icon: 'fa-exclamation-circle',

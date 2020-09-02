@@ -1,4 +1,4 @@
-import { DataOption, IProcessRequestData } from './../mod/app-common.classes';
+import { DataOption, IProcessRequestData, IUserInfo } from './../mod/app-common.classes';
 import { RequestParams } from './../mod/app-params.model';
 import { AppReturn } from './../mod/app-return.model';
 import { Subscription } from 'rxjs';
@@ -13,7 +13,6 @@ export class DatasetBase extends AppCommonMethods {
     public apiCommon?: AppCommonMethodsService
   ) {
     super();
-    //this.apiCommon.tables = this.tables;
   }
 
   public tables: any = {};
@@ -30,6 +29,7 @@ export class DatasetBase extends AppCommonMethods {
   // in the derived class, the new value will take effect even
   // even when used locally in the parent class....
   public apiUrl: string;
+  public userInfo:IUserInfo;
 
   public toPostData(table: any): any {
     let ret: Array<any> = [];
@@ -76,6 +76,37 @@ export class DatasetBase extends AppCommonMethods {
     return ret; // tableCode ? ret[tableCode] : ret;
   }
 
+  Post(
+    reqParams: Array<RequestParams>,
+    args?: { onSuccess?: Function; onError?: Function }
+  ): Subscription {
+    const hdrs = new HttpHeaders();
+
+    hdrs.set('Content-Type', 'application/json; charset=utf-8');
+    hdrs.set('Access-Control-Allow-Origin', '*');
+    hdrs.set(
+      'Access-Control-Allow-Origin',
+      'Origin, X-Requested-With, Content-Type, Accept'
+    );
+
+
+    let postHeader:any = {"_req_stamp_":"","__uid__":"alv","__rights__":"","__action__":""};
+
+    let url: string = this.apiUrl;
+    let body:{};
+    let ret: Subscription = this.http
+      .post(url, '', { headers: hdrs })
+      .subscribe(
+        (data) => {
+          console.log('Post success data', data);
+        },
+        (err) => {
+          console.log('Post Error', err);
+        }
+      );
+    return ret;
+  }
+
   Get(
     reqParams: Array<RequestParams>,
     args?: { onSuccess?: Function; onError?: Function }
@@ -108,9 +139,9 @@ export class DatasetBase extends AppCommonMethods {
       let forceRequet = p.forceRequest == undefined ? false : p.forceRequest;
       const snapshot = !p.snapshot ? false : p.snapshot;
 
-
       // remove request history to force request to server...
-      if (clearExisting || forceRequet || snapshot) this.apiCommon.ClearHistoryLog(jStr);
+      if (clearExisting || forceRequet || snapshot)
+        this.apiCommon.ClearHistoryLog(jStr);
 
       // add table code to collection to flag requirement for clearing rows collection
       // push only the main table code and ignore join parameters
@@ -169,7 +200,7 @@ export class DatasetBase extends AppCommonMethods {
     let url: string = this.apiUrl + '?_p=' + btoa(JSON.stringify(jsonParams));
 
     //let tableRows: Array<Array<any>> = [];
-    let procData:IProcessRequestData = null;
+    let procData: IProcessRequestData = null;
     let tableRows: Array<Array<any>> = [];
 
     const startStamp = new Date();
@@ -193,7 +224,6 @@ export class DatasetBase extends AppCommonMethods {
 
         //tableRows = procData.data;
 
-
         // add request to history log. this log will be checked for subsequent requests
         // where calls for existing entries will be bypassed to improve performance efficiency
         jsonParamsStr.forEach((key) => this.apiCommon.AddHistoryLog(key));
@@ -216,7 +246,7 @@ export class DatasetBase extends AppCommonMethods {
               data.shift();
               // transfer subscription key to the new first element of the
               /// raw data array.
-              if(data.length)data[0].subsKey = config.subsKey;
+              if (data.length) data[0].subsKey = config.subsKey;
             }
             args.onSuccess({ raw: data, processed: procData, config: config });
             //args.onSuccess({ raw: data, rows: tableRows, config: config });

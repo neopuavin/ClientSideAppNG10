@@ -346,6 +346,8 @@ export class FormCommon {
           if (result.mode == 'yes') {
             // call post method here, then apply client update
             this.UpdateClient(changed);
+
+            // close dialog after a successful posting
             if(dialogRef)dialogRef.close({mode:'saved'});
 
             this.dataSource.openSnackBar(

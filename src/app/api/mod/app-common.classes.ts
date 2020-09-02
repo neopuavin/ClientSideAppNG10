@@ -73,6 +73,13 @@ export interface ILookupItem {
   fore?: string;
 }
 
+export interface IUserInfo{
+  key:number;
+  id:string;
+  name:string;
+  rights:any;
+}
+
 export class DataColumn {
   constructor(args: IDataColumn) {
     this.fieldName = args.fieldName;
