@@ -196,6 +196,8 @@ export class DatasetBase extends AppCommonMethods {
     jsonParams.push(reqConfig);
     // console.log(JSON.stringify(jsonParams));
 
+    console.log("\nJSON.stringify(jsonParams):",JSON.stringify(jsonParams));
+
     // form url here with encoded parameters
     let url: string = this.apiUrl + '?_p=' + btoa(JSON.stringify(jsonParams));
 
@@ -248,7 +250,8 @@ export class DatasetBase extends AppCommonMethods {
               /// raw data array.
               if (data.length) data[0].subsKey = config.subsKey;
             }
-            args.onSuccess({ raw: data, processed: procData, config: config });
+            const dataObj = { raw: data, processed: procData, config: config };
+            args.onSuccess(dataObj);
             //args.onSuccess({ raw: data, rows: tableRows, config: config });
           }
 

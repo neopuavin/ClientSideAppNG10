@@ -181,6 +181,13 @@ export class FormCommon {
   public get gridSourceLookups(): Array<any> {
     return this._gridSourceLookups;
   }
+
+  public AddGridAssetLookupItem(key:number,name:string){
+    const lkp = this.gridSourceLookups['ASSETNAME'];
+    if(!lkp) return;
+    lkp[key] = name;
+  }
+
   public isMainTabActive(id: number): boolean {
     const tab: DataTab = this.activeTab;
     if (tab) return false;
@@ -238,8 +245,15 @@ export class FormCommon {
 
     this.ds.Get([requestParams], {
       onSuccess: (data) => {
+        // processed rows for the grid to display
         this._gridSourceRows = data.processed.data[0];
+
+        // inline lookup definitions
         this._gridSourceLookups = data.processed.lookups[0];
+
+        //console.log("this._gridSourceLookups:",this.gridSourceLookups['ASSETNAME']);
+
+        // refresh data grid to display extracted data
         if (this.mainGrid) this.mainGrid.Refresh();
 
         // reset current row
@@ -296,6 +310,7 @@ export class FormCommon {
     const cols: Array<ColumnInfo> = this.sourceTable.columns;
     const row = this.currentRow;
 
+
     // loop through the table's column definitions
     cols.forEach((c) => {
       const fieldName = c.name;
@@ -308,6 +323,7 @@ export class FormCommon {
     //this.sourceTable.fields
     // clone
     //this._currentRow
+    console.log("\nthis.currentRow:",this.currentRow,"\nform:",form);
     return form;
   }
 
@@ -391,10 +407,12 @@ export class FormCommon {
         this.mainGrid._currentRow[field] = value;
     }
     console.log(
-      'UpdateClient data:',
+      '\nUpdateClient data:',
       data,
-      'this.mainFormObject',
-      this.mainFormObject
+      '\nthis.mainFormObject',
+      this.mainFormObject,
+      "\nthis.mainGrid._currentRow",
+      this.mainGrid._currentRow
     );
   }
 
@@ -509,6 +527,7 @@ export class FormCommon {
       {
         onSuccess: (e) => {
           if (e.processed.data[0].length) {
+
             // set details current row data
             this._currentRow = e.processed.data[0].length
               ? e.processed.data[0][0]
@@ -520,6 +539,20 @@ export class FormCommon {
                 ? e.processed.data[1][0]['TRE_NOD_LOC']
                 : null,
             };
+
+
+            this._currentRow.XTRA = { assetLookup: [
+                {
+                  key: this._currentRow[this.assetField],
+                  code: this._currentRow.XTRA.NODE_ID,
+                  text: this._currentRow.XTRA.NODE_DESC,
+                  location: this._currentRow.XTRA.TRE_NOD_LOC,
+                },
+              ],
+
+            }
+
+            // set current row asset lookup
           }
 
           // add currentRow to buffer

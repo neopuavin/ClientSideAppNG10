@@ -91,3 +91,10 @@
         }
 
       ```
+## Data Migration
+- ### Table Structure Change
+  - IMSA_TBL_ARC_ANOM_MAIN
+    1. Added unique numeric key field ANA_ID
+    1. Added stamp fields ANA_ARCHIVE_REASON, ANA_ARCHIVE_DATE and ANA_ARCHIVE_BY
+    1. Created group index on AN_ID
+    1. Possibly resolving lookup key code to store text value instead or both. This is to remove dependencies.

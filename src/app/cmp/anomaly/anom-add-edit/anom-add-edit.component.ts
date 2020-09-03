@@ -46,8 +46,10 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     // .AddTab({ id: 5, label: 'Test Tab', icon: '', active: false });
   }
   ngAfterViewInit() {
-    setTimeout(() => (this._isReady = true), 5);
-    setTimeout(() => this.SetAnomalyTypeGroup(), 9);
+    setTimeout(() => (this._isReady = true), 1);
+    setTimeout(() => this.SetAnomalyTypeGroup(), 1);
+
+    console.log("\nAnomAddEditPopupData:",this.data);
   }
 
   public AfterScatter(evt: any) {
@@ -107,7 +109,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.detailForm.Scatter();
           tab.loaded = true;
-        }, 10);
+        }, 1);
       }
     }
   }
@@ -141,29 +143,39 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     return this.data.parent.dataSource;
   }
 
+  public get assetLookup():Array<any>{
+
+    if(!this.data)return null;
+    if(!this.data.row)return null;
+    if(!this.data.row.XTRA)return null;
+
+    return this.data.row.XTRA.assetLookup;
+  }
+
   ChangeAsset(e: any) {
-    console.log(this.data.assetLookup);
     const currAsset = this.formObject.get('AN_ASSET_ID').value;
     if (currAsset) {
-      let lkpItem = this.data.assetLookup.find((i) => i.key == currAsset);
+      let lkpItem = this.assetLookup.find((i) => i.key == currAsset);
       this.data.currentLocation = lkpItem ? lkpItem.location : null;
     }
     this.dataSource
       .SelectAsset(this.data.currentLocation)
       .subscribe((result) => {
-        console.log(`Change asset to:`, result);
+
         if (result) {
           if (result.mode == 'accept') {
             const nodeData = result.data;
             // 1. create another entry in the asset lookup array if not yet existing.
-            if (!this.data.assetLookup.find((i) => i.key == nodeData.dataId)) {
+            if (!this.assetLookup.find((i) => i.key == nodeData.dataId)) {
               // lookup item not yet existing. create and append one
-              this.data.assetLookup.push({
+              this.assetLookup.push({
                 key: nodeData.dataId,
                 code: nodeData.code,
                 location: nodeData.location,
                 text: nodeData.text,
               });
+              // update asset grid lookup by calling the module's AddGridAssetLookupItem method
+              this.data.parent.AddGridAssetLookupItem(nodeData.dataId,nodeData.text);
             }
             // 2. set value of AN_ASSET_ID control to the new asset key (nodeData.dataId)
             this.formObject.get('AN_ASSET_ID').setValue(nodeData.dataId);

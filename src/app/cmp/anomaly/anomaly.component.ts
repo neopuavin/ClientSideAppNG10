@@ -316,6 +316,7 @@ export class AnomalyComponent
       // show only selected fields to display
       .ShowColumns([
         'AN_ID',
+        'AN_ASSET_ID',
         'AN_REF',
         'AN_REVNO',
         'AN_TITLE',
@@ -524,15 +525,6 @@ export class AnomalyComponent
       .OpenPopup('addEditAnomaly', 870, 455, true, {
         row: this.currentRow,
 
-        // create single item asset lookup to display asset as a read-only select field
-        assetLookup: [
-          {
-            key: this.currentRow.AN_ASSET_ID,
-            code: this.currentRow.XTRA.NODE_ID,
-            text: this.currentRow.XTRA.NODE_DESC,
-            location: this.currentRow.XTRA.TRE_NOD_LOC,
-          },
-        ],
         // use common form object from the FormCommon base class
         //formObject: this.mainFormObject,
         formObject: this.GetRowFormObject(),

@@ -23,7 +23,7 @@
     <app-panel-a [horizontal]="true" [labelWidth]="75" [LPL]="8">
       <app-app-input-a [fieldName]="'AN_ASSET_ID'" [actionIcon]="'fa-sitemap'" [actionTip]="'Select new asset...'"
         (actionClick)="ChangeAsset($event)" [label]="'Asset'" [LPL]="0" [width]="335"
-        [lookupSource]="this.data.assetLookup">
+        [lookupSource]="assetLookup">
       </app-app-input-a>
       <app-app-input-a [fieldName]="'AN_DATE_IDENT'" [label]="'Identified'" (actionClick)="ChangeDate($event)">
       </app-app-input-a>
