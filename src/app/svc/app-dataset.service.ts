@@ -21,6 +21,7 @@ import { TblParent, TblParentRow, TblUsers, TblAnomalies, TblTreeStrucRow } from
 */
 //<INCLUDES>
 import { TblAnomalies, TblAnomaliesRow } from './app.tables';
+import { TblAnomaliesArchive, TblAnomaliesArchiveRow } from './app.tables';
 import { TblAnomalyTypes, TblAnomalyTypesRow } from './app.tables';
 import { TblChangeTracker, TblChangeTrackerRow } from './app.tables';
 import { TblDesignData, TblDesignDataRow } from './app.tables';
@@ -102,6 +103,7 @@ export class AppDataset extends DatasetBase {
 
   //<INSTANTIATE>
   public tblAnomalies:TblAnomalies = this.AddTable(new TblAnomalies(this.http, this.apiUrl, this.tables, this.apiCommon));
+  public tblAnomaliesArchive:TblAnomaliesArchive = this.AddTable(new TblAnomaliesArchive(this.http, this.apiUrl, this.tables, this.apiCommon));
   public tblAnomalyTypes:TblAnomalyTypes = this.AddTable(new TblAnomalyTypes(this.http, this.apiUrl, this.tables, this.apiCommon));
   public tblChangeTracker:TblChangeTracker = this.AddTable(new TblChangeTracker(this.http, this.apiUrl, this.tables, this.apiCommon));
   public tblDesignData:TblDesignData = this.AddTable(new TblDesignData(this.http, this.apiUrl, this.tables, this.apiCommon));

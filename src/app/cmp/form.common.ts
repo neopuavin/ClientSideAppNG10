@@ -356,7 +356,7 @@ export class FormCommon {
         .Confirm(
           'Confirm Save',
           'This action will overwite previously saved field values.<br/><br/>Do you want to continue?',
-          { width: 500, height: 230, labelYes: 'Continue', labelNo: 'Abort' }
+          { width: 500, height: 230, labelYes: 'Yes', labelNo: 'No' }
         )
         .subscribe((result) => {
           if (result.mode == 'yes') {
@@ -372,7 +372,7 @@ export class FormCommon {
               1500
             );
           } else {
-            this.dataSource.openSnackBar('Posting cancelled.', 'X', 1500);
+            this.dataSource.openSnackBar('Continue editing record.', 'X', 1500);
           }
         });
       return;
