@@ -194,9 +194,6 @@ export class DatasetBase extends AppCommonMethods {
     if (reqConfig.code == undefined) reqConfig.code = '@config';
 
     jsonParams.push(reqConfig);
-    // console.log(JSON.stringify(jsonParams));
-
-    console.log("\nJSON.stringify(jsonParams):",JSON.stringify(jsonParams));
 
     // form url here with encoded parameters
     let url: string = this.apiUrl + '?_p=' + btoa(JSON.stringify(jsonParams));

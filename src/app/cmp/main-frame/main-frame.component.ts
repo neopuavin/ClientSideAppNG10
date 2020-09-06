@@ -1,3 +1,4 @@
+import { IUserInfo } from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { SurveyDataComponent } from './../survey-data/survey-data.component';
 import { IAppVer } from './../../api/mod/app-params.model';
@@ -46,13 +47,37 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
   public treePanelWidth: number = -1;
   public infoPanelWidth: number = -1;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.ds.userInfo = {
+      key: 1,
+      id: 'admin',
+      name: 'Administrator',
+      email: '',
+      phone: '',
+      rights: {
+        canAdd: true,
+        canEdit: true,
+        canDelete: true,
+      },
+    };
+    // this.ds.userInfo.key = 1;
+    // this.ds.userInfo.id = 'admin';
+    // this.ds.userInfo.name = 'Administrator';
+    // this.ds.userInfo.email = 'admin@domain.com';
+    // this.ds.userInfo.rights = {
+    //   canAdd: true,
+    //   canEdit: true,
+    //   canDelete: true,
+    // };
 
-  private _changeValuesNow:boolean  = false;
+    console.log('this.ds.userInfo: ', this.ds.userInfo);
+  }
+
+  private _changeValuesNow: boolean = false;
   ngAfterViewInit() {
     //console.log("treeView",this.treeView,this.treeView.treeData);
     this.InitComponent();
-    setTimeout(()=>this._changeValuesNow = true,1);
+    setTimeout(() => (this._changeValuesNow = true), 1);
   }
 
   GetModuleData() {
@@ -174,6 +199,17 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
       treeView: this.treeView,
       onSuccess: (result) => this.treeView.ProcessTree(),
     });
+
+    //this.ds.userInfo.id=1;
+  }
+
+  menuLabel(menuItem: any): string {
+    const lbl = menuItem.label;
+    if (lbl == 'user-info') {
+      return this.ds.userInfo ? `Hi ${this.ds.userInfo.name} [${this.ds.userInfo.id}]` : 'Visitor';
+    } else {
+      return menuItem.label;
+    }
   }
 
   ReloadData() {
@@ -220,9 +256,8 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     this.panelSwitch[item] = !this.panelSwitch[item];
   }
 
-
-  public setValueTo(trueValue:any,defaultValue:any){
-    if(!this._changeValuesNow)return defaultValue;
+  public setValueTo(trueValue: any, defaultValue: any) {
+    if (!this._changeValuesNow) return defaultValue;
     return trueValue;
   }
 

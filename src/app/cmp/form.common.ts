@@ -349,7 +349,7 @@ export class FormCommon {
     return ret;
   }
 
-  SaveData(form: FormGroup, row: any, dialogRef?: any) {
+  SaveData(form: FormGroup, row: any, dialogRef?: any, extraPostParam?:any) {
     const changed = this.DataChanged(form, row);
     if (changed) {
       this.dataSource
@@ -360,7 +360,12 @@ export class FormCommon {
         )
         .subscribe((result) => {
           if (result.mode == 'yes') {
+
             // call post method here, then apply client update
+            console.log("CALL POST REQUEST HERE!", changed)
+
+
+            // call update client
             this.UpdateClient(changed);
 
             // close dialog after a successful posting

@@ -121,7 +121,7 @@
     },
     {
       "id": 5,
-      "label": "Hi User Name [id]",
+      "label": "user-info",
       "active": false,
       "icon": "fa fa-user ml-2",
       "subMenu": []

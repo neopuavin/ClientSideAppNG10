@@ -152,9 +152,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     //return;
     this.InitDataSource();
 
-    // setTimeout(()=>{
-    //   this._isReady = true;
-    // },100);
+    setTimeout(()=>{
+      this._isReady = true;
+    },1);
 
     //    console.log("this.pagesArray",this.pagesArray);
   }
@@ -293,7 +293,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // });
   }
 
-  private _isReady: boolean = true;
+  private _isReady: boolean = false;
   public get isReady() {
     return this._isReady;
   }

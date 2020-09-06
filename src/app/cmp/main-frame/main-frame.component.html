@@ -19,7 +19,7 @@
     <div class="" id="nav-menu">
       <div class="" id="nav-menu-top">
         <span *ngFor="let m of menuList" class="noselect {{m.active ? 'active' : ''}}" (click)="menuClick(m.id)"><i
-            *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''" [class]="m.icon + ' mr-1'"></i>{{m.label}}
+            *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''" [class]="m.icon + ' mr-1'"></i>{{menuLabel(m)}}
         </span>
         <span id="notifiaction" class="px-0 m-0 ml-2">
           <i class="fa active" matTooltipPosition="below" [matTooltip]="notificationTip"

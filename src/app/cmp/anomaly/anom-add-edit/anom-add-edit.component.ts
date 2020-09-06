@@ -130,6 +130,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   Save(dialogRef:any) {
+    // data pre-processing
     this.data.parent.SaveData(this.data.formObject,this.data.row,dialogRef);
   }
 

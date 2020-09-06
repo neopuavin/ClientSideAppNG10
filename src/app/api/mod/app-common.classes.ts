@@ -77,6 +77,8 @@ export interface IUserInfo{
   key:number;
   id:string;
   name:string;
+  email:string;
+  phone:string;
   rights:any;
 }
 
