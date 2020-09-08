@@ -1,7 +1,11 @@
-import { DataOption, IProcessRequestData, IUserInfo } from './../mod/app-common.classes';
+import {
+  DataOption,
+  IProcessRequestData,
+  IUserInfo,
+} from './../mod/app-common.classes';
 import { RequestParams } from './../mod/app-params.model';
 import { AppReturn } from './../mod/app-return.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ColumnInfo } from '../mod/app-column.model';
 import { AppCommonMethods } from './app-common.methods';
@@ -29,7 +33,7 @@ export class DatasetBase extends AppCommonMethods {
   // in the derived class, the new value will take effect even
   // even when used locally in the parent class....
   public apiUrl: string;
-  public userInfo:IUserInfo;
+  public userInfo: IUserInfo;
 
   public toPostData(table: any): any {
     let ret: Array<any> = [];
@@ -76,35 +80,50 @@ export class DatasetBase extends AppCommonMethods {
     return ret; // tableCode ? ret[tableCode] : ret;
   }
 
+  get PostHeaderInfo(): any {
+    return {
+      _req_stamp_: new Date(),
+      __uid__: this.userInfo.id,
+      __uname__: this.userInfo.name,
+      __rights__: this.userInfo.rights,
+      __action__: 'SaveData',
+    };
+  }
+
+  get PostHeaderInfo64(): string {
+    return btoa(JSON.stringify(this.PostHeaderInfo));
+  }
+
+
   Post(
-    reqParams: Array<RequestParams>,
+    formData: any,
     args?: { onSuccess?: Function; onError?: Function }
-  ): Subscription {
-    const hdrs = new HttpHeaders();
+  ): Observable<any> {
+    const headers = new HttpHeaders();
 
-    hdrs.set('Content-Type', 'application/json; charset=utf-8');
-    hdrs.set('Access-Control-Allow-Origin', '*');
-    hdrs.set(
-      'Access-Control-Allow-Origin',
-      'Origin, X-Requested-With, Content-Type, Accept'
-    );
-
-
-    let postHeader:any = {"_req_stamp_":"","__uid__":"alv","__rights__":"","__action__":""};
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
 
     let url: string = this.apiUrl;
-    let body:{};
-    let ret: Subscription = this.http
-      .post(url, '', { headers: hdrs })
-      .subscribe(
-        (data) => {
-          console.log('Post success data', data);
-        },
-        (err) => {
-          console.log('Post Error', err);
-        }
-      );
-    return ret;
+    let body: any = { __header__: this.PostHeaderInfo64 };
+    // for (let tableCode of formData) {
+    //   body[tableCode] = formData[tableCode];
+    // }
+    console.log('BODY TO POST:', body, formData);
+    return null;
+    //return this.http.post(url, body, { headers: headers });
+
+    // let ret: Subscription = this.http
+    //   .post(url, body, { headers: headers })
+    //   .subscribe(
+    //     (data) => {
+    //       console.log('Post success data', data);
+    //     },
+    //     (err) => {
+    //       console.log('Post Error', err);
+    //     }
+    //   );
+    // return ret;
   }
 
   Get(

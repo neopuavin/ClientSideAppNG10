@@ -49,7 +49,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     setTimeout(() => (this._isReady = true), 1);
     setTimeout(() => this.SetAnomalyTypeGroup(), 1);
 
-    console.log("\nAnomAddEditPopupData:",this.data);
+    console.log('\nAnomAddEditPopupData:', this.data);
   }
 
   public AfterScatter(evt: any) {
@@ -129,12 +129,44 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     }
   }
 
-  Save(dialogRef:any) {
-    // data pre-processing
-    this.data.parent.SaveData(this.data.formObject,this.data.row,dialogRef);
+  Save(dialogRef: any) {
+    const changed = this.data.parent.DataChanged(
+      this.data.formObject,
+      this.data.row
+    );
+    let xtraParam: any = null;
+    let userStamps: Array<string> = null;
+    let dateStamps: Array<string> = null;
+    if (changed) {
+      // data pre-processing
+      // create archive post instruction
+
+      // enumerate date and user stamp fields
+      userStamps = ['AN_UPD_BY'];
+      dateStamps = ['AN_UPD_DATE'];
+
+      if (changed['AN_ASSMNT'] != undefined) {
+        userStamps.push['AN_ASS_BY'];
+        dateStamps.push['AN_ASS_DATE'];
+      }
+
+      if (changed['AN_TA_APPROVED'] != undefined) {
+        userStamps.push['AN_TA_NAME'];
+        dateStamps.push['AN_TA_APPR_DATE'];
+      }
+    }
+
+    this.data.parent.SaveData(
+      this.data.formObject,
+      this.data.row,
+      dialogRef,
+      xtraParam,
+      userStamps,
+      dateStamps
+    );
   }
 
-  Reset(dialogRef:any) {
+  Reset(dialogRef: any) {
     this.data.parent.ResetData(this.data.formObject, this.data.row);
   }
 
@@ -144,11 +176,10 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     return this.data.parent.dataSource;
   }
 
-  public get assetLookup():Array<any>{
-
-    if(!this.data)return null;
-    if(!this.data.row)return null;
-    if(!this.data.row.XTRA)return null;
+  public get assetLookup(): Array<any> {
+    if (!this.data) return null;
+    if (!this.data.row) return null;
+    if (!this.data.row.XTRA) return null;
 
     return this.data.row.XTRA.assetLookup;
   }
@@ -162,7 +193,6 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     this.dataSource
       .SelectAsset(this.data.currentLocation)
       .subscribe((result) => {
-
         if (result) {
           if (result.mode == 'accept') {
             const nodeData = result.data;
@@ -176,7 +206,10 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
                 text: nodeData.text,
               });
               // update asset grid lookup by calling the module's AddGridAssetLookupItem method
-              this.data.parent.AddGridAssetLookupItem(nodeData.dataId,nodeData.text);
+              this.data.parent.AddGridAssetLookupItem(
+                nodeData.dataId,
+                nodeData.text
+              );
             }
             // 2. set value of AN_ASSET_ID control to the new asset key (nodeData.dataId)
             this.formObject.get('AN_ASSET_ID').setValue(nodeData.dataId);

@@ -182,9 +182,9 @@ export class FormCommon {
     return this._gridSourceLookups;
   }
 
-  public AddGridAssetLookupItem(key:number,name:string){
+  public AddGridAssetLookupItem(key: number, name: string) {
     const lkp = this.gridSourceLookups['ASSETNAME'];
-    if(!lkp) return;
+    if (!lkp) return;
     lkp[key] = name;
   }
 
@@ -310,7 +310,6 @@ export class FormCommon {
     const cols: Array<ColumnInfo> = this.sourceTable.columns;
     const row = this.currentRow;
 
-
     // loop through the table's column definitions
     cols.forEach((c) => {
       const fieldName = c.name;
@@ -323,7 +322,7 @@ export class FormCommon {
     //this.sourceTable.fields
     // clone
     //this._currentRow
-    console.log("\nthis.currentRow:",this.currentRow,"\nform:",form);
+    console.log('\nthis.currentRow:', this.currentRow, '\nform:', form);
     return form;
   }
 
@@ -346,10 +345,18 @@ export class FormCommon {
         ret[field] = ctrl.value;
       }
     }
+
     return ret;
   }
 
-  SaveData(form: FormGroup, row: any, dialogRef?: any, extraPostParam?:any) {
+  SaveData(
+    form: FormGroup,
+    row: any,
+    dialogRef?: any,
+    extraPostParam?: any,
+    userStampFields?: Array<string>,
+    dateStampFields?: Array<string>
+  ) {
     const changed = this.DataChanged(form, row);
     if (changed) {
       this.dataSource
@@ -361,15 +368,73 @@ export class FormCommon {
         .subscribe((result) => {
           if (result.mode == 'yes') {
 
-            // call post method here, then apply client update
-            console.log("CALL POST REQUEST HERE!", changed)
+            // get table specific parameters
+            const tbl = this.sourceTable;
+            const tableCode = tbl.tableCode;
+            const keyName = tbl.keyName;
 
+            // set record's key field value if not yet set,
+            // which normally is the case on editing mode.
+            // when mode is adding a new record, key value is
+            // normally set at the calling component, with integer value
+            // less than zero (0) to indicate that a new record is
+            // to be created
+
+            if(changed[keyName] == undefined)changed[keyName] = row[keyName];
+
+            // handle stamps
+            if(userStampFields){
+              // set value of fields to contain the current user's
+              // name as enumerated in the calling (add/edit/delete) component
+              // eg. CREATED_BY, UPDATED_BY, etc.
+              userStampFields.forEach(fieldName=>{
+                changed[fieldName] = this.ds.userInfo.name;
+              });
+            }
+            if(dateStampFields){
+              // set value of fields to contain the current date
+              // name as enumerated in the calling (add/edit/delete) component
+              // eg. CREATED_DATE, UPDATED_DATE, etc.
+              dateStampFields.forEach(fieldName=>{
+                changed[fieldName] = new Date();
+              });
+            }
+
+            // initialize form data variable
+            const formData = {};
+
+            // populate formData main object
+            formData[tableCode] = [changed];
+
+            // handle other post parameters passed through extraPostParam
+            if(extraPostParam){
+              // this is additional post instruction parameters that will
+              // be requested together with the main table row post instruction.
+              // parameter value has the following format
+              /*
+              *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
+              *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
+              *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
+              */
+            }
+
+            const obs = this.ds.Post(formData);
+            if (obs) {
+              const subs = obs.subscribe(
+                (data) => {
+                  console.log('POST Return Data:', data);
+                },
+                (err) => {
+                  console.log('Error: ', err);
+                }
+              );
+            }
 
             // call update client
             this.UpdateClient(changed);
 
             // close dialog after a successful posting
-            if(dialogRef)dialogRef.close({mode:'saved'});
+            if (dialogRef) dialogRef.close({ mode: 'saved' });
 
             this.dataSource.openSnackBar(
               'Start data posting process.',
@@ -416,7 +481,7 @@ export class FormCommon {
       data,
       '\nthis.mainFormObject',
       this.mainFormObject,
-      "\nthis.mainGrid._currentRow",
+      '\nthis.mainGrid._currentRow',
       this.mainGrid._currentRow
     );
   }
@@ -532,7 +597,6 @@ export class FormCommon {
       {
         onSuccess: (e) => {
           if (e.processed.data[0].length) {
-
             // set details current row data
             this._currentRow = e.processed.data[0].length
               ? e.processed.data[0][0]
@@ -545,8 +609,8 @@ export class FormCommon {
                 : null,
             };
 
-
-            this._currentRow.XTRA = { assetLookup: [
+            this._currentRow.XTRA = {
+              assetLookup: [
                 {
                   key: this._currentRow[this.assetField],
                   code: this._currentRow.XTRA.NODE_ID,
@@ -554,8 +618,7 @@ export class FormCommon {
                   location: this._currentRow.XTRA.TRE_NOD_LOC,
                 },
               ],
-
-            }
+            };
 
             // set current row asset lookup
           }
