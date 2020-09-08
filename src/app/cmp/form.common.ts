@@ -387,17 +387,13 @@ export class FormCommon {
               // set value of fields to contain the current user's
               // name as enumerated in the calling (add/edit/delete) component
               // eg. CREATED_BY, UPDATED_BY, etc.
-              userStampFields.forEach(fieldName=>{
-                changed[fieldName] = this.ds.userInfo.name;
-              });
+              userStampFields.forEach(fieldName=>changed[fieldName] = this.ds.userInfo.name);
             }
             if(dateStampFields){
               // set value of fields to contain the current date
               // name as enumerated in the calling (add/edit/delete) component
               // eg. CREATED_DATE, UPDATED_DATE, etc.
-              dateStampFields.forEach(fieldName=>{
-                changed[fieldName] = new Date();
-              });
+              dateStampFields.forEach(fieldName=>changed[fieldName] =this.ds.dateStampString);
             }
 
             // initialize form data variable

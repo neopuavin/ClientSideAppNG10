@@ -62,10 +62,10 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   public get AssetInfo(): { code: string; desc: string } {
-    //if(this.data.row)
+    //if(this.row)
     return {
-      code: this.data.row.XTRA.NODE_ID,
-      desc: this.data.row.XTRA.NODE_DESC,
+      code: this.row.XTRA.NODE_ID,
+      desc: this.row.XTRA.NODE_DESC,
     };
   }
 
@@ -131,15 +131,28 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
 
   Save(dialogRef: any) {
     const changed = this.data.parent.DataChanged(
-      this.data.formObject,
-      this.data.row
+      this.formObject,
+      this.row
     );
+    const archive: any = {};
     let xtraParam: any = null;
     let userStamps: Array<string> = null;
     let dateStamps: Array<string> = null;
     if (changed) {
       // data pre-processing
       // create archive post instruction
+
+      for (const field in this.formObject.controls) {
+        // 'field' is a string
+        const control = this.formObject.get(field); // 'control' is a FormControl
+        if (control.value != null && control.value != undefined) {
+          archive[field] =
+            field == 'AN_REVNO' ? this.row[field] + 1 : this.row[field];
+        }
+      }
+      archive['ANA_ARCHIVE_DATE'] =this.data.parent.ds.dateStampString;
+      archive['ANA_ARCHIVE_BY'] = this.data.parent.ds.userInfo.name;
+      archive['ANA_ARCHIVE_REASON'] = 'update';
 
       // enumerate date and user stamp fields
       userStamps = ['AN_UPD_BY'];
@@ -156,9 +169,12 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
       }
     }
 
+    console.log('SAVE PARAMETERS:',archive['ANA_ARCHIVE_DATE'], archive, userStamps, dateStamps, xtraParam);
+    return;
+
     this.data.parent.SaveData(
-      this.data.formObject,
-      this.data.row,
+      this.formObject,
+      this.row,
       dialogRef,
       xtraParam,
       userStamps,
@@ -167,7 +183,7 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   Reset(dialogRef: any) {
-    this.data.parent.ResetData(this.data.formObject, this.data.row);
+    this.data.parent.ResetData(this.formObject, this.row);
   }
 
   private get dataSource(): any {
@@ -178,10 +194,10 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
 
   public get assetLookup(): Array<any> {
     if (!this.data) return null;
-    if (!this.data.row) return null;
-    if (!this.data.row.XTRA) return null;
+    if (!this.row) return null;
+    if (!this.row.XTRA) return null;
 
-    return this.data.row.XTRA.assetLookup;
+    return this.row.XTRA.assetLookup;
   }
 
   ChangeAsset(e: any) {
@@ -227,6 +243,11 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   public get formObject(): FormGroup {
     if (!this.data) return null;
     return this.data.formObject;
+  }
+
+  public get row(): any {
+    if (!this.data) return null;
+    return this.data.row;
   }
 
   public get severity(): number {

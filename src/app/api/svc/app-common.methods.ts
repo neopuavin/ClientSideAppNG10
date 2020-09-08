@@ -105,9 +105,25 @@ export class AppCommonMethods {
         dt2.getSeconds() * 1000 +
         dt2.getMilliseconds();
 
-        return ms2-ms1;
+      return ms2 - ms1;
     }
 
-    return ms1
+    return ms1;
+  }
+
+  padNum(num: number, length?: number): string {
+    if (!length) length = 2;
+    const ret = '0'.repeat(length) + num.toString();
+    return ret.substr(ret.length - length, length);
+  }
+
+  dateToString(dt: Date): string {
+    return `${dt.getFullYear()}-${this.padNum(dt.getMonth() + 1)}-${this.padNum(
+      dt.getDate()
+    )}T${this.padNum(dt.getHours())}:${this.padNum(dt.getMinutes())}:${this.padNum(dt.getSeconds())}`;
+  }
+
+  public get dateStampString():string{
+    return this.dateToString(new Date());
   }
 }
