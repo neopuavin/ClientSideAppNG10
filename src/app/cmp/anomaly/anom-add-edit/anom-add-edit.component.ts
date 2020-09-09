@@ -130,14 +130,14 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   Save(dialogRef: any) {
-    const changed = this.data.parent.DataChanged(
-      this.formObject,
-      this.row
-    );
+    const changed = this.data.parent.DataChanged(this.formObject, this.row);
     const archive: any = {};
     let xtraParam: any = null;
     let userStamps: Array<string> = null;
     let dateStamps: Array<string> = null;
+
+    let recolorRequired: boolean = false;
+
     if (changed) {
       // data pre-processing
       // create archive post instruction
@@ -145,14 +145,17 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
       for (const field in this.formObject.controls) {
         // 'field' is a string
         const control = this.formObject.get(field); // 'control' is a FormControl
-        if (control.value != null && control.value != undefined) {
-          archive[field] =
-            field == 'AN_REVNO' ? this.row[field] + 1 : this.row[field];
-        }
+        if (control)
+          if (control.value != null && control.value != undefined)
+            archive[field] = this.row[field];
       }
-      archive['ANA_ARCHIVE_DATE'] =this.data.parent.ds.dateStampString;
+
+      archive['ANA_ID'] = -1;
+      archive['ANA_ARCHIVE_DATE'] = this.data.parent.ds.dateStampString;
       archive['ANA_ARCHIVE_BY'] = this.data.parent.ds.userInfo.name;
       archive['ANA_ARCHIVE_REASON'] = 'update';
+
+      xtraParam = { ana: [archive] };
 
       // enumerate date and user stamp fields
       userStamps = ['AN_UPD_BY'];
@@ -167,23 +170,65 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
         userStamps.push['AN_TA_NAME'];
         dateStamps.push['AN_TA_APPR_DATE'];
       }
+
+      if (
+        changed['AN_CURR_CLASS'] != undefined ||
+        changed['AN_ASSET_ID'] != undefined
+      )
+        recolorRequired = true;
     }
 
-    console.log('SAVE PARAMETERS:',archive['ANA_ARCHIVE_DATE'], archive, userStamps, dateStamps, xtraParam);
-    return;
+    // if(changed['AN_DATE_IDENT']){
+    //   const tbl = this.row._parentTable;
+    //   const cols = tbl.columns;
+    //   const fld = cols.find(f=>f.name=='AN_DATE_IDENT');
+    //   console.log(tbl,fld,typeof(this.row['AN_UPD_DATE']), typeof(changed['AN_DATE_IDENT']), changed['AN_DATE_IDENT'].getFullYear());
+    // }
 
-    this.data.parent.SaveData(
-      this.formObject,
-      this.row,
-      dialogRef,
-      xtraParam,
-      userStamps,
-      dateStamps
-    );
+    // return;
+
+    // console.log('SAVE PARAMETERS:',archive['ANA_ARCHIVE_DATE'], archive, userStamps, dateStamps, xtraParam);
+
+    this.data.showMask = true;
+    setTimeout(() => {
+      this.data.parent.SaveData({
+        form: this.formObject,
+        row: this.row,
+        extraPostParam: xtraParam,
+        userStampFields: userStamps,
+        dateStampFields: dateStamps,
+        revField: 'AN_REVNO',
+        onSuccess: (data) => {
+          if (dialogRef) dialogRef.close({ mode: 'saved' });
+          if(recolorRequired) this.ResetTreeStatus();
+          console.log('\nPosting data:', data, "recolorRequired:", recolorRequired);
+        },
+        onError: (err) => {
+          console.log('\nError posting data:', err);
+          this.data.showMask = false;
+        },
+        onCancel: (res) => {
+          this.data.showMask = false;
+        },
+      });
+    }, 10);
   }
 
+  /** form,
+      row,
+      dialogRef,
+      extraPostParam,
+      userStampFields,
+      dateStampFields,
+      revField,
+      onSuccess,
+      onError,
+      messages, */
+
   Reset(dialogRef: any) {
+    //this.data.showMask = true;
     this.data.parent.ResetData(this.formObject, this.row);
+    //setTimeout(()=>{this.data.showMask=false},2000);
   }
 
   private get dataSource(): any {
@@ -238,6 +283,15 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     this.dataSource.SelectDate(e.source).subscribe((result) => {
       console.log(`Dialog result: ${result}`, e);
     });
+  }
+
+  ResetTreeStatus(){
+    if(!this.data) return;
+    if(!this.data.parent.ResetTreeStatus) return;
+    setTimeout(()=>{
+      console.log("this.data.parent.ResetTreeStatus:",this.data.parent.ResetTreeStatus);
+      this.data.parent.ResetTreeStatus();
+    },50);
   }
 
   public get formObject(): FormGroup {

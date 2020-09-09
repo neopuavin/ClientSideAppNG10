@@ -94,6 +94,17 @@ export class DatasetBase extends AppCommonMethods {
     return btoa(JSON.stringify(this.PostHeaderInfo));
   }
 
+  PostX(temp?:any):Observable<any>{
+    const url: string = this.apiUrl;
+    const body = {}
+    const headers = new HttpHeaders();
+
+    headers.set('Access-Control-Allow-Origin', '*');
+    headers.set('Content-Type', 'application/json');
+
+    console.log("\nURL:", url, "\n")
+    return this.http.post(url, body, { headers: headers});
+  }
 
   Post(
     formData: any,
@@ -101,17 +112,32 @@ export class DatasetBase extends AppCommonMethods {
   ): Observable<any> {
     const headers = new HttpHeaders();
 
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('Accept', 'application/json');
+    // hdrs.set('Content-Type', 'application/json; charset=utf-8');
+    headers.set('Content-Type', 'multipart/form-data');
+    // headers.set('Accept', 'application/json');
+
+    // headers.set('Access-Control-Allow-Origin', '*');
+    // headers.set('Content-Type', 'application/json');
+    // headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    // headers.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+
+
+    // headers.append(
+    //   'Access-Control-Allow-Origin',
+    //   'Origin, X-Requested-With, Content-Type, Accept'
+    // );
+
 
     let url: string = this.apiUrl;
     let body: any = { __header__: this.PostHeaderInfo64 };
-    // for (let tableCode of formData) {
-    //   body[tableCode] = formData[tableCode];
-    // }
-    console.log('BODY TO POST:', body, formData);
-    return null;
-    //return this.http.post(url, body, { headers: headers });
+
+    // append formData properties to body object
+    for (const key in formData) body[key] = formData[key];
+
+    console.log('BODY TO POST:',headers,url, body);
+
+    //let options = new RequestO({ headers: headers });
+    return this.http.post(url, body, { headers: headers});
 
     // let ret: Subscription = this.http
     //   .post(url, body, { headers: headers })

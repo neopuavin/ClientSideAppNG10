@@ -241,6 +241,11 @@ export class TableRowBase {
     this._parentTable.__currentRow(this);
   }
 
+  GetColumnType(fieldName:string):string{
+    if(!this._parentTable) return null;
+    this._parentTable.GetColumnType(fieldName);
+  }
+
   Post(): void {
     // sve individual record
     if (!this._parentTable) return;

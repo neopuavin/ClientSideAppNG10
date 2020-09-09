@@ -23,4 +23,14 @@ export class AppComponent {
     return true;
   }
 
+  public TestPost(){
+    const ds = this.dataSource.ActiveSource.appDataset;
+    //console.log(ds.Post);
+    ds.Post(null).subscribe(data=>{
+      console.log("Data:",data);
+    }, err=>{
+      console.log("Error Posting:",err);
+    })
+  }
+
 }

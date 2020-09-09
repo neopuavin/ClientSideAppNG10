@@ -20,3 +20,4 @@
     (click)="this.clickAction(btn.value)">{{btn.label}}</button>
   <!-- <button mat-button class="btn btn-warning m-0 p-0 ml-2" (click)="this.acceptAndClose()">Save</button> -->
 </mat-dialog-actions>
+<div *ngIf="showMask" style="position:absolute;top:-24px;left:-24px;width:calc(100% + 48px);height:calc(100% + 48px);z-index:10;background:black;opacity:0.2;">&nbsp;</div>

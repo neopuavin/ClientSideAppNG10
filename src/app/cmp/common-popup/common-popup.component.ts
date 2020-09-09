@@ -93,4 +93,10 @@ export class CommonPopupComponent implements OnInit {
     if (this.data.parent) return this.data.parent.dataSource;
     return null;
   }
+
+  public get showMask():boolean{
+    if(!this.data) return false;
+    return this.data.showMask;
+  }
+
 }

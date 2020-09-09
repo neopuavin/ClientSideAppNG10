@@ -98,3 +98,9 @@
     1. Added stamp fields ANA_ARCHIVE_REASON, ANA_ARCHIVE_DATE and ANA_ARCHIVE_BY
     1. Created group index on AN_ID
     1. Possibly resolving lookup key code to store text value instead or both. This is to remove dependencies.
+
+## Project Configuration
+- ### Server-Side Add-On Dependencies
+  - NuGet DotNetZip - Response compression tool
+  - NuGet Newtonsoft.json - JObject, JPropery, JArray support
+  - NuGet Cors - [Microsoft.AspNet.WebApi.Cors](https://www.nuget.org/packages/Microsoft.AspNet.WebApi.Cors) to enable Cross-Origin Resource Sharing in ASP.NET API. Required to be allow different domain to be registered and perform Get/Post request.

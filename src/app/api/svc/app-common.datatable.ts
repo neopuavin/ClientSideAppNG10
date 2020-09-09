@@ -271,6 +271,12 @@ export class TableBase extends AppCommonMethods {
     return ret;
   }
 
+  GetColumnType(fieldName:string):string{
+    const col:ColumnInfo = this.columns.find(f=>f.name == fieldName);
+    if(!col) return null;
+    return col.type
+  }
+
   set currentKey(value: number) {
     // sets the current record given the id
     let rec: any = this.Item(value);

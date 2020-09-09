@@ -84,6 +84,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     // Request data based on selected module....
   }
 
+  private _KeepAlive:any;
   KeepAlive() {
     this.ds.Get(
       [
@@ -96,15 +97,20 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
       ],
       {
         onSuccess: (data) => {
-          //console.log('Success on keeping alive!', data);
+          console.log('\nSuccess on keeping alive! ' + this.ds.dateStampString, data);
         },
+        onError:(err)=>{
+          console.log('\nError on keeping alive! ' + this.ds.dateStampString, err);
+        }
       }
     );
 
     // set interval of 10 mins to keep api component running
+    const minSecs = 60 * 1000;
+    const mins = 5;
     setTimeout(() => {
       this.KeepAlive();
-    }, 10 * 60 * 1000);
+    }, mins * minSecs);
   }
 
   /**chgTrack/0/-/trk_id */
@@ -200,7 +206,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
       onSuccess: (result) => this.treeView.ProcessTree(),
     });
 
-    //this.ds.userInfo.id=1;
+    this.KeepAlive();
   }
 
   menuLabel(menuItem: any): string {

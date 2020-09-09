@@ -4,6 +4,8 @@ import { AppDataset, IAccessRights } from './../svc/app-dataset.service';
 import { AppMainServiceService } from './../svc/app-main-service.service';
 import { RequestParams } from './../api/mod/app-params.model';
 
+import { Subscription, Observable } from 'rxjs';
+
 import { DataTab } from './../api/cmp/data-tabs/data-tabs.component';
 import { DataGridComponent } from './../api/cmp/data-grid/data-grid.component';
 
@@ -319,10 +321,6 @@ export class FormCommon {
       form.addControl(fieldName, ctrl);
     });
 
-    //this.sourceTable.fields
-    // clone
-    //this._currentRow
-    console.log('\nthis.currentRow:', this.currentRow, '\nform:', form);
     return form;
   }
 
@@ -349,15 +347,35 @@ export class FormCommon {
     return ret;
   }
 
-  SaveData(
-    form: FormGroup,
-    row: any,
-    dialogRef?: any,
-    extraPostParam?: any,
-    userStampFields?: Array<string>,
-    dateStampFields?: Array<string>
-  ) {
+  SaveData(args: {
+    form: FormGroup;
+    row: any;
+    dialogRef?: any;
+    extraPostParam?: any;
+    userStampFields?: Array<string>;
+    dateStampFields?: Array<string>;
+    revField?: string;
+    onSuccess?: Function;
+    onError?: Function;
+    onCancel?: Function;
+    messages?: { saveSucceess?: string; saveError?: string };
+  }) {
+    const {
+      form,
+      row,
+      dialogRef,
+      extraPostParam,
+      userStampFields,
+      dateStampFields,
+      revField,
+      onSuccess,
+      onError,
+      onCancel,
+      messages,
+    } = args;
+
     const changed = this.DataChanged(form, row);
+
     if (changed) {
       this.dataSource
         .Confirm(
@@ -367,7 +385,6 @@ export class FormCommon {
         )
         .subscribe((result) => {
           if (result.mode == 'yes') {
-
             // get table specific parameters
             const tbl = this.sourceTable;
             const tableCode = tbl.tableCode;
@@ -380,21 +397,49 @@ export class FormCommon {
             // less than zero (0) to indicate that a new record is
             // to be created
 
-            if(changed[keyName] == undefined)changed[keyName] = row[keyName];
+            if (changed[keyName] == undefined) changed[keyName] = row[keyName];
 
             // handle stamps
-            if(userStampFields){
+            if (userStampFields) {
               // set value of fields to contain the current user's
               // name as enumerated in the calling (add/edit/delete) component
               // eg. CREATED_BY, UPDATED_BY, etc.
-              userStampFields.forEach(fieldName=>changed[fieldName] = this.ds.userInfo.name);
+              userStampFields.forEach((fieldName) => {
+                if (changed[fieldName] != this.ds.userInfo.name)
+                  changed[fieldName] = this.ds.userInfo.name;
+              });
             }
-            if(dateStampFields){
+            if (dateStampFields) {
               // set value of fields to contain the current date
               // name as enumerated in the calling (add/edit/delete) component
               // eg. CREATED_DATE, UPDATED_DATE, etc.
-              dateStampFields.forEach(fieldName=>changed[fieldName] =this.ds.dateStampString);
+              dateStampFields.forEach(
+                (fieldName) => (changed[fieldName] = this.ds.dateStampString)
+              );
             }
+
+            // scan all date type data in changed and make sure that the
+            // values are in YYYY-MM-ddThh:mm:ss format
+
+            // get container table of the row object
+            const table = row._parentTable;
+            if (table)
+            // loop through all changed fields and reformat
+            // date field values if it contains the actual date object
+              for (const fieldName in changed) {
+                if (table.GetColumnType(fieldName) == 'Date') {
+                  // make sure that if the value in changed object
+                  // is an object type, reformat it accordingly
+                  if (typeof changed[fieldName] == 'object')
+                    // field contains true date object
+                    changed[fieldName] = this.ds.dateToString(
+                      changed[fieldName]
+                    );
+                }
+              } // end for for fieldName in changed
+
+            // if revision field name is specified, up-rev the value
+            if (revField) changed[revField] = row[revField] + 1;
 
             // initialize form data variable
             const formData = {};
@@ -403,51 +448,79 @@ export class FormCommon {
             formData[tableCode] = [changed];
 
             // handle other post parameters passed through extraPostParam
-            if(extraPostParam){
+            if (extraPostParam) {
               // this is additional post instruction parameters that will
               // be requested together with the main table row post instruction.
               // parameter value has the following format
               /*
-              *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
-              *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
-              *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
-              */
+               *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
+               *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
+               *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
+               */
+
+              for (const key in extraPostParam)
+                formData[key] = extraPostParam[key];
             }
 
+            // console.log('formData:', formData);
+            console.log(
+              '\nuserStampFields:',
+              userStampFields,
+              '\nformData:',
+              formData
+            );
+
             const obs = this.ds.Post(formData);
+
             if (obs) {
+              this.dataSource.openSnackBar(
+                'Posting data. Please wait...',
+                'X',
+                1000
+              );
               const subs = obs.subscribe(
                 (data) => {
                   console.log('POST Return Data:', data);
+
+                  subs.unsubscribe();
+
+                  // call update client
+                  this.UpdateClient(changed);
+
+                  // close dialog after a successful posting
+                  if (dialogRef) dialogRef.close({ mode: 'saved' });
+                  if (onSuccess) onSuccess(data);
+
+                  this.dataSource.openSnackBar('Record saved.', 'X', 1500);
                 },
                 (err) => {
+                  this.dataSource.openSnackBar(
+                    'Sorry. An error has occured when posting data.',
+                    'X',
+                    5000
+                  );
                   console.log('Error: ', err);
+                  if (onError) onError(err);
+                  subs.unsubscribe();
                 }
               );
             }
-
-            // call update client
-            this.UpdateClient(changed);
-
-            // close dialog after a successful posting
-            if (dialogRef) dialogRef.close({ mode: 'saved' });
-
-            this.dataSource.openSnackBar(
-              'Start data posting process.',
-              'X',
-              1500
-            );
           } else {
             this.dataSource.openSnackBar('Continue editing record.', 'X', 1500);
+            if (onCancel) onCancel(null);
           }
         });
       return;
     } else {
-      this.dataSource.Confirm(
-        'Nothing to change',
-        'No modifications made to the current record.',
-        { width: 450, height: 180 }
-      );
+      this.dataSource
+        .Confirm(
+          'Nothing to change',
+          'No modifications made to the current record.',
+          { width: 450, height: 180 }
+        )
+        .subscribe((ret) => {
+          if (onCancel) onCancel(null);
+        });
     }
   }
 
@@ -495,7 +568,7 @@ export class FormCommon {
           for (const field in form.controls) {
             // 'field' is a string
             const ctrl: AbstractControl = form.get(field); // 'control' is a FormControl
-            if (ctrl) ctrl.setValue(row[field]);
+            if (ctrl) if (row[field] != undefined) ctrl.setValue(row[field]);
           }
           this.dataSource.openSnackBar(
             'Restored original field values reset.',

@@ -1,6 +1,8 @@
+import { TblAnomaliesRow } from './../../svc/app.tables';
 import { DataOption, ILookupItem } from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { FormCommon } from './../form.common';
+import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 @Component({
@@ -497,16 +499,82 @@ export class AnomalyComponent
 
   /********************************* action button events ******************************************/
   AddRecordEvent(args: any) {
-    // override function
-    console.log('AddRecordEvent', args, 'TreeView:', this.treeView);
-    if (this.treeView) {
-      // this.treeView.ResetStatus(-2);
-      setTimeout(() => {
-        this.ds.treeColorData = null; // will trigger re-fetching of tree color data
-        this.treeView.ResetStatus(); // will set all status to value that will allow re-assignment of color
-      }, 50);
+    if (!this.treeView.currNode) {
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm(
+        'No asset selected',
+        'Please select an asset where new anomaly will be raised.',
+        { height: 170 }
+      );
+      return;
     }
-    // this.OpenAddEditAnomaly();
+
+    const row = this.ds.tblAnomalies.Add();
+
+    const form: FormGroup = this.GetRowFormObject(true);
+    // initialize blank form
+    form.get('AN_ID').setValue(-1);
+    1;
+
+    console.log('form.value', form.value, row, this.treeView.currNode);
+
+    return;
+
+    this.dataSource
+      .OpenPopup('addEditAnomaly', 870, 455, true, {
+        row: null,
+
+        // Define a blank form object
+        formObject: form,
+        //
+        riskMatrixData: this.ds.riskMatrixData,
+        // set AnomalyComponent as the parent component reference
+        parent: this,
+        // Dialog title
+        title: 'Create Anomaly',
+        // dialog title icon
+        icon: 'fa-new',
+        // dialog action buttons
+        buttons: [
+          {
+            label: 'Cancel',
+            value: 'cancel',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
+            label: 'Reset',
+            value: 'reset',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
+            label: 'Save',
+            value: 'save',
+            class: 'btn btn-sm btn-warning',
+          },
+        ],
+      })
+      .subscribe((result) => {
+        // if (result) {
+        //   if (result.mode == 'accept') this.SaveRecord(result);
+        // } else this.CancelUpdate();
+      });
+
+    // // override function
+    // console.log('AddRecordEvent', args, 'TreeView:', this.treeView);
+    // if (this.treeView) {
+    //   // this.treeView.ResetStatus(-2);
+    //   setTimeout(() => {
+    //     this.ResetTreeStatus();
+    //     // this.ds.treeColorData = null; // will trigger re-fetching of tree color data
+    //     // this.treeView.ResetStatus(); // will set all status to value that will allow re-assignment of color
+    //   }, 50);
+    // }
+    // // this.OpenAddEditAnomaly();
+  }
+
+  ResetTreeStatus() {
+    this.ds.treeColorData = null; // will trigger re-fetching of tree color data
+    this.treeView.ResetStatus(); // will set all status to value that will allow re-assignment of color
   }
 
   EditRecordEvent(args: any) {
@@ -601,7 +669,12 @@ export class AnomalyComponent
     );
 
     console.log('\nUTC yourDate.toString()', new Date(yourDate.toString()));
-    console.log('\nyourUTCDate', new Date(yourUTCDate),"\nRaw yourUTCDate:", yourUTCDate);
+    console.log(
+      '\nyourUTCDate',
+      new Date(yourUTCDate),
+      '\nRaw yourUTCDate:',
+      yourUTCDate
+    );
 
     console.log('\nutcDate()', utcDate.toString());
     console.log(
