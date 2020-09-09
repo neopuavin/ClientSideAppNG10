@@ -135,6 +135,7 @@
       "ver": "Alpha 1.3.8",
       "build": "20200909",
       "updates": [
+        "Anomaly Delete in progress",
         "Anomaly Create almost complete",
         "Completed anomaly archiving process",
         "Completed anomaly Edit live data posting",

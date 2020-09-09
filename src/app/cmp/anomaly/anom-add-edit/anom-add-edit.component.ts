@@ -130,36 +130,50 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   Save(dialogRef: any) {
-    const changed = this.data.parent.DataChanged(this.formObject, this.row);
     const archive: any = {};
     let xtraParam: any = null;
     let userStamps: Array<string> = null;
     let dateStamps: Array<string> = null;
 
     let recolorRequired: boolean = false;
+    let isNew: boolean = this.row['AN_ID'] < 0;
+
+    const changed = this.data.parent.DataChanged(
+      this.formObject,
+      this.row,
+      isNew
+    );
 
     if (changed) {
       // data pre-processing
-      // create archive post instruction
 
-      for (const field in this.formObject.controls) {
-        // 'field' is a string
-        const control = this.formObject.get(field); // 'control' is a FormControl
-        if (control)
-          if (control.value != null && control.value != undefined)
-            archive[field] = this.row[field];
+      if (!isNew) {
+        // create archive post instruction
+        for (const field in this.formObject.controls) {
+          // 'field' is a string
+          const control = this.formObject.get(field); // 'control' is a FormControl
+          if (control)
+            if (control.value != null && control.value != undefined)
+              archive[field] = this.row[field];
+        }
+
+        archive['ANA_ID'] = -1;
+        archive['ANA_ARCHIVE_DATE'] = this.data.parent.ds.dateStampString;
+        archive['ANA_ARCHIVE_BY'] = this.data.parent.ds.userInfo.name;
+        archive['ANA_ARCHIVE_REASON'] = 'update';
+
+        xtraParam = { ana: [archive] };
+      } else {
+        this.formObject
+          .get('AN_REF')
+          .setValue(
+            `{YY-NNNN|${new Date().getFullYear().toString().substr(2, 2)}}`
+          );
       }
 
-      archive['ANA_ID'] = -1;
-      archive['ANA_ARCHIVE_DATE'] = this.data.parent.ds.dateStampString;
-      archive['ANA_ARCHIVE_BY'] = this.data.parent.ds.userInfo.name;
-      archive['ANA_ARCHIVE_REASON'] = 'update';
-
-      xtraParam = { ana: [archive] };
-
       // enumerate date and user stamp fields
-      userStamps = ['AN_UPD_BY'];
-      dateStamps = ['AN_UPD_DATE'];
+      userStamps = [isNew ? 'AN_RAISED_BY' : 'AN_UPD_BY'];
+      dateStamps = [isNew ? 'AN_RAISED_DATE' : 'AN_UPD_DATE'];
 
       if (changed['AN_ASSMNT'] != undefined) {
         userStamps.push['AN_ASS_BY'];
@@ -173,7 +187,8 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
 
       if (
         changed['AN_CURR_CLASS'] != undefined ||
-        changed['AN_ASSET_ID'] != undefined
+        changed['AN_ASSET_ID'] != undefined ||
+        isNew
       )
         recolorRequired = true;
     }
@@ -194,14 +209,31 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
       this.data.parent.SaveData({
         form: this.formObject,
         row: this.row,
+        isNew: isNew,
         extraPostParam: xtraParam,
         userStampFields: userStamps,
         dateStampFields: dateStamps,
-        revField: 'AN_REVNO',
+        revField: isNew ? '' : 'AN_REVNO',
+        messages: {
+          saveWarning: isNew
+            ? 'You are about to save newly created anomaly.<br/><br/>Do you want to continue?'
+            : undefined,
+            saveSuccess:isNew ?'New anomaly created.' : undefined
+        },
         onSuccess: (data) => {
           if (dialogRef) dialogRef.close({ mode: 'saved' });
-          if(recolorRequired) this.ResetTreeStatus();
-          console.log('\nPosting data:', data, "recolorRequired:", recolorRequired);
+          if (recolorRequired) {
+            this.ResetTreeStatus();
+            const searchLocation = this.assetLookup.find(
+              (a) => a.key == this.formObject.get('AN_ASSET_ID').value
+            );
+            if (searchLocation) {
+              this.data.parent.treeView.SetCurrentNode(searchLocation.location);
+            }
+            //console.log("ASSET LOOKUP:" , this.assetLookup,  this.formObject.get('AN_ASSET_ID').value);
+            //this.data.parent.treeView.SetCurrentNode();
+          }
+          // if (isNew) refresh list
         },
         onError: (err) => {
           console.log('\nError posting data:', err);
@@ -285,13 +317,16 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ResetTreeStatus(){
-    if(!this.data) return;
-    if(!this.data.parent.ResetTreeStatus) return;
-    setTimeout(()=>{
-      console.log("this.data.parent.ResetTreeStatus:",this.data.parent.ResetTreeStatus);
+  ResetTreeStatus() {
+    if (!this.data) return;
+    if (!this.data.parent.ResetTreeStatus) return;
+    setTimeout(() => {
+      console.log(
+        'this.data.parent.ResetTreeStatus:',
+        this.data.parent.ResetTreeStatus
+      );
       this.data.parent.ResetTreeStatus();
-    },50);
+    }, 50);
   }
 
   public get formObject(): FormGroup {

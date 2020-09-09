@@ -512,17 +512,42 @@ export class AnomalyComponent
     const row = this.ds.tblAnomalies.Add();
 
     const form: FormGroup = this.GetRowFormObject(true);
-    // initialize blank form
+    const node = this.treeView.currNode;
+
+    // initialize blank form with default values
     form.get('AN_ID').setValue(-1);
-    1;
+    form.get('AN_REF').setValue("<New Anomaly>");
+    form.get('AN_REVNO').setValue(0);
+    form.get('AN_ASSET_ID').setValue(node.did);
+    form.get('AN_ORIG_CLASS').setValue(8471);
+    form.get('AN_CURR_CLASS').setValue(8471);
+    form.get('AN_ORIG_AVAIL_CLASS').setValue(8471);
+    form.get('AN_CURR_AVAIL_CLASS').setValue(8471);
+    form.get('AN_ATTACHMENTS').setValue(0);
+    form.get('AN_STATUS').setValue(8450);
+    form.get('AN_FNCR_REQUIRED').setValue(0);
+    form.get('AN_PORTFOLIO_APPL').setValue(0);
+    form.get('AN_PT_SUPPORT').setValue(0);
+    form.get('AN_ASIS').setValue(0);
+    form.get('AN_EQ_FAILURE').setValue(0);
+    form.get('AN_TA_APPROVED').setValue(0);
+    form.get('AN_TA_APPROVED').setValue(0);
+    form.get('AN_TYPE').setValue(58);
 
-    console.log('form.value', form.value, row, this.treeView.currNode);
 
-    return;
+    for(const fieldName in form.controls){
+      row[fieldName] = form.get(fieldName).value;
+    }
+
+    row.XTRA.assetLookup = [{code:node.code,key:node.did,location:node.loc,text:node.text}]
+
+
+    console.log('\nform.value', form.value, '\nNew Row:' , row,'\nCurrentRow:',this.currentRow, '\ntreeViewNode:' ,this.treeView.currNode);
+
 
     this.dataSource
       .OpenPopup('addEditAnomaly', 870, 455, true, {
-        row: null,
+        row: row,
 
         // Define a blank form object
         formObject: form,

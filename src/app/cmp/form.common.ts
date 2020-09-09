@@ -324,7 +324,8 @@ export class FormCommon {
     return form;
   }
 
-  DataChanged(form: FormGroup, row: any): any {
+  DataChanged(form: FormGroup, row: any, isNew?: boolean): any {
+    if (!isNew) isNew = false;
     let ret: any = null;
 
     // get table defintion of the row
@@ -337,6 +338,16 @@ export class FormCommon {
       // 'field' is a string
       const ctrl: AbstractControl = form.get(field); // 'control' is a FormControl
       const col = cols.find((c) => c.name == field);
+      if (col) {
+        const includeField: boolean =
+          (isNew && ctrl.value != undefined) ||
+          (!isNew && ctrl.value != row[field]);
+        if (includeField) {
+          if (!ret) ret = {};
+          ret[field] = ctrl.value;
+        }
+      }
+
       if (col && ctrl.value != row[field]) {
         // field value changed
         if (!ret) ret = {};
@@ -350,6 +361,7 @@ export class FormCommon {
   SaveData(args: {
     form: FormGroup;
     row: any;
+    isNew?: boolean;
     dialogRef?: any;
     extraPostParam?: any;
     userStampFields?: Array<string>;
@@ -358,11 +370,17 @@ export class FormCommon {
     onSuccess?: Function;
     onError?: Function;
     onCancel?: Function;
-    messages?: { saveSucceess?: string; saveError?: string };
+    messages?: {
+      saveSuccess?: string;
+      saveError?: string;
+      saveWarning?: string;
+      postingNow?: string;
+    };
   }) {
-    const {
+    let {
       form,
       row,
+      isNew,
       dialogRef,
       extraPostParam,
       userStampFields,
@@ -374,15 +392,30 @@ export class FormCommon {
       messages,
     } = args;
 
-    const changed = this.DataChanged(form, row);
+    if (isNew == undefined) isNew = false;
+
+    // set messages
+    if (messages == undefined) messages = {};
+    let { saveSuccess, saveError, saveWarning, postingNow } = messages;
+
+    if (!saveSuccess) saveSuccess = 'Record saved.';
+    if (!saveError)
+      saveError = 'Sorry. An error has occured when posting data.';
+    if (!saveWarning)
+      saveWarning =
+        'This action will overwite previously saved field values.<br/><br/>Do you want to continue?';
+    if (!postingNow) postingNow = 'Posting data. Please wait...';
+
+    const changed = this.DataChanged(form, row, isNew);
 
     if (changed) {
       this.dataSource
-        .Confirm(
-          'Confirm Save',
-          'This action will overwite previously saved field values.<br/><br/>Do you want to continue?',
-          { width: 500, height: 230, labelYes: 'Yes', labelNo: 'No' }
-        )
+        .Confirm('Confirm Save', saveWarning, {
+          width: 500,
+          height: 230,
+          labelYes: 'Yes',
+          labelNo: 'No',
+        })
         .subscribe((result) => {
           if (result.mode == 'yes') {
             // get table specific parameters
@@ -424,8 +457,8 @@ export class FormCommon {
             // get container table of the row object
             const table = row._parentTable;
             if (table)
-            // loop through all changed fields and reformat
-            // date field values if it contains the actual date object
+              // loop through all changed fields and reformat
+              // date field values if it contains the actual date object
               for (const fieldName in changed) {
                 if (table.GetColumnType(fieldName) == 'Date') {
                   // make sure that if the value in changed object
@@ -473,32 +506,22 @@ export class FormCommon {
             const obs = this.ds.Post(formData);
 
             if (obs) {
-              this.dataSource.openSnackBar(
-                'Posting data. Please wait...',
-                'X',
-                1000
-              );
+              this.dataSource.openSnackBar(postingNow, 'X', 1000);
               const subs = obs.subscribe(
                 (data) => {
-                  console.log('POST Return Data:', data);
-
                   subs.unsubscribe();
 
                   // call update client
-                  this.UpdateClient(changed);
+                  this.UpdateClient(changed, row, isNew);
 
                   // close dialog after a successful posting
                   if (dialogRef) dialogRef.close({ mode: 'saved' });
                   if (onSuccess) onSuccess(data);
 
-                  this.dataSource.openSnackBar('Record saved.', 'X', 1500);
+                  this.dataSource.openSnackBar(saveSuccess, 'X', 1500);
                 },
                 (err) => {
-                  this.dataSource.openSnackBar(
-                    'Sorry. An error has occured when posting data.',
-                    'X',
-                    5000
-                  );
+                  this.dataSource.openSnackBar(saveError, 'X', 5000);
                   console.log('Error: ', err);
                   if (onError) onError(err);
                   subs.unsubscribe();
@@ -524,8 +547,11 @@ export class FormCommon {
     }
   }
 
-  UpdateClient(data: any) {
+  UpdateClient(data: any, row?: any, isNew?: boolean) {
     // post changed data taken from the add/edit form object
+
+    if (isNew) isNew = false;
+    if (!row) row = this.currentRow;
 
     for (let field in data) {
       const value = data[field];
@@ -538,21 +564,22 @@ export class FormCommon {
         console.log(`Control ${field} not found.`);
       }
 
-      // update currentRow value
-      this.currentRow[field] = value;
+      // update currentRow or supplied row value
+      row[field] = value;
 
-      // update grid value
-      if (this.mainGrid._currentRow[field] != undefined)
-        this.mainGrid._currentRow[field] = value;
+      // update grid value if not new record
+      if (this.mainGrid._currentRow)
+        if (this.mainGrid._currentRow[field] != undefined && !isNew)
+          this.mainGrid._currentRow[field] = value;
     }
-    console.log(
-      '\nUpdateClient data:',
-      data,
-      '\nthis.mainFormObject',
-      this.mainFormObject,
-      '\nthis.mainGrid._currentRow',
-      this.mainGrid._currentRow
-    );
+    // console.log(
+    //   '\nUpdateClient data:',
+    //   data,
+    //   '\nthis.mainFormObject',
+    //   this.mainFormObject,
+    //   '\nthis.mainGrid._currentRow',
+    //   this.mainGrid._currentRow
+    // );
   }
 
   ResetData(form: FormGroup, row: any) {
