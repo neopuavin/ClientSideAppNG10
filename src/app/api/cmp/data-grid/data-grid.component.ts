@@ -30,11 +30,14 @@ import { Data } from '@angular/router';
   styleUrls: ['./data-grid.component.scss'],
 })
 export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _HostListenerTimeout: any;
   @HostListener('window:resize', ['$event']) handleResize(event: any) {
     // simply adding this event declaration, triggers recalculation of column widths
     // when the browser window is resized!
     // a method can also be called within this event handler...
     // this.RefreshGridDisplay();
+
+    this.resetColumnWidths();
   }
 
   // object with 'rows' property which is an array of object!
@@ -44,6 +47,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() showMenu: boolean = false;
   @Input() ManagmentOpener: any = null;
+
+  @Input() gridPortHeight: number = 768;
 
   @Input() set currentRow(value: any) {
     const keyName = this.options.keyColumnName;
@@ -150,11 +155,12 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     //return;
+    this._portHeight = this.gridPortHeight;
     this.InitDataSource();
 
-    setTimeout(()=>{
+    setTimeout(() => {
       this._isReady = true;
-    },1);
+    }, 1);
 
     //    console.log("this.pagesArray",this.pagesArray);
   }
@@ -167,12 +173,15 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // check if set of fields selected were part of the original (SetupData is called)
     // set of visible fields. if not onColumnsChanged must be fired!
 
-    this.options.ShowColumns(fieldsArray)
+    this.options.ShowColumns(fieldsArray);
 
-    if(this.options.columnsDataNotAvailable){
+    if (this.options.columnsDataNotAvailable) {
       this.onColumnsChanged.emit();
       //this.options.RecordExtractedDataFieldnames();
     }
+
+    // set column widths array to null to force width recalculation
+    this.resetColumnWidths();
 
     return;
     //RecordExtractedDataFieldnames
@@ -309,7 +318,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   public RowClick(event: any, row: any) {
     this.currentRow = row;
   }
-
 
   public get headerHeight(): number {
     if (!this._changeValuesNow) return 0;
@@ -498,7 +506,44 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     return c.width;
   }
+
+  _cellWidths: Array<number> = null;
+  public get cellWidths(): Array<number> {
+    if (this.gridHeaderGuide && !this._cellWidths) {
+      const widths: Array<number> = [];
+      const cells = this.gridHeaderGuide.querySelectorAll('div');
+      cells.forEach((cell) => widths.push(cell.offsetWidth));
+      this._cellWidths = widths;
+    }
+    return this._cellWidths;
+    //if(!_ce
+    /**
+     *     if (this.gridHeaderGuide) {
+      // const cells = this.gridHeaderGuide.querySelectorAll('div');
+      // return cells[idx + 1].offsetWidth;
+    }
+     */
+  }
+
+  resetColumnWidths() {
+    if (this._HostListenerTimeout) clearTimeout(this._HostListenerTimeout);
+    this._HostListenerTimeout = setTimeout(() => {
+      this._cellWidths = null;
+    }, 10);
+  }
+
+  calcWidths() {
+    this._cellWidths = null;
+    setTimeout(() => {
+      console.log(this.cellWidths);
+    }, 1000);
+  }
+
   public cellWidth(c: DataGridColum, idx: number): number {
+    const widths = this.cellWidths;
+    if (!widths) return 100;
+    return widths[idx + 1];
+
     if (this.gridHeaderGuide) {
       const cells = this.gridHeaderGuide.querySelectorAll('div');
       return cells[idx + 1].offsetWidth;
@@ -655,6 +700,11 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._currentRow[key] == row[key];
   }
 
+  private _portHeight: number = 768;
+  public get portHeight(): number {
+    return this._portHeight;
+  }
+
   public get headerPadWidth(): number {
     // this can return a calculated field based on the
     // overflow status of the grid virtual scroll container
@@ -674,6 +724,48 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   public setValueTo(trueValue: any, defaultValue: any) {
     if (!this._changeValuesNow) return defaultValue;
     return trueValue;
+  }
+
+  public handleOffset:number = 2;
+  headerMouse(event: any) {
+    const type = event.type;
+    const e = event;
+    const src = e.srcElement;
+    if (src.id.indexOf('h_') != 0) return;
+
+    const idx = +src.id.substr(2);
+    const offset = event.offsetX;
+    const colWidth = this.cellWidths[idx + 1];
+
+    if (type == 'mousemove') {
+      const onNext: boolean = offset >= 0 && offset <= this.handleOffset && idx != 0;
+      const onPrev: boolean =
+        offset >= colWidth - this.handleOffset && offset <= colWidth;
+      this._showResizeCursor = onNext || onPrev;
+
+      if (this._showResizeCursor) {
+        this._getHandleLeft = this.RowHeaderWidth - this.handleOffset;
+        for (let cIdx = 0; cIdx < idx + (onPrev ? 1 : 0); cIdx++) {
+          this._getHandleLeft += this.cellWidths[cIdx + 1];
+        }
+      }
+    } else if (type == 'mousedown') {
+    } else if (type == 'mouseleave') {
+      this._showResizeCursor = false;
+    }
+  }
+
+  private _getHandleLeft: number = 100;
+  public get getHandleLeft(): number {
+    return this._getHandleLeft;
+  }
+
+  private _showResizeCursor: boolean = false;
+  public get showResizeCursor(): boolean {
+    return this._showResizeCursor;
+  }
+  public get headerMaskCursor(): string {
+    return this._showResizeCursor ? 'ew-resize' : 'default';
   }
 
   // Events START **************************************************************************
@@ -711,7 +803,7 @@ export class DataGridColum extends DataColumn {
     this.colorParams = args.colorParams;
     this.isKey = args.isKey;
 
-    if(args.visible!=undefined) this.visible = args.visible;
+    if (args.visible != undefined) this.visible = args.visible;
 
     this.dateFormat = args.dateFormat;
     this.noZero = args.noZero;
@@ -881,13 +973,13 @@ export class DataGridOption extends DataOption {
     return this._visibleColumns;
   }
 
-  private _extractedColumns:Array<string>=[];
-  public get columnsDataNotAvailable():boolean{
+  private _extractedColumns: Array<string> = [];
+  public get columnsDataNotAvailable(): boolean {
     // this is to check if data on visible columns were all included in the last data extraction
-    let missingData:boolean = false;
-    const visible  = this.visibleColumns;
-    for(let idx=0;idx < visible.length ; idx++){
-      if(this._extractedColumns.indexOf(visible[idx].fieldName)==-1){
+    let missingData: boolean = false;
+    const visible = this.visibleColumns;
+    for (let idx = 0; idx < visible.length; idx++) {
+      if (this._extractedColumns.indexOf(visible[idx].fieldName) == -1) {
         missingData = true;
         break;
       }
@@ -895,11 +987,11 @@ export class DataGridOption extends DataOption {
     return missingData;
   }
 
-  public RecordExtractedDataFieldnames(){
+  public RecordExtractedDataFieldnames() {
     this._extractedColumns = [];
-    this.visibleColumns.forEach(col=>{
+    this.visibleColumns.forEach((col) => {
       this._extractedColumns.push(col.fieldName);
-    })
+    });
   }
 
   public AddColumn(args: IDataGridColumn): DataGridOption {

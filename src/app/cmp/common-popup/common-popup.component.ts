@@ -99,4 +99,14 @@ export class CommonPopupComponent implements OnInit {
     return this.data.showMask;
   }
 
+  public get icon():string{
+    const ico = this.data.icon;
+
+     if(ico.indexOf('far ')==0 || ico.indexOf('fab ')==0 || ico.indexOf('fas ')==0){
+       return ico;
+     }else{
+      return 'fa ' + ico;
+     }
+  }
+
 }

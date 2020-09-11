@@ -535,15 +535,9 @@ export class AnomalyComponent
     form.get('AN_TYPE').setValue(58);
 
 
-    for(const fieldName in form.controls){
-      row[fieldName] = form.get(fieldName).value;
-    }
+    for(const fieldName in form.controls)row[fieldName] = form.get(fieldName).value;
 
     row.XTRA.assetLookup = [{code:node.code,key:node.did,location:node.loc,text:node.text}]
-
-
-    console.log('\nform.value', form.value, '\nNew Row:' , row,'\nCurrentRow:',this.currentRow, '\ntreeViewNode:' ,this.treeView.currNode);
-
 
     this.dataSource
       .OpenPopup('addEditAnomaly', 870, 455, true, {
@@ -556,9 +550,9 @@ export class AnomalyComponent
         // set AnomalyComponent as the parent component reference
         parent: this,
         // Dialog title
-        title: 'Create Anomaly',
+        title: 'Add New Anomaly',
         // dialog title icon
-        icon: 'fa-new',
+        icon: 'far fa-file-alt',
         // dialog action buttons
         buttons: [
           {
@@ -584,17 +578,6 @@ export class AnomalyComponent
         // } else this.CancelUpdate();
       });
 
-    // // override function
-    // console.log('AddRecordEvent', args, 'TreeView:', this.treeView);
-    // if (this.treeView) {
-    //   // this.treeView.ResetStatus(-2);
-    //   setTimeout(() => {
-    //     this.ResetTreeStatus();
-    //     // this.ds.treeColorData = null; // will trigger re-fetching of tree color data
-    //     // this.treeView.ResetStatus(); // will set all status to value that will allow re-assignment of color
-    //   }, 50);
-    // }
-    // // this.OpenAddEditAnomaly();
   }
 
   ResetTreeStatus() {
@@ -656,7 +639,15 @@ export class AnomalyComponent
   }
 
   DeleteRecordEvent(args: any) {
-    console.log('DeleteRecordEvent', args, 'Current row:', this.currentRow);
+    if (!this.currentRow) {
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm(
+        'No current record',
+        'Please select an Anomaly record to delete'
+      );
+      return;
+    }
+
     // this.OpenAssetSelector();
   }
 

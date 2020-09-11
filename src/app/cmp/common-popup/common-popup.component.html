@@ -1,6 +1,6 @@
 <h3 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
   class="noselect p-0 m-0"><i *ngIf="data.icon"
-    [class]="'ml-2 fa ' + data.icon"></i><span class="ml-2">{{data.title ? data.title : 'No Title'}}</span>
+    [class]="'ml-2 ' + [icon] "></i><span class="ml-2">{{data.title ? data.title : 'No Title'}}</span>
 </h3>
 
 <mat-dialog-content class="mat-typography">

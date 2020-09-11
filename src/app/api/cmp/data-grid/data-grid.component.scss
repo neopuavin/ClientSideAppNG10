@@ -47,11 +47,23 @@ $test_col_with: 400px;
         text-overflow: ellipsis;
         text-align: center;
       }
+      > div#vsep{
+        padding:0px;
+        font-size:0px;
+        border-left:1px solid black;
+        border-right:1px solid black;
+        background: $grid_header_border_color;
+        position: absolute;
+        box-sizing: border-box;
+        height: 100%;
+      }
+
       > div:first-child {
         //border-left: 1px solid $grid_border_color;
         //border-left: 1px solid $grid_header_border_color;
-        //background-color: red;
+        // background-color: red;
       }
+
     }
     #barMenu{
       margin-top:5px;

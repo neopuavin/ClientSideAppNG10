@@ -1,49 +1,65 @@
 <div id="grid-wrapper" *ngIf="isReady">
   <div *ngIf="false" id="grid-toolbar">Toolbar</div>
-  <div #gridHeader id="grid-header" [style.min-height.px]="headerHeight"
-    [style.max-height.px]="headerHeight">
+  <div #gridHeader id="grid-header" [style.min-height.px]="headerHeight" [style.max-height.px]="headerHeight"
+    style="position: relative;">
+
+    <!--drag mask-->
+    <!-- <div style="position: absolute;background:black;z-index:1;width:100px;opacity:0.3"
+    [style.min-height.px]="rowHeaderHeight" [style.max-height.px]="rowHeaderHeight"
+    [style.margin-left.px]="leftScrollOffset"
+    >
+    </div> -->
 
     <!-- actual visible column headers -->
-    <div *ngIf="isWithVisibleColumns" class="grid-header-row" [style.margin-left.px]="leftScrollOffset" [style.padding-left.px]="RowHeaderWidth" style="position:relative;"
-      [style.min-height.px]="rowHeaderHeight" [style.max-height.px]="rowHeaderHeight">
+    <div *ngIf="isWithVisibleColumns" class="grid-header-row" (mousemove)="headerMouse($event)"
+      (mouseout)="headerMouse($event)" (mousedown)="headerMouse($event)" (mouseout)="headerMouse($event)"
+      [style.cursor]="headerMaskCursor" [style.margin-left.px]="leftScrollOffset"
+      [style.padding-left.px]="RowHeaderWidth" style="position:relative;" [style.min-height.px]="rowHeaderHeight"
+      [style.max-height.px]="rowHeaderHeight">
 
-      <div #rowHeader class="row-header" [style.max-width.px]="RowHeaderWidth"
-        [style.left.px]="-leftScrollOffset"
+      <!-- generate row header cell-->
+      <div #rowHeader class="row-header" [style.max-width.px]="RowHeaderWidth" [style.left.px]="-leftScrollOffset"
         [style.min-width.px]="RowHeaderWidth" style="border-bottom:none;position:absolute;z-index:1;">
         <i id="barMenu" matTooltipPosition="right" matTooltip="Click to manage grid columns"
-        (click)="ManageGrid($event)" *ngIf="ManagmentOpener" class="fa fa-bars"></i>
+          (click)="ManageGrid($event)" *ngIf="ManagmentOpener" class="fa fa-bars"></i>
         <span *ngIf="!ManagmentOpener">&nbsp;</span>
       </div>
 
-      <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)" class="noselect"
-        [style.max-width.px]="cellWidth(h,ci)">{{h.caption}}</div>
+      <!-- grip handle -->
+      <!-- <div style="position:absolute;box-sizing:border-box ;flex-grow:0;flex-shrink:0;background:lime; max-width: 2px;border:none; border-left:1px solid red;border-right:1px solid red;font-size:1px;">&nbsp;</div> -->
+      <!-- <div style="border-left:1px solid red;position:absolute;"></div> -->
+      <div id="vsep" *ngIf="showResizeCursor" [style.width.px]="handleOffset*2" [style.left.px]="getHandleLeft">&nbsp;</div>
+
+      <!-- generate row cells -->
+      <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)"
+        class="noselect" [attr.id]="'h_'+ci" [style.max-width.px]="cellWidth(h,ci)">{{h.caption}}</div>
+
+      <!-- generate row end padding cell -->
       <div *ngIf="headerPadWidth!=0" [style.min-width.px]="headerPadWidth" [style.max-width.px]="headerPadWidth">&nbsp;
       </div>
     </div>
 
     <!-- hidden row which is used for column widths of visible header and details -->
-    <div #gridHeaderWidthGuide class="grid-header-row" [style.height.px]="0">
+    <div #gridHeaderWidthGuide class="grid-header-row" [style.height.px]="0" style="background:red;">
       <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth">.</div>
       <div *ngFor="let h of options.visibleColumns" [style.min-width.px]="headerWidth(h,{min:true})"
-        [style.max-width.px]="headerWidth(h,{max:true})">
+        [style.max-width.px]="headerWidth(h,{max:true})" style="background:red;" (click)="calcWidths()">
         {{h.minWidth}} : {{headerWidth(h,{max:true})}} : {{h.width}}</div>
-      <div
-        *ngIf="headerPadWidth!=0"
-        [style.min-width.px]="headerPadWidth"
-        [style.max-width.px]="headerPadWidth">&nbsp;
+      <div *ngIf="headerPadWidth!=0" [style.min-width.px]="headerPadWidth" [style.max-width.px]="headerPadWidth">HEADER!
       </div>
     </div>
   </div>
 
-  <cdk-virtual-scroll-viewport *ngIf="isWithVisibleColumns" id="grid-view-port" #gridViewPort [style.height.%]="100" [itemSize]="options.rowHeight">
+  <cdk-virtual-scroll-viewport *ngIf="isWithVisibleColumns" id="grid-view-port" #gridViewPort
+    [style.height.px]="portHeight" [itemSize]="options.rowHeight" [maxBufferPx]="800" [minBufferPx]="800">
     <div class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
     <div class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
     <div class="grid-prompt noselect" *ngIf="isLoadingData"><i
         class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
 
-    <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;"
-      [style.height.px]="options.rowHeight" [style.padding-left.px]="RowHeaderWidth"
-      (click)="RowClick($event,r)" [ngClass]="RowClass(r)" style="position:relative;">
+    <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;" [style.height.px]="options.rowHeight"
+      [style.padding-left.px]="RowHeaderWidth" (click)="RowClick($event,r)" [ngClass]="RowClass(r)"
+      style="position:relative;">
 
       <!-- Detail Row Header Start -->
       <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth"
@@ -52,16 +68,18 @@
         <!-- <i class="pointer fa fa-pen"></i> -->
         <!-- <i class="pointer fa fa-lock"></i> -->
         <i class="pointer fa fa-caret-right"></i>
-        <i *ngIf="isRowWaiting" [style.visible]="isRowWaiting ? 'visible': 'hidden'" class="wait fa fa-spinner fa-spin fa-1x fa-fw"></i>
+        <i *ngIf="isRowWaiting" [style.visible]="isRowWaiting ? 'visible': 'hidden'"
+          class="wait fa fa-spinner fa-spin fa-1x fa-fw"></i>
         <input class="row-focus" type="text" (keyup)="KeyUp($event,r)" [id]="'row_focus_' + r[options.keyColumnName]" />
         <!-- <i class="pointer fa fa-chevron-right"></i> -->
       </div>
       <!-- Detail Row Header End -->
 
-      <div *ngFor="let c of options.visibleColumns;let ci=index;" [class]="'grid-cell'+(isCurrRow(r) ? '' : ' noselect')" [style.text-align]="c.align"
+      <div *ngFor="let c of options.visibleColumns;let ci=index;"
+        [class]="'grid-cell'+(isCurrRow(r) ? '' : ' noselect')" [style.text-align]="c.align"
         [style.min-width.px]="cellWidth(c,ci)" [style.max-width.px]="cellWidth(c,ci)" [style.color]="cellColor(r,c)"
         [style.background]="cellBack(r,c)" (mouseenter)="OnCellMouse($event,r,c)" (mouseleave)="OnCellMouse($event,r,c)"
-        matTooltipPosition="below" [matTooltip]="cellTip">
+        matTooltipPosition="below" matTooltipShowDelay="800" [matTooltip]="cellTip">
         {{cellText(r,c)}}
       </div>
     </div>
@@ -107,4 +125,3 @@
   </div>
 
 </div>
-
