@@ -37,6 +37,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // a method can also be called within this event handler...
     // this.RefreshGridDisplay();
 
+    //
+    this.gridViewPort.checkViewportSize();
+
     this.resetColumnWidths();
   }
 
@@ -77,6 +80,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
  */
     this._currentRow = value;
   }
+
+  private debugMode:boolean = false;
 
   public get keyColumnName(): string {
     return this.options.keyColumnName;
@@ -562,6 +567,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public cellColor(r: any, c: DataGridColum): any {
+    if(this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.foreGround) return null;
 
@@ -572,6 +578,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return !color ? null : color;
   }
   public cellBack(r: any, c: DataGridColum): any {
+    if(this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.backGround) return null;
 
@@ -589,7 +596,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const value = r[c.fieldName];
 
-    // return value;
+    //return eval("`V:${r[c.fieldName]}`");
+
+    if(this.debugMode) return value;
 
     if (c.displayField && this.sourceLookups[c.displayField]) {
       // if sourceLookups and displayField are defined
@@ -765,6 +774,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._showResizeCursor;
   }
   public get headerMaskCursor(): string {
+    // return 'default';
     return this._showResizeCursor ? 'ew-resize' : 'default';
   }
 
