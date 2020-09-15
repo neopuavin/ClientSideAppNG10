@@ -241,7 +241,9 @@ export class DatasetBase extends AppCommonMethods {
     jsonParams.push(reqConfig);
 
     // form url here with encoded parameters
-    let url: string = this.apiUrl + '?_p=' + btoa(JSON.stringify(jsonParams));
+    const jString  = JSON.stringify(jsonParams);
+    console.log(jString);
+    let url: string = this.apiUrl + '?_p=' + btoa(jString);
 
     //let tableRows: Array<Array<any>> = [];
     let procData: IProcessRequestData = null;

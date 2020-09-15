@@ -310,6 +310,37 @@ export class AnomalyComponent
           inlineLookupTableField: 'LKP_DESC_B',
         },
       })
+      .AddColumn({
+        fieldAlias:'RISK',
+        value:"{AN_RISK_RANK_LIKELIHOOD}{AN_RISK_RANK_SEVERITY}",
+        width:wd3,
+        caption:'Risk',
+        displayFormat:"${AN_RISK_RANK_SEVERITY}${AN_RISK_RANK_LIKELIHOOD}"
+      })
+      .AddColumn({
+        fieldName: 'AN_RISK_RANK_SEVERITY',
+        fieldAlias:'SEVERITY',
+        width: wd3,
+        align: center,
+        caption: 'Severity',
+        lookupParams: {
+          inlineLookupFieldAlias: 'SEV',
+          inlineLookupTableAlias: 'risksev',
+          inlineLookupTableField: 'LKP_DESC_A',
+        },
+      })
+      .AddColumn({
+        fieldName: 'AN_RISK_RANK_LIKELIHOOD',
+        fieldAlias:'LIKELIHOOD',
+        width: wd3,
+        align: center,
+        caption: 'Likelihood',
+        lookupParams: {
+          inlineLookupFieldAlias: 'LIK',
+          inlineLookupTableAlias: 'risklik',
+          inlineLookupTableField: 'LKP_DESC_A',
+        },
+      })
 
       // set mandatory field(s) needed to be extracted from the database
       // even if the grid column(s)'s visibility mode is set to hidden
@@ -318,6 +349,9 @@ export class AnomalyComponent
       // show only selected fields to display
       .ShowColumns([
         'AN_ID',
+        'RISK',
+        // 'SEVERITY',
+        // 'LIKELIHOOD',
         'AN_ASSET_ID',
         'AN_REF',
         'AN_REVNO',
@@ -374,7 +408,17 @@ export class AnomalyComponent
         code: 'lkp',
         alias: 'sapstat',
         localField: 'AN_WO_STATUS',
-      });
+      })
+      .LeftJoin({
+        code: 'lkp',
+        alias: 'risksev',
+        localField: 'AN_RISK_RANK_SEVERITY',
+      })
+      .LeftJoin({
+        code: 'lkp',
+        alias: 'risklik',
+        localField: 'AN_RISK_RANK_LIKELIHOOD',
+      })
 
     console.log(
       '\nselect:',

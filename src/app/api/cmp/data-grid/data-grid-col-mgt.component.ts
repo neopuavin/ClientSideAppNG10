@@ -157,7 +157,8 @@ export class DataGridColMgtComponent implements OnInit, AfterViewInit {
     let list = showAll ? this._visible : this._hidden;
     this.columns.forEach((c) =>
       list.push({
-        id: c.fieldName,
+        // id: c.fieldName,
+        id: c.fieldKey,
         fieldName: c.fieldName,
         caption: c.caption,
         order: c.order,
@@ -209,14 +210,16 @@ export class DataGridColMgtComponent implements OnInit, AfterViewInit {
     this.columns.forEach((c) => {
       if (c.visible) {
         this._visible.push({
-          id: c.fieldName,
+          // id: c.fieldName,
+          id: c.fieldKey,
           fieldName: c.fieldName,
           caption: c.caption,
           order: c.order,
         });
       } else {
         this._hidden.push({
-          id: c.fieldName,
+          // id: c.fieldName,
+          id: c.fieldKey,
           fieldName: c.fieldName,
           caption: c.caption,
           order: c.order,

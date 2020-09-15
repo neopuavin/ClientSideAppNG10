@@ -81,7 +81,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     this._currentRow = value;
   }
 
-  private debugMode:boolean = false;
+  private debugMode: boolean = false;
 
   public get keyColumnName(): string {
     return this.options.keyColumnName;
@@ -178,6 +178,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // check if set of fields selected were part of the original (SetupData is called)
     // set of visible fields. if not onColumnsChanged must be fired!
 
+    console.log("fieldsArray:",fieldsArray);
     this.options.ShowColumns(fieldsArray);
 
     if (this.options.columnsDataNotAvailable) {
@@ -336,6 +337,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   public RowClass(row: any) {
     return {
       'current-row': this.isCurrRow(row),
+      noselect: true,
     };
   }
 
@@ -567,7 +569,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public cellColor(r: any, c: DataGridColum): any {
-    if(this.debugMode) return null;
+    if (this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.foreGround) return null;
 
@@ -578,7 +580,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return !color ? null : color;
   }
   public cellBack(r: any, c: DataGridColum): any {
-    if(this.debugMode) return null;
+    if (this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.backGround) return null;
 
@@ -594,25 +596,50 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // row object and can be subsequently used to render text instead of actively
     // going through the process of looking up texts.
 
-    const value = r[c.fieldName];
+    const colKey: string = c.fieldKey;
 
-    //return eval("`V:${r[c.fieldName]}`");
+    // if cellText cache object is not yet existing, create an empty object
+    if (r.CELL_TEXT == undefined) r.CELL_TEXT = {};
 
-    if(this.debugMode) return value;
+    // if cellText is already cached in the current row
+    if (r.CELL_TEXT[colKey] != undefined) return r.CELL_TEXT[colKey];
+
+    let value: any;
+
+    if (c.fieldName) {
+      value = this.cellTextFromFieldName(r, c);
+      if (this.debugMode) return value;
+    } else if(c.value) {
+      // process calculated column
+      value = this.cellTextFromValue(r, c);
+    }
+
+    if (this.debugMode) return value;
+
+    r.CELL_TEXT[colKey] = value;
+    return value;
+  }
+
+  cellTextFromValue(r: any, c: DataGridColum):string{
+    const fmt:string = '`' + c.value.replace(/\{/gi,"${r.") + '`';
+    let value:string = eval(fmt);
+    if(value.indexOf('null')!=-1) value = '';
+
+    return value // //eval("`${r[AN_ID]}`");
+  }
+
+  cellTextFromFieldName(r: any, c: DataGridColum): string {
+    let value: any = r[c.fieldName];
 
     if (c.displayField && this.sourceLookups[c.displayField]) {
       // if sourceLookups and displayField are defined
       // sourceLookups - set of inline lookups
-      // where groupname is displayField and value is the item key
+      // where groupname is displayField and 'value' is the item key
 
-      return this.sourceLookups[c.displayField][value];
-    }
-    // if sourceLookups is not defined, the value will still have the
-    // raw field value
-
-    // if lookup params parameter is not defined, return the raw value
-    if (!c.lookupParams) {
+      value = this.sourceLookups[c.displayField][value];
+    } else if (!c.lookupParams) {
       // here is where the raw value will fall if no lookup parameters is deifned
+
       // check if field is a date
       if (c.dateFormat && value) {
         const isDefault = c.dateFormat == 'default';
@@ -626,60 +653,64 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
             ? this.dateFormat
             : c.dateFormat;
 
-        return moment(dt).format(fmt);
+        value = moment(dt).format(fmt);
+      } else if (c.noZero && !isNaN(value)) {
+        // if numeric value but will simply display blank if the value is zero
+        value = +value != 0 ? value : '';
+      } else {
+        // retain current value of 'value'
       }
-
-      if (c.noZero && !isNaN(value)) {
-        return +value != 0 ? value : '';
-      }
-
-      return value;
+    } else {
+      // c.lookupParams is supplied, process lookup parameters to derive cellText
+      value = this.cellTextFromLookupParams(r, c, value);
     }
 
-    // if value is empty
-    if ((value + '').length == 0) return '';
+    return value;
+  }
 
+  cellTextFromLookupParams(r: any, c: DataGridColum, value: any): string {
     // get lookup definition parameters
     const lkpPrm = c.lookupParams;
+    let retVal: any;
 
     if (lkpPrm.lookupSource) {
       // if array of objects is supplied as lookupSource
       const lkpElem = lkpPrm.lookupSource.find((e) => e.value == value);
-      return lkpElem ? lkpElem.display : lkpPrm.notFoundDislay;
+      retVal = lkpElem ? lkpElem.display : lkpPrm.notFoundDislay;
     } else if (lkpPrm.formXTRA) {
       // if display value is taken from a field in the row's XTRA property
-      return r.XTRA[lkpPrm.formXTRA];
+      retVal = r.XTRA[lkpPrm.formXTRA];
     } else if (lkpPrm.toggleDisplay) {
       // if display value will be taken from a string array
       const tgl = lkpPrm.toggleDisplay.find((t) => t.value == value);
-      return tgl ? tgl.display : value;
-    }
+      retVal = tgl ? tgl.display : value;
 
-    // get lookup table object
-    const tbl = c.lookupParams.table;
+    } else {
 
-    let dispVal: any = tbl.LookupText(
-      value,
-      lkpPrm.displayField,
-      lkpPrm.groupValue,
-      lkpPrm.groupField,
-      lkpPrm.notFoundDislay
-    );
+      // get lookup table object
+      const tbl = c.lookupParams.table;
 
-    if (lkpPrm.subLookupParams) {
-      const stbl = lkpPrm.subLookupParams.table;
-      dispVal = stbl.LookupText(
-        dispVal,
-        lkpPrm.subLookupParams.displayField,
-        lkpPrm.subLookupParams.groupValue,
-        lkpPrm.subLookupParams.groupField,
+      retVal = tbl.LookupText(
+        value,
+        lkpPrm.displayField,
+        lkpPrm.groupValue,
+        lkpPrm.groupField,
         lkpPrm.notFoundDislay
       );
+
+      if (lkpPrm.subLookupParams) {
+        const stbl = lkpPrm.subLookupParams.table;
+        retVal = stbl.LookupText(
+          retVal,
+          lkpPrm.subLookupParams.displayField,
+          lkpPrm.subLookupParams.groupValue,
+          lkpPrm.subLookupParams.groupField,
+          lkpPrm.notFoundDislay
+        );
+      }
     }
 
-    //return dispVal + (lkpPrm.subLookupParams ? " " + dispVal  : " xx ");
-
-    return dispVal;
+    return value;
   }
 
   OnCellMouse(event: any, row: any, cell: DataColumn) {
@@ -735,11 +766,16 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return trueValue;
   }
 
-  public handleOffset:number = 2;
+  public handleOffset: number = 2;
+  public onNext: boolean = false;
+  public onPrev: boolean = false;
+
+  public _mouseDown: boolean = false;
   headerMouse(event: any) {
     const type = event.type;
     const e = event;
     const src = e.srcElement;
+
     if (src.id.indexOf('h_') != 0) return;
 
     const idx = +src.id.substr(2);
@@ -747,20 +783,38 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     const colWidth = this.cellWidths[idx + 1];
 
     if (type == 'mousemove') {
-      const onNext: boolean = offset >= 0 && offset <= this.handleOffset && idx != 0;
-      const onPrev: boolean =
+      this.onNext = offset >= 0 && offset <= this.handleOffset && idx != 0;
+      this.onPrev =
         offset >= colWidth - this.handleOffset && offset <= colWidth;
-      this._showResizeCursor = onNext || onPrev;
+
+      this._showResizeCursor = this.onNext || this.onPrev || this._mouseDown;
 
       if (this._showResizeCursor) {
         this._getHandleLeft = this.RowHeaderWidth - this.handleOffset;
-        for (let cIdx = 0; cIdx < idx + (onPrev ? 1 : 0); cIdx++) {
+        for (let cIdx = 0; cIdx < idx + (this.onPrev ? 1 : 0); cIdx++) {
           this._getHandleLeft += this.cellWidths[cIdx + 1];
         }
       }
+    } else if (type == 'mouseup') {
+      this._mouseDown = false;
     } else if (type == 'mousedown') {
+      this._mouseDown = true;
     } else if (type == 'mouseleave') {
+      this._mouseDown = false;
       this._showResizeCursor = false;
+    }
+
+    this.promptNoRecords = `Left:${this._getHandleLeft}, MouseDown:${this._mouseDown}, ShowHandle:${this._showResizeCursor}, Offset:${offset}, OnPrev:${this.onPrev}, OnNext:${this.onNext}`;
+  }
+
+  splitCursorMouse(event: any) {
+    const type = event.type;
+    const e = event;
+    const src = e.srcElement;
+    if (type == 'mouseup') {
+      this._mouseDown = false;
+    } else if (type == 'mousedown') {
+      this._mouseDown = true;
     }
   }
 
@@ -774,7 +828,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._showResizeCursor;
   }
   public get headerMaskCursor(): string {
-    // return 'default';
+    //return 'default';
     return this._showResizeCursor ? 'ew-resize' : 'default';
   }
 
@@ -799,6 +853,7 @@ export interface IDataGridColumn extends IDataColumn {
   dateFormat?: string;
   noZero?: boolean;
   order?: number;
+  displayFormat?: string;
 }
 
 export class DataGridColum extends DataColumn {
@@ -812,10 +867,12 @@ export class DataGridColum extends DataColumn {
     this.lookupParams = args.lookupParams;
     this.colorParams = args.colorParams;
     this.isKey = args.isKey;
+    this.displayFormat = args.displayFormat;
 
     if (args.visible != undefined) this.visible = args.visible;
 
     this.dateFormat = args.dateFormat;
+    this.value = args.value;
     this.noZero = args.noZero;
     this.order = args.order ? args.order : 1;
   }
@@ -832,6 +889,8 @@ export class DataGridColum extends DataColumn {
   public order: number;
   public colorParams: IColorParams;
   public lookupParams: ILookupParams;
+  public value:any;
+  public displayFormat: string;
 }
 
 export class DataGridOption extends DataOption {
@@ -903,11 +962,15 @@ export class DataGridOption extends DataOption {
   public SetColumnVisibility(column: DataGridColum, visible: boolean) {
     // Sets visibility mode of a column and its matching data and inline lookup fields
     column.visible = visible;
+
     // check field and if exist set the field's visible property to false
-    const fld = this.fields.find((f) => f.fieldName == column.fieldName);
+    //const fld = this.fields.find((f) => f.fieldName == column.fieldName);
+    const fld = this.fields.find((f) => f.fieldKey == column.fieldKey);
+
     if (fld) {
       if (!visible) {
-        if (this._requiredFields.indexOf(fld.fieldName) == -1)
+        // if (this._requiredFields.indexOf(fld.fieldName) == -1)
+        if (this._requiredFields.indexOf(fld.fieldKey) == -1)
           fld.visible = false;
       } else {
         fld.visible = true;
@@ -916,8 +979,10 @@ export class DataGridOption extends DataOption {
 
     const lkp = column.lookupParams;
     if (lkp && column.displayField) {
-      // check if an inline lookup is defined
+      // check if an inline lookup is defined. If it does, it must be included in the
+      // set of fields to be requested from the server
       if (lkp.inlineLookupFieldAlias) {
+        // find lookup field definition associated with the field set in the column
         const lkpFld = this.fields.find(
           (f) => f.fieldAlias == column.displayField
         );
@@ -929,20 +994,21 @@ export class DataGridOption extends DataOption {
             lkpFld.visible = true;
           }
         }
-      }
+      } // if inlinelookup defined
     }
   }
 
   public HideColumns(
-    columnNames: Array<string>,
+    fieldKeys: Array<string>,
     hideOnly?: boolean
   ): DataGridOption {
     if (hideOnly == undefined) hideOnly = true;
     if (hideOnly)
       this.columns.forEach((c) => this.SetColumnVisibility(c, true));
 
-    columnNames.forEach((cn) => {
-      const col = this.columns.find((c) => c.fieldName == cn);
+    fieldKeys.forEach((fk) => {
+      // const col = this.columns.find((c) => c.fieldName == cn);
+      const col = this.columns.find((c) => c.fieldKey == fk);
       if (col) this.SetColumnVisibility(col, false);
     });
 
@@ -951,7 +1017,7 @@ export class DataGridOption extends DataOption {
   }
 
   public ShowColumns(
-    columnNames: Array<string>,
+    fieldKeys: Array<string>,
     showOnly?: boolean
   ): DataGridOption {
     if (showOnly == undefined) showOnly = true;
@@ -960,8 +1026,8 @@ export class DataGridOption extends DataOption {
       this.columns.forEach((c) => this.SetColumnVisibility(c, false));
 
     let order: number = 1;
-    columnNames.forEach((cn) => {
-      const col = this.columns.find((c) => c.fieldName == cn);
+    fieldKeys.forEach((fk) => {
+      const col = this.columns.find((c) => c.fieldKey == fk);
       if (col) {
         this.SetColumnVisibility(col, true);
         col.order = order;
@@ -1011,6 +1077,18 @@ export class DataGridOption extends DataOption {
     const col = new DataGridColum(args);
     col.parentOption = this;
     col.order = this.columns.length;
+
+    // assign column key string if not supplied during construction
+    if (!col.fieldKey)
+      if (col.fieldAlias)
+        // if fieldAlias is available, use it
+        col.fieldKey = col.fieldAlias;
+      else if (col.fieldName)
+        // else if fieldName is available, use it
+        col.fieldKey = col.fieldName;
+      // else, col.fieldKey will be assigned a GUID
+      else col.fieldKey = this.GUID;
+
     this.columns.push(col);
 
     let displayField = args.displayField;
@@ -1039,8 +1117,30 @@ export class DataGridOption extends DataOption {
     // create field entry based on parameter(s) supplied for the grid column
     let fldOpt: IDataColumn = { fieldName: args.fieldName };
     if (displayField) fldOpt.displayField = displayField;
-    this.AddFieldWithOptions(fldOpt);
+    // add data field only if fieldname is specified
+    if (fldOpt.fieldName) this.AddFieldWithOptions(fldOpt);
 
     return this;
   }
+
+  get GUID(): string {
+    // Public Domain/MIT
+    let d = new Date().getTime(); //Timestamp
+    let d2 = (performance && performance.now && performance.now() * 1000) || 0; //Time in microseconds since page-load or 0 if unsupported
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (
+      c
+    ) {
+      var r = Math.random() * 16; //random number between 0 and 16
+      if (d > 0) {
+        //Use timestamp until depleted
+        r = (d + r) % 16 | 0;
+        d = Math.floor(d / 16);
+      } else {
+        //Use microseconds since page-load if supported
+        r = (d2 + r) % 16 | 0;
+        d2 = Math.floor(d2 / 16);
+      }
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+  } // end of GUID method
 }

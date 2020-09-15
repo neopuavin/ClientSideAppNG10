@@ -9,10 +9,12 @@ export interface IDataColumn {
   // [aggregateFuction]([tableAlias.]<fieldName>)[@<fieldAlias>]
   fieldName?: string;
   fieldAlias?: string;
+  fieldKey?: string;
   tableAlias?: string;
   caption?: string;
   aggregateFuction?: string;
   forLookup?: boolean;
+  value?:any;
 
   // when supplied, inline lookup will be generated. Object of key-value pairs
   // which will be used to search for display text of data field.
@@ -85,6 +87,7 @@ export interface IUserInfo{
 export class DataColumn {
   constructor(args: IDataColumn) {
     this.fieldName = args.fieldName;
+    this.fieldKey = args.fieldKey;
     this.caption = args.caption ? args.caption : '';
     this.fieldAlias = args.fieldAlias ? args.fieldAlias : '';
     this.tableAlias = args.tableAlias ? args.tableAlias : '';
@@ -97,6 +100,7 @@ export class DataColumn {
   }
 
   public parentOption: DataOption = null;
+  public fieldKey: string;
   public fieldName: string;
   public tableAlias: string;
   public fieldAlias: string;

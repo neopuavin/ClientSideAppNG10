@@ -11,8 +11,12 @@
     </div> -->
 
     <!-- actual visible column headers -->
-    <div *ngIf="isWithVisibleColumns" class="grid-header-row" (mousemove)="headerMouse($event)"
-      (mouseout)="headerMouse($event)" (mousedown)="headerMouse($event)" (mouseout)="headerMouse($event)"
+    <div *ngIf="isWithVisibleColumns" class="grid-header-row"
+      (mousemove)="headerMouse($event)"
+      (mouseout)="headerMouse($event)"
+      (mousedown)="headerMouse($event)"
+      (mouseup)="headerMouse($event)"
+      (mouseout)="headerMouse($event)"
       [style.cursor]="headerMaskCursor" [style.margin-left.px]="leftScrollOffset"
       [style.padding-left.px]="RowHeaderWidth" style="position:relative;" [style.min-height.px]="rowHeaderHeight"
       [style.max-height.px]="rowHeaderHeight">
@@ -28,7 +32,10 @@
       <!-- grip handle -->
       <!-- <div style="position:absolute;box-sizing:border-box ;flex-grow:0;flex-shrink:0;background:lime; max-width: 2px;border:none; border-left:1px solid red;border-right:1px solid red;font-size:1px;">&nbsp;</div> -->
       <!-- <div style="border-left:1px solid red;position:absolute;"></div> -->
-      <div id="vsep" *ngIf="showResizeCursor" [style.width.px]="handleOffset*2" [style.left.px]="getHandleLeft">&nbsp;</div>
+      <div id="vsep" *ngIf="showResizeCursor" [style.width.px]="handleOffset*2" [style.left.px]="getHandleLeft"
+      (mousedown)="splitCursorMouse($event)"
+      (mouseup)="splitCursorMouse($event)"
+      >&nbsp;</div>
 
       <!-- generate row cells -->
       <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)"
@@ -58,7 +65,8 @@
         class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
 
     <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;" [style.height.px]="options.rowHeight"
-      [style.padding-left.px]="RowHeaderWidth" (click)="RowClick($event,r)" [ngClass]="RowClass(r)"
+      [style.padding-left.px]="RowHeaderWidth" (click)="RowClick($event,r)"
+      [ngClass]="RowClass(r)"
       style="position:relative;">
 
       <!-- Detail Row Header Start -->
