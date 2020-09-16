@@ -32,8 +32,15 @@ export class DatasetBase extends AppCommonMethods {
   // locally during desing time, and when the value is overwritten
   // in the derived class, the new value will take effect even
   // even when used locally in the parent class....
-  public apiUrl: string;
   public userInfo: IUserInfo;
+
+  private _apiUrl: string;
+  public get apiUrl():string{
+    return this._apiUrl;
+  }
+  public set apiUrl(value:string){
+    this._apiUrl = value;
+  }
 
   public toPostData(table: any): any {
     let ret: Array<any> = [];
@@ -242,7 +249,7 @@ export class DatasetBase extends AppCommonMethods {
 
     // form url here with encoded parameters
     const jString  = JSON.stringify(jsonParams);
-    console.log(jString);
+    // console.log(jString);
     let url: string = this.apiUrl + '?_p=' + btoa(jString);
 
     //let tableRows: Array<Array<any>> = [];

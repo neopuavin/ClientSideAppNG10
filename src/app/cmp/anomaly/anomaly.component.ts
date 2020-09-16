@@ -1,3 +1,4 @@
+import { DataGridColum } from './../../api/cmp/data-grid/data-grid.component';
 import { TblAnomaliesRow } from './../../svc/app.tables';
 import { DataOption, ILookupItem } from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
@@ -46,30 +47,55 @@ export class AnomalyComponent
         this.AnomalyLookup(149);
         this.AnomalyLookup(190);
         this.AnomalyLookup('antype');
-        this.ds.riskMatrixData;
+
+        // assign required lookups to mainDataGrid
+        if (this.ds.riskMatrixData) {
+          // late lookup binding to grid column
+          const riskColumn: DataGridColum = this.mainGridOptions.columns.find(
+            (c) => c.fieldKey == 'RISK'
+          );
+          if (riskColumn) {
+            // bind value lookup object
+            const mtx = this.ds.riskMatrixData.mtx;
+            riskColumn.lookupParams.lookupSource = mtx;
+            /**
+             * from ...
+             * {
+             *  key1:{code:string, fore:string, back:string},
+             *  key2:{code:string, fore:string, back:string},
+             *  key#:{code:string, fore:string, back:string}
+             * }
+             * to ...
+             * {
+             *  foreGround: { code1: fore1, code2: fore2, code#: fore# },
+             *  backGround: { code1: back1, code2: back2, code#: back# }
+             * }
+             */
+            let fore: any = {};
+            let back: any = {};
+            for (let key in mtx) {
+              const item = mtx[key];
+              fore[item.code] = item.fore;
+              back[item.code] = item.back;
+            }
+            riskColumn.colorParams = { foreGround: fore, backGround: back };
+            console.log('color params:', riskColumn.colorParams);
+          }
+        }
       }
     );
+
+    // the next method calls must be executed within the ngOnInit lifecycle because
+    // objects generated are needed in the template rendering.
 
     // Set Common Data Settings
     this.CommonFormInit();
 
+    // Call data grid option setup on success of getting all lookup dependencies
     this.SetupGridColumns();
 
-    // setup tab
-    this.mainTabsOptions
-      .AddTab({
-        id: 1,
-        label: 'General Information',
-        icon: 'fa fa-info-circle',
-        active: true,
-      })
-      .AddTab({ id: 2, label: 'Assessment', icon: '', active: false })
-      .AddTab({ id: 3, label: 'Recommendations', icon: '', active: false })
-      .AddTab({ id: 4, label: 'Risk Ranking', icon: '', active: false })
-      .AddTab({ id: 5, label: 'Failure Threats', icon: '', active: false })
-      .AddTab({ id: 6, label: 'Attachments', icon: '', active: false })
-      .AddTab({ id: 7, label: 'Actions', icon: '', active: false })
-      .AddTab({ id: 8, label: 'Related Anomalies', icon: '', active: false });
+    // Setup details tab
+    this.SetupDetailsTab();
   }
 
   SetupGridColumns() {
@@ -311,15 +337,22 @@ export class AnomalyComponent
         },
       })
       .AddColumn({
-        fieldAlias:'RISK',
-        value:"{AN_RISK_RANK_LIKELIHOOD}{AN_RISK_RANK_SEVERITY}",
-        width:wd3,
-        caption:'Risk',
-        displayFormat:"${AN_RISK_RANK_SEVERITY}${AN_RISK_RANK_LIKELIHOOD}"
+        fieldAlias: 'RISK',
+        value: 'M{AN_RISK_RANK_SEVERITY}{AN_RISK_RANK_LIKELIHOOD}',
+        width: wd2,
+        align: center,
+        caption: 'Risk',
+        colorParams: null,
+        lookupParams: {
+          lookupSource: null, // this will later be replaced with this.ds.riskMatrixData.mtx onSuccess of lookup retreival
+          lookupDisplayField: 'code',
+          lookupValueField: 'object',
+        },
+        displayFormat: '${AN_RISK_RANK_SEVERITY}${AN_RISK_RANK_LIKELIHOOD}',
       })
       .AddColumn({
         fieldName: 'AN_RISK_RANK_SEVERITY',
-        fieldAlias:'SEVERITY',
+        fieldAlias: 'SEVERITY',
         width: wd3,
         align: center,
         caption: 'Severity',
@@ -331,7 +364,7 @@ export class AnomalyComponent
       })
       .AddColumn({
         fieldName: 'AN_RISK_RANK_LIKELIHOOD',
-        fieldAlias:'LIKELIHOOD',
+        fieldAlias: 'LIKELIHOOD',
         width: wd3,
         align: center,
         caption: 'Likelihood',
@@ -349,9 +382,6 @@ export class AnomalyComponent
       // show only selected fields to display
       .ShowColumns([
         'AN_ID',
-        'RISK',
-        // 'SEVERITY',
-        // 'LIKELIHOOD',
         'AN_ASSET_ID',
         'AN_REF',
         'AN_REVNO',
@@ -362,6 +392,9 @@ export class AnomalyComponent
         'AN_CURR_CLASS',
         'AN_ORIG_AVAIL_CLASS',
         'AN_CURR_AVAIL_CLASS',
+        'RISK',
+        // 'SEVERITY',
+        // 'LIKELIHOOD',
         'AN_DATE_IDENT',
         'AN_RAISED_DATE',
         'AN_RAISED_BY',
@@ -418,7 +451,7 @@ export class AnomalyComponent
         code: 'lkp',
         alias: 'risklik',
         localField: 'AN_RISK_RANK_LIKELIHOOD',
-      })
+      });
 
     console.log(
       '\nselect:',
@@ -428,6 +461,32 @@ export class AnomalyComponent
       '\nwhere:',
       this.mainGridOptions.whereClause
     );
+
+    // reset column widths
+    // this.mainGrid.resetColumnWidths();
+  }
+
+  SetupDetailsTab() {
+    // setup tab
+    this.mainTabsOptions
+      .AddTab({
+        id: 1,
+        label: 'General Information',
+        icon: 'fa fa-info-circle',
+        active: true,
+      })
+      .AddTab({ id: 2, label: 'Assessment', icon: '', active: false })
+      .AddTab({ id: 3, label: 'Recommendations', icon: '', active: false })
+      .AddTab({ id: 4, label: 'Risk Ranking', icon: '', active: false })
+      .AddTab({ id: 5, label: 'Failure Threats', icon: '', active: false })
+      .AddTab({ id: 6, label: 'Attachments', icon: '', active: false })
+      .AddTab({ id: 7, label: 'Actions', icon: '', active: false })
+      .AddTab({
+        id: 8,
+        label: 'Related Anomalies',
+        icon: '',
+        active: false,
+      });
   }
 
   SetFilterParams(): void {
@@ -560,7 +619,7 @@ export class AnomalyComponent
 
     // initialize blank form with default values
     form.get('AN_ID').setValue(-1);
-    form.get('AN_REF').setValue("<New Anomaly>");
+    form.get('AN_REF').setValue('<New Anomaly>');
     form.get('AN_REVNO').setValue(0);
     form.get('AN_ASSET_ID').setValue(node.did);
     form.get('AN_ORIG_CLASS').setValue(8471);
@@ -578,10 +637,12 @@ export class AnomalyComponent
     form.get('AN_TA_APPROVED').setValue(0);
     form.get('AN_TYPE').setValue(58);
 
+    for (const fieldName in form.controls)
+      row[fieldName] = form.get(fieldName).value;
 
-    for(const fieldName in form.controls)row[fieldName] = form.get(fieldName).value;
-
-    row.XTRA.assetLookup = [{code:node.code,key:node.did,location:node.loc,text:node.text}]
+    row.XTRA.assetLookup = [
+      { code: node.code, key: node.did, location: node.loc, text: node.text },
+    ];
 
     this.dataSource
       .OpenPopup('addEditAnomaly', 870, 455, true, {
@@ -621,7 +682,6 @@ export class AnomalyComponent
         //   if (result.mode == 'accept') this.SaveRecord(result);
         // } else this.CancelUpdate();
       });
-
   }
 
   ResetTreeStatus() {

@@ -75,11 +75,11 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
     return true;
   }
 
-  CellClick(lik: number, sev: number) {
+  CellClick(sev: number, lik: number) {
     if (this.readOnly) return;
     this.severity = sev;
     this.likelihood = lik;
-    this.riskClick.emit({ likelihood: lik, severity: sev });
+    this.riskClick.emit({ severity: sev, likelihood: lik });
   }
 
   public get severity(): number {

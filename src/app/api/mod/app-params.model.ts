@@ -47,7 +47,10 @@ export interface ILookupParams {
   notFoundDislay?: string;
   subLookupParams?: ILookupParams;
   formXTRA?:string;
+
   lookupSource?:Array<ILookupSource>;
+  lookupValueField?:string;
+  lookupDisplayField?:string;
 
   toggleDisplay?:Array<any>;
 

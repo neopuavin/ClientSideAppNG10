@@ -70,8 +70,6 @@ export class AppDataset extends DatasetBase {
     an_id: 1,
   };
 
-  private _apiUrl: string;
-
   constructor(
     public http: HttpClient,
     public apiCommon: AppCommonMethodsService,
@@ -79,51 +77,203 @@ export class AppDataset extends DatasetBase {
   ) {
     super(http);
     //<RELATIONS>
-    this.tblAnomalies.tableRelations.push(new Relation("rf", "lnk", this.tblAnomalies, this.tblRefFiles, "", "", false));
-    this.tblAnomalies.tableRelations.push(new Relation("ft", "lnk", this.tblAnomalies, this.tblFailureThreats, "", "", false));
-    this.tblAnomalies.tableRelations.push(new Relation("lkp", "lkp", this.tblAnomalies, this.tblLookups, "AN_STATUS", "LKP_ID", false));
-    this.tblAnomalies.tableRelations.push(new Relation("node", "lkp", this.tblAnomalies, this.tblNodesAttrib, "AN_ASSET_ID", "REC_TAG", false));
-    this.tblNodesAttrib.tableRelations.push(new Relation("an", "1tom", this.tblNodesAttrib, this.tblAnomalies, "REC_TAG", "AN_ASSET_ID", true));
-    this.tblTreeStruc.tableRelations.push(new Relation("node", "1to1", this.tblTreeStruc, this.tblNodesAttrib, "TRE_DAT_TAG", "", false));
-    this.tblTreeStruc.tableRelations.push(new Relation("tre", "1tom", this.tblTreeStruc, this.tblTreeStruc, "", "TRE_NOD_TAG_PAR", true));
-    this.tblTreeStruc.tableRelations.push(new Relation("desdat", "1tom", this.tblTreeStruc, this.tblDesignData, "TRE_DAT_TAG", "DD_ASSET", true));
-    this.tblTreeStruc.tableRelations.push(new Relation("an", "1tom", this.tblTreeStruc, this.tblAnomalies, "TRE_DAT_TAG", "AN_ASSET_ID", true));
-    this.tblTreeStruc.tableRelations.push(new Relation("rf", "1tom", this.tblTreeStruc, this.tblRefFiles, "TRE_DAT_TAG", "RF_ASSET", true));
-    this.tblTreeStruc.tableRelations.push(new Relation("svyhdr", "1tom", this.tblTreeStruc, this.tblSurveyHeader, "TRE_DAT_TAG", "SVY_HDR_NOD_ID", true));
-//</RELATIONS>
+    this.tblAnomalies.tableRelations.push(
+      new Relation(
+        'rf',
+        'lnk',
+        this.tblAnomalies,
+        this.tblRefFiles,
+        '',
+        '',
+        false
+      )
+    );
+    this.tblAnomalies.tableRelations.push(
+      new Relation(
+        'ft',
+        'lnk',
+        this.tblAnomalies,
+        this.tblFailureThreats,
+        '',
+        '',
+        false
+      )
+    );
+    this.tblAnomalies.tableRelations.push(
+      new Relation(
+        'lkp',
+        'lkp',
+        this.tblAnomalies,
+        this.tblLookups,
+        'AN_STATUS',
+        'LKP_ID',
+        false
+      )
+    );
+    this.tblAnomalies.tableRelations.push(
+      new Relation(
+        'node',
+        'lkp',
+        this.tblAnomalies,
+        this.tblNodesAttrib,
+        'AN_ASSET_ID',
+        'REC_TAG',
+        false
+      )
+    );
+    this.tblNodesAttrib.tableRelations.push(
+      new Relation(
+        'an',
+        '1tom',
+        this.tblNodesAttrib,
+        this.tblAnomalies,
+        'REC_TAG',
+        'AN_ASSET_ID',
+        true
+      )
+    );
+    this.tblTreeStruc.tableRelations.push(
+      new Relation(
+        'node',
+        '1to1',
+        this.tblTreeStruc,
+        this.tblNodesAttrib,
+        'TRE_DAT_TAG',
+        '',
+        false
+      )
+    );
+    this.tblTreeStruc.tableRelations.push(
+      new Relation(
+        'tre',
+        '1tom',
+        this.tblTreeStruc,
+        this.tblTreeStruc,
+        '',
+        'TRE_NOD_TAG_PAR',
+        true
+      )
+    );
+    this.tblTreeStruc.tableRelations.push(
+      new Relation(
+        'desdat',
+        '1tom',
+        this.tblTreeStruc,
+        this.tblDesignData,
+        'TRE_DAT_TAG',
+        'DD_ASSET',
+        true
+      )
+    );
+    this.tblTreeStruc.tableRelations.push(
+      new Relation(
+        'an',
+        '1tom',
+        this.tblTreeStruc,
+        this.tblAnomalies,
+        'TRE_DAT_TAG',
+        'AN_ASSET_ID',
+        true
+      )
+    );
+    this.tblTreeStruc.tableRelations.push(
+      new Relation(
+        'rf',
+        '1tom',
+        this.tblTreeStruc,
+        this.tblRefFiles,
+        'TRE_DAT_TAG',
+        'RF_ASSET',
+        true
+      )
+    );
+    this.tblTreeStruc.tableRelations.push(
+      new Relation(
+        'svyhdr',
+        '1tom',
+        this.tblTreeStruc,
+        this.tblSurveyHeader,
+        'TRE_DAT_TAG',
+        'SVY_HDR_NOD_ID',
+        true
+      )
+    );
+    //</RELATIONS>
 
     //<DECLARE>
-  this.apiCommon.PARAMS_DELIM_CHAR = '`';
-  this.apiCommon.PARAMS_VAL_DELIM_CHAR = ',';
-  this.apiCommon.FIELD_PARENT_LINK_ALIAS = 'lnk_id';
-  this.apiCommon.FIELD_CHILD_FIRST_ALIAS = 'lnk_child_first';
-  this.apiCommon.FIELD_CHILD_COUNT_ALIAS = 'lnk_child_count';
-  //</DECLARE>
+    this.apiCommon.PARAMS_DELIM_CHAR = '`';
+    this.apiCommon.PARAMS_VAL_DELIM_CHAR = ',';
+    this.apiCommon.FIELD_PARENT_LINK_ALIAS = 'lnk_id';
+    this.apiCommon.FIELD_CHILD_FIRST_ALIAS = 'lnk_child_first';
+    this.apiCommon.FIELD_CHILD_COUNT_ALIAS = 'lnk_child_count';
+    //</DECLARE>
   }
 
   //<INSTANTIATE>
-  public tblAnomalies:TblAnomalies = this.AddTable(new TblAnomalies(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblAnomaliesArchive:TblAnomaliesArchive = this.AddTable(new TblAnomaliesArchive(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblAnomalyTypes:TblAnomalyTypes = this.AddTable(new TblAnomalyTypes(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblChangeTracker:TblChangeTracker = this.AddTable(new TblChangeTracker(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblDesignData:TblDesignData = this.AddTable(new TblDesignData(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblDesignDataParams:TblDesignDataParams = this.AddTable(new TblDesignDataParams(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblFailureThreats:TblFailureThreats = this.AddTable(new TblFailureThreats(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblLookups:TblLookups = this.AddTable(new TblLookups(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblMatrix:TblMatrix = this.AddTable(new TblMatrix(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblNodesAttrib:TblNodesAttrib = this.AddTable(new TblNodesAttrib(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblUserParam:TblUserParam = this.AddTable(new TblUserParam(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblRefFiles:TblRefFiles = this.AddTable(new TblRefFiles(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSepAnomalies:TblSepAnomalies = this.AddTable(new TblSepAnomalies(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSepNodesAttrib:TblSepNodesAttrib = this.AddTable(new TblSepNodesAttrib(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSepTreeStruc:TblSepTreeStruc = this.AddTable(new TblSepTreeStruc(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSurvey:TblSurvey = this.AddTable(new TblSurvey(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSurveyEvent:TblSurveyEvent = this.AddTable(new TblSurveyEvent(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSurveyHeader:TblSurveyHeader = this.AddTable(new TblSurveyHeader(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblSurveyPosition:TblSurveyPosition = this.AddTable(new TblSurveyPosition(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblTreeStruc:TblTreeStruc = this.AddTable(new TblTreeStruc(this.http, this.apiUrl, this.tables, this.apiCommon));
-  public tblUsers:TblUsers = this.AddTable(new TblUsers(this.http, this.apiUrl, this.tables, this.apiCommon));
-//</INSTANTIATE>
+  public tblAnomalies: TblAnomalies = this.AddTable(
+    new TblAnomalies(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblAnomaliesArchive: TblAnomaliesArchive = this.AddTable(
+    new TblAnomaliesArchive(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblAnomalyTypes: TblAnomalyTypes = this.AddTable(
+    new TblAnomalyTypes(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblChangeTracker: TblChangeTracker = this.AddTable(
+    new TblChangeTracker(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblDesignData: TblDesignData = this.AddTable(
+    new TblDesignData(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblDesignDataParams: TblDesignDataParams = this.AddTable(
+    new TblDesignDataParams(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblFailureThreats: TblFailureThreats = this.AddTable(
+    new TblFailureThreats(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblLookups: TblLookups = this.AddTable(
+    new TblLookups(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblMatrix: TblMatrix = this.AddTable(
+    new TblMatrix(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblNodesAttrib: TblNodesAttrib = this.AddTable(
+    new TblNodesAttrib(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblUserParam: TblUserParam = this.AddTable(
+    new TblUserParam(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblRefFiles: TblRefFiles = this.AddTable(
+    new TblRefFiles(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSepAnomalies: TblSepAnomalies = this.AddTable(
+    new TblSepAnomalies(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSepNodesAttrib: TblSepNodesAttrib = this.AddTable(
+    new TblSepNodesAttrib(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSepTreeStruc: TblSepTreeStruc = this.AddTable(
+    new TblSepTreeStruc(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSurvey: TblSurvey = this.AddTable(
+    new TblSurvey(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSurveyEvent: TblSurveyEvent = this.AddTable(
+    new TblSurveyEvent(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSurveyHeader: TblSurveyHeader = this.AddTable(
+    new TblSurveyHeader(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblSurveyPosition: TblSurveyPosition = this.AddTable(
+    new TblSurveyPosition(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblTreeStruc: TblTreeStruc = this.AddTable(
+    new TblTreeStruc(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  public tblUsers: TblUsers = this.AddTable(
+    new TblUsers(this.http, this.apiUrl, this.tables, this.apiCommon)
+  );
+  //</INSTANTIATE>
 
   /*
   this.tblTableClass = this.AddTable(new TblTableClass(this.http,this.apiUrl,this.tables));
@@ -396,8 +546,10 @@ export class AppDataset extends DatasetBase {
       const sev = this.GetLookupItems(148);
       const mtx = this.GetLookupItems('mtx', {
         key: 'mtx_id',
-        fore: 'mtx_fore',
+        // temporarily store likelihood and severity id in code separated by comma
+        code: '`{mtx_sev_lkp_id},{mtx_lik_lkp_id}`',
         back: 'mtx_back',
+        fore: 'mtx_fore',
       });
 
       const riskData: {
@@ -408,13 +560,24 @@ export class AppDataset extends DatasetBase {
 
       if (lik.length != 0 && sev.length != 0) {
         // assign severity and likelihood lookup data
-        riskData.lik = lik;
         riskData.sev = sev;
+        riskData.lik = lik;
+
         // process matrix lookup data
-        mtx.forEach(
-          (mx) =>
-            (riskData.mtx['M' + mx.key] = { fore: mx.fore, back: mx.back })
-        );
+        mtx.forEach((mx) => {
+          // lookup likelihood and severity codes split code of the matrix record
+          const sevlikIds = mx.code.split(',');
+          riskData.mtx['M' + mx.key] = {
+            fore: mx.fore,
+            back: mx.back,
+            code: `${this.GetLookupValue(
+              sev,
+              +sevlikIds[0],
+              'code',
+              'key'
+            )}${this.GetLookupValue(lik, +sevlikIds[1], 'code', 'key')}`,
+          };
+        });
 
         this._riskMatrixData = riskData;
       } else {
@@ -461,7 +624,15 @@ export class AppDataset extends DatasetBase {
         let item: ILookupItem = { key: r[mapInfo.key] };
 
         if (mapInfo.text) item.text = r[mapInfo.text];
-        if (mapInfo.code) item.code = r[mapInfo.code];
+        if (mapInfo.code) {
+          if (mapInfo.code.indexOf('`') == 0) {
+            // replace all '{' characters with "${r." then evaluate expression
+            const fmt = mapInfo.code.replace(/\{/gi, '${r.');
+            item.code = eval(fmt);
+          } else {
+            item.code = r[mapInfo.code];
+          }
+        }
 
         if (mapInfo.back) item.back = r[mapInfo.back];
         if (mapInfo.fore) item.fore = r[mapInfo.fore];
@@ -473,6 +644,30 @@ export class AppDataset extends DatasetBase {
       return items;
     }
     return [];
+  }
+
+  public GetLookupItem(
+    lookupObject: Array<any>,
+    keyValue: any,
+    keyField?: string
+  ): any {
+    if (!keyField) keyField = 'key';
+    return lookupObject.find((e) => {
+      return e[keyField] == keyValue;
+    });
+  }
+
+  public GetLookupValue(
+    lookupObject: Array<any>,
+    keyValue: any,
+    displayField?: string,
+    keyField?: string
+  ): any {
+    const item = this.GetLookupItem(lookupObject, keyValue, keyField);
+    if (!item) return keyValue;
+
+    if (!displayField) displayField = 'code';
+    return item[displayField];
   }
 
   public SetLookupData(

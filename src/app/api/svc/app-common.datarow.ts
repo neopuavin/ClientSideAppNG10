@@ -263,6 +263,10 @@ export class TableRowBase {
     }
   }
 
+  ClearCachedInfo(){
+    if(this['CELL_TEXT']) delete this['CELL_TEXT'];
+  }
+
   UnSetRestoreValues() {
     // check if restored values are still necessary to be on the current row.
     // if no changes were made on the current record, this._backupData must be set to null

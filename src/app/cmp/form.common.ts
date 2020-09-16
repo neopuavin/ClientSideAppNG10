@@ -571,15 +571,13 @@ export class FormCommon {
       if (this.mainGrid._currentRow)
         if (this.mainGrid._currentRow[field] != undefined && !isNew)
           this.mainGrid._currentRow[field] = value;
+    } // end of for
+    if (this.mainGrid._currentRow && !isNew){
+      // clear cached row information
+      this.mainGrid._currentRow.ClearCachedInfo()
     }
-    // console.log(
-    //   '\nUpdateClient data:',
-    //   data,
-    //   '\nthis.mainFormObject',
-    //   this.mainFormObject,
-    //   '\nthis.mainGrid._currentRow',
-    //   this.mainGrid._currentRow
-    // );
+
+
   }
 
   ResetData(form: FormGroup, row: any) {
@@ -700,9 +698,9 @@ export class FormCommon {
 
             // set current row's tree location position data
             this._currentRow.XTRA = {
-              TRE_NOD_LOC: e.processed.data[1].length
+              TRE_NOD_LOC:e.processed.data[1] ? ( e.processed.data[1].length
                 ? e.processed.data[1][0]['TRE_NOD_LOC']
-                : null,
+                : null):null,
             };
 
             this._currentRow.XTRA = {

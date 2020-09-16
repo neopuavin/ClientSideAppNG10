@@ -100,6 +100,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() pageSize: number = -1;
   @Input() totalPages: number = -1;
   @Input() totalRecords: number = -1;
+  @Input() bufferRows: number = 4;
 
   @Input() isLoadingData: boolean = false;
   @Input() promptLoadingData: string = 'Loading...';
@@ -178,7 +179,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // check if set of fields selected were part of the original (SetupData is called)
     // set of visible fields. if not onColumnsChanged must be fired!
 
-    console.log("fieldsArray:",fieldsArray);
+    console.log('fieldsArray:', fieldsArray);
     this.options.ShowColumns(fieldsArray);
 
     if (this.options.columnsDataNotAvailable) {
@@ -573,10 +574,19 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!c.colorParams) return null;
     if (!c.colorParams.foreGround) return null;
 
-    const value = r[c.fieldName];
-    //const key = isNaN(value) ? value : 'v' + value;
-    //const key = isNaN(value) ? value : 'v' + value;
-    const color = c.colorParams.foreGround[value];
+    let value:any = null;
+    if (!c.fieldName && r.CELL_TEXT != undefined) {
+
+      const colKey = c.fieldKey;
+      value = r.CELL_TEXT[colKey];
+
+    }else if(c.fieldName){
+      value = r[c.fieldName];
+    }else{
+      return null;
+    }
+
+    const color = value ? c.colorParams.foreGround[value] : null;
     return !color ? null : color;
   }
   public cellBack(r: any, c: DataGridColum): any {
@@ -584,10 +594,25 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!c.colorParams) return null;
     if (!c.colorParams.backGround) return null;
 
-    const value = r[c.fieldName];
-    //const key = isNaN(value) ? value : 'v' + value;
-    const color = c.colorParams.backGround[value];
+    let value:any = null;
+    if (!c.fieldName && r.CELL_TEXT != undefined) {
+
+      const colKey = c.fieldKey;
+      value = r.CELL_TEXT[colKey];
+
+    }else if(c.fieldName){
+      value = r[c.fieldName];
+    }else{
+      return null;
+    }
+
+    const color = value ? c.colorParams.backGround[value] : null;
     return !color ? null : color;
+
+    // const value = r[c.fieldName];
+    // //const key = isNaN(value) ? value : 'v' + value;
+    // const color = c.colorParams.backGround[value];
+    // return !color ? null : color;
   }
 
   public cellText(r: any, c: DataGridColum): string {
@@ -599,37 +624,51 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     const colKey: string = c.fieldKey;
 
     // if cellText cache object is not yet existing, create an empty object
-    if (r.CELL_TEXT == undefined) r.CELL_TEXT = {};
+    if (r.CELL_TEXT == undefined) {
+      r.CELL_TEXT = {};
+      r.CELL_BACK = {};
+      r.CELL_FORE = {};
+    }
 
     // if cellText is already cached in the current row
-    if (r.CELL_TEXT[colKey] != undefined) return r.CELL_TEXT[colKey];
+    if (r.CELL_TEXT[colKey] != undefined) {
+      return r.CELL_TEXT[colKey];
+    }
 
     let value: any;
 
     if (c.fieldName) {
       value = this.cellTextFromFieldName(r, c);
       if (this.debugMode) return value;
-    } else if(c.value) {
+    } else if (c.value) {
       // process calculated column
       value = this.cellTextFromValue(r, c);
     }
 
     if (this.debugMode) return value;
 
-    r.CELL_TEXT[colKey] = value;
     return value;
   }
 
-  cellTextFromValue(r: any, c: DataGridColum):string{
-    const fmt:string = '`' + c.value.replace(/\{/gi,"${r.") + '`';
-    let value:string = eval(fmt);
-    if(value.indexOf('null')!=-1) value = '';
+  cellTextFromValue(r: any, c: DataGridColum): string {
+    const fmt: string = '`' + c.value.replace(/\{/gi, '${r.') + '`';
+    let value: string = eval(fmt);
+    const lkpParams = c.lookupParams;
 
-    return value // //eval("`${r[AN_ID]}`");
+    if (value.indexOf('null') != -1) value = '';
+
+    if (lkpParams && value)
+      if (lkpParams.lookupSource)
+        value = this.cellTextFromLookupParams(r, c, value);
+
+    r.CELL_TEXT[c.fieldKey] = value;
+
+    return value; // //eval("`${r[AN_ID]}`");
   }
 
   cellTextFromFieldName(r: any, c: DataGridColum): string {
     let value: any = r[c.fieldName];
+    let recordValue: boolean = false;
 
     if (c.displayField && this.sourceLookups[c.displayField]) {
       // if sourceLookups and displayField are defined
@@ -637,6 +676,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       // where groupname is displayField and 'value' is the item key
 
       value = this.sourceLookups[c.displayField][value];
+      recordValue = true;
     } else if (!c.lookupParams) {
       // here is where the raw value will fall if no lookup parameters is deifned
 
@@ -654,6 +694,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
             : c.dateFormat;
 
         value = moment(dt).format(fmt);
+        recordValue = true;
       } else if (c.noZero && !isNaN(value)) {
         // if numeric value but will simply display blank if the value is zero
         value = +value != 0 ? value : '';
@@ -663,7 +704,11 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       // c.lookupParams is supplied, process lookup parameters to derive cellText
       value = this.cellTextFromLookupParams(r, c, value);
+      recordValue = true;
     }
+
+    // cache only cell text non-native value
+    if (recordValue) r.CELL_TEXT[c.fieldKey] = value;
 
     return value;
   }
@@ -674,9 +719,23 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     let retVal: any;
 
     if (lkpPrm.lookupSource) {
-      // if array of objects is supplied as lookupSource
-      const lkpElem = lkpPrm.lookupSource.find((e) => e.value == value);
-      retVal = lkpElem ? lkpElem.display : lkpPrm.notFoundDislay;
+      const lookupValueField = lkpPrm.lookupValueField
+        ? lkpPrm.lookupValueField
+        : 'value';
+      const lookupDisplayField = lkpPrm.lookupDisplayField
+        ? lkpPrm.lookupDisplayField
+        : 'display';
+
+      // if object is supplied as lookupSource value, use the value as parameter key of the lookup object,
+      // if array of objects is supplied as lookupSource,  use the value as search value
+      const lkpElem =
+        lookupValueField == 'object'
+          ? lkpPrm.lookupSource[value]
+          : lkpPrm.lookupSource.find((e) => e[lookupValueField] == value);
+
+      retVal = lkpElem ? lkpElem[lookupDisplayField] : lkpPrm.notFoundDislay;
+
+      // retVal =`${lookupDisplayField},${value},${lkpPrm.lookupSource[value]}`
     } else if (lkpPrm.formXTRA) {
       // if display value is taken from a field in the row's XTRA property
       retVal = r.XTRA[lkpPrm.formXTRA];
@@ -684,9 +743,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       // if display value will be taken from a string array
       const tgl = lkpPrm.toggleDisplay.find((t) => t.value == value);
       retVal = tgl ? tgl.display : value;
-
     } else {
-
       // get lookup table object
       const tbl = c.lookupParams.table;
 
@@ -710,7 +767,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
-    return value;
+    // return value;
+    return retVal + '';
   }
 
   OnCellMouse(event: any, row: any, cell: DataColumn) {
@@ -889,7 +947,7 @@ export class DataGridColum extends DataColumn {
   public order: number;
   public colorParams: IColorParams;
   public lookupParams: ILookupParams;
-  public value:any;
+  public value: any;
   public displayFormat: string;
 }
 

@@ -16,9 +16,9 @@
       <div [style.background]="sev.back" [style.color]="sev.fore" matTooltipPosition="right" [matTooltip]="sev.text">
         <span>{{sev.code}}</span>
       </div>
-      <div *ngFor="let lik of riskMatrixData.lik" (click)="CellClick(lik.key,sev.key)"
-        [style.background]="riskMatrixData.mtx['M'+lik.key+sev.key].back"
-        [style.color]="riskMatrixData.mtx['M'+lik.key+sev.key].fore" matTooltipPosition="above"
+      <div *ngFor="let lik of riskMatrixData.lik" (click)="CellClick(sev.key,lik.key)"
+        [style.background]="riskMatrixData.mtx['M'+sev.key+lik.key].back"
+        [style.color]="riskMatrixData.mtx['M'+sev.key+lik.key].fore" matTooltipPosition="above"
         [matTooltip]="'Severity: ' + sev.text + ', Likelihood: ' + lik.text">
         <span *ngIf="isWithData">
           <i *ngIf="(severity==sev.key && likelihood==lik.key)" class="fa fa-check"></i>
