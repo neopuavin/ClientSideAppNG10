@@ -569,7 +569,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return null;
   }
 
-  public cellColor(r: any, c: DataGridColum): any {
+  public cellColor(r: any, c: DataGridColum): string {
     if (this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.foreGround) return null;
