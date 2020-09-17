@@ -36,7 +36,8 @@ export class FormCommon {
   @Input() public moduleId: number = -1;
   @Input() public formTitle: string = '';
   @Input() public sourceTable: any = null;
-  @Input() public assetField: any = null;
+  @Input() public assetField: string = null;
+  @Input() public deletedFlagField: string = null;
   @Input() public treeView: TreeViewComponent;
 
   @Input() public detailsHeight: number = 180;
@@ -198,7 +199,10 @@ export class FormCommon {
 
   // Placeholder for setting up filter Overidden from
   // specific modules
-  public SetFilterParams(): void {}
+  public SetFilterParams(): void {
+    // this method is a provision to set more module specific filter parameters
+    //
+  }
 
   SetupData(pageNumber?: number, pageSize?: number) {
     // Get initial table data, get
@@ -227,11 +231,21 @@ export class FormCommon {
 
     location = `"${location.replace(/,/gi, '","')}"`;
 
+    // base filter is on tree node location
     let filter: string = `{TRE_NOD_LOC|${location}}`;
+    filter += this.deletedFlagField
+      ? '^' + `({${this.deletedFlagField}|0}|{${this.deletedFlagField}|null})`
+      : '';
+    filter = `(${filter})`;
     this.SetFilterParams();
+    // get filter defined within the
+    if (this.deletedFlagField) {
+      // add deleted flag to the base filter of the main grid option object
+    }
     const localFilter = this.mainGridOptions.whereClause;
-    filter += (localFilter ? '^' : '') + localFilter;
+    filter += localFilter ? '^' + localFilter : '';
 
+    // Base request parameters where initially common filtering and sorting is applied
     let requestParams: RequestParams = {
       code: this.mainGridOptions.fromClauseCode,
       includedFields: fieldList,
@@ -289,9 +303,7 @@ export class FormCommon {
   EditRecordEvent(args: any) {
     console.log('EditRecordEvent', args);
   }
-  DeleteRecordEvent(args: any) {
-    console.log('DeleteRecordEvent', args);
-  }
+
   PrintRecordEvent(args: any) {
     console.log('PrintRecordEvent', args);
   }
@@ -358,6 +370,105 @@ export class FormCommon {
     return ret;
   }
 
+  DeleteRecordEvent(args: {
+    row: any;
+    userStampFields?: Array<string>;
+    dateStampFields?: Array<string>;
+    extraPostParam?: any;
+    onSuccess?: Function;
+    onError?: Function;
+    messages?: {
+      msgSuccess?: string;
+      msgError?: string;
+      msgTitle?: string;
+      msgWarning?: string;
+      msgProgress?: string;
+    };
+  }) {
+    if (!args) return;
+
+    let {
+      row,
+      userStampFields,
+      dateStampFields,
+      extraPostParam,
+      onSuccess,
+      onError,
+      messages,
+    } = args;
+
+    if (!messages) messages = {};
+
+    let { msgSuccess, msgError, msgTitle, msgWarning, msgProgress } = messages;
+    let postErrMsg: string = 'error';
+
+    if (!msgTitle) msgTitle = 'Confirm record deletion';
+    if (!msgWarning)
+      msgWarning =
+        'You are about to delete the current record.<br/><br/>Do you want to continue?';
+    if (!msgProgress) msgProgress = 'Deleting record. Please wait...';
+    if (!msgError) msgError = '`Error deleting record (${postErrMsg})...`';
+    if (!msgSuccess) msgSuccess = 'Record deletion successful.';
+
+    const delFlag = this.deletedFlagField;
+
+    if (!this.deletedFlagField) {
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm(
+        'Delete flag field not set',
+        'Please specify delete flag field when instantiating component in<br/>main-frame template.',
+        { width: 500, height: 200 }
+      );
+      return;
+    }
+
+    if (!row) {
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm(
+        'No current record',
+        'Please select a record to delete',
+        { width: 450 }
+      );
+      return;
+    }
+
+    // confirm if deletion will proceed
+    this.dataSource
+      .Confirm(msgTitle, msgWarning, {
+        width: 500,
+        height: 250,
+        labelNo: 'No',
+        labelYes: 'Yes',
+      })
+      .subscribe((result) => {
+        if (result)
+          if (result.mode == 'yes') {
+            let delReqParams: any = {};
+            const tbl = row._parentTable;
+            if (!tbl) {
+              console.log(
+                '!RECORD NOT DELETED BECAUSE TABLE DEFINITION IS NOT FOUND!'
+              );
+              return;
+            }
+            console.log('Row ID:', row[tbl.keyName]);
+
+            // initialize form data variable
+            const formData = {};
+            const changed = {};
+
+            // set key value
+            changed[tbl.keyName] = row[tbl.keyName];
+
+            // set user stamp update
+            // set user date update
+
+            // populate formData main object
+            formData[tbl.tableCode] = [changed];
+          }
+      });
+  }
+
   SaveData(args: {
     form: FormGroup;
     row: any;
@@ -370,6 +481,11 @@ export class FormCommon {
     onSuccess?: Function;
     onError?: Function;
     onCancel?: Function;
+
+    recolorTree?: boolean;
+    requeryGrid?: boolean;
+    requeryDetails?: boolean;
+
     messages?: {
       saveSuccess?: string;
       saveError?: string;
@@ -389,8 +505,13 @@ export class FormCommon {
       onSuccess,
       onError,
       onCancel,
+      recolorTree,
+      requeryGrid,
+      requeryDetails,
       messages,
     } = args;
+
+    console.log('DIALOGREF:', dialogRef);
 
     if (isNew == undefined) isNew = false;
 
@@ -418,116 +539,132 @@ export class FormCommon {
         })
         .subscribe((result) => {
           if (result.mode == 'yes') {
-            // get table specific parameters
-            const tbl = this.sourceTable;
-            const tableCode = tbl.tableCode;
-            const keyName = tbl.keyName;
+            this.PostUpdate({
+              row: row,
+              dataToPost: changed,
+              userStampFields: userStampFields,
+              dateStampFields: dateStampFields,
+              extraPostParam: extraPostParam,
+              revField: revField,
+              isNew: isNew,
+              dialogRef: dialogRef,
+              onSuccess: onSuccess,
+              onError: onError,
+              recolorTree,
+              requeryGrid,
+              requeryDetails,
+            });
 
-            // set record's key field value if not yet set,
-            // which normally is the case on editing mode.
-            // when mode is adding a new record, key value is
-            // normally set at the calling component, with integer value
-            // less than zero (0) to indicate that a new record is
-            // to be created
+            // // get table specific parameters
+            // const tbl = this.sourceTable;
+            // const tableCode = tbl.tableCode;
+            // const keyName = tbl.keyName;
 
-            if (changed[keyName] == undefined) changed[keyName] = row[keyName];
+            // // set record's key field value if not yet set,
+            // // which normally is the case on editing mode.
+            // // when mode is adding a new record, key value is
+            // // normally set at the calling component, with integer value
+            // // less than zero (0) to indicate that a new record is
+            // // to be created
 
-            // handle stamps
-            if (userStampFields) {
-              // set value of fields to contain the current user's
-              // name as enumerated in the calling (add/edit/delete) component
-              // eg. CREATED_BY, UPDATED_BY, etc.
-              userStampFields.forEach((fieldName) => {
-                if (changed[fieldName] != this.ds.userInfo.name)
-                  changed[fieldName] = this.ds.userInfo.name;
-              });
-            }
-            if (dateStampFields) {
-              // set value of fields to contain the current date
-              // name as enumerated in the calling (add/edit/delete) component
-              // eg. CREATED_DATE, UPDATED_DATE, etc.
-              dateStampFields.forEach(
-                (fieldName) => (changed[fieldName] = this.ds.dateStampString)
-              );
-            }
+            // if (changed[keyName] == undefined) changed[keyName] = row[keyName];
 
-            // scan all date type data in changed and make sure that the
-            // values are in YYYY-MM-ddThh:mm:ss format
+            // // handle stamps
+            // if (userStampFields) {
+            //   // set value of fields to contain the current user's
+            //   // name as enumerated in the calling (add/edit/delete) component
+            //   // eg. CREATED_BY, UPDATED_BY, etc.
+            //   userStampFields.forEach((fieldName) => {
+            //     if (changed[fieldName] != this.ds.userInfo.name)
+            //       changed[fieldName] = this.ds.userInfo.name;
+            //   });
+            // }
+            // if (dateStampFields) {
+            //   // set value of fields to contain the current date
+            //   // name as enumerated in the calling (add/edit/delete) component
+            //   // eg. CREATED_DATE, UPDATED_DATE, etc.
+            //   dateStampFields.forEach(
+            //     (fieldName) => (changed[fieldName] = this.ds.dateStampString)
+            //   );
+            // }
 
-            // get container table of the row object
-            const table = row._parentTable;
-            if (table)
-              // loop through all changed fields and reformat
-              // date field values if it contains the actual date object
-              for (const fieldName in changed) {
-                if (table.GetColumnType(fieldName) == 'Date') {
-                  // make sure that if the value in changed object
-                  // is an object type, reformat it accordingly
-                  if (typeof changed[fieldName] == 'object')
-                    // field contains true date object
-                    changed[fieldName] = this.ds.dateToString(
-                      changed[fieldName]
-                    );
-                }
-              } // end for for fieldName in changed
+            // // scan all date type data in changed and make sure that the
+            // // values are in YYYY-MM-ddThh:mm:ss format
 
-            // if revision field name is specified, up-rev the value
-            if (revField) changed[revField] = row[revField] + 1;
+            // // get container table of the row object
+            // const table = row._parentTable;
+            // if (table)
+            //   // loop through all changed fields and reformat
+            //   // date field values if it contains the actual date object
+            //   for (const fieldName in changed) {
+            //     if (table.GetColumnType(fieldName) == 'Date') {
+            //       // make sure that if the value in changed object
+            //       // is an object type, reformat it accordingly
+            //       if (typeof changed[fieldName] == 'object')
+            //         // field contains true date object
+            //         changed[fieldName] = this.ds.dateToString(
+            //           changed[fieldName]
+            //         );
+            //     }
+            //   } // end for for fieldName in changed
 
-            // initialize form data variable
-            const formData = {};
+            // // if revision field name is specified, up-rev the value
+            // if (revField) changed[revField] = row[revField] + 1;
 
-            // populate formData main object
-            formData[tableCode] = [changed];
+            // // initialize form data variable
+            // const formData = {};
 
-            // handle other post parameters passed through extraPostParam
-            if (extraPostParam) {
-              // this is additional post instruction parameters that will
-              // be requested together with the main table row post instruction.
-              // parameter value has the following format
-              /*
-               *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
-               *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
-               *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
-               */
+            // // populate formData main object
+            // formData[tableCode] = [changed];
 
-              for (const key in extraPostParam)
-                formData[key] = extraPostParam[key];
-            }
+            // // handle other post parameters passed through extraPostParam
+            // if (extraPostParam) {
+            //   // this is additional post instruction parameters that will
+            //   // be requested together with the main table row post instruction.
+            //   // parameter value has the following format
+            //   /*
+            //    *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
+            //    *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
+            //    *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
+            //    */
 
-            // console.log('formData:', formData);
-            console.log(
-              '\nuserStampFields:',
-              userStampFields,
-              '\nformData:',
-              formData
-            );
+            //   for (const key in extraPostParam)
+            //     formData[key] = extraPostParam[key];
+            // }
 
-            const obs = this.ds.Post(formData);
+            // // console.log('formData:', formData);
+            // console.log(
+            //   '\nuserStampFields:',
+            //   userStampFields,
+            //   '\nformData:',
+            //   formData
+            // );
 
-            if (obs) {
-              this.dataSource.openSnackBar(postingNow, 'X', 1000);
-              const subs = obs.subscribe(
-                (data) => {
-                  subs.unsubscribe();
+            // const obs = this.ds.Post(formData);
 
-                  // call update client
-                  this.UpdateClient(changed, row, isNew);
+            // if (obs) {
+            //   this.dataSource.openSnackBar(postingNow, 'X', 1000);
+            //   const subs = obs.subscribe(
+            //     (data) => {
+            //       subs.unsubscribe();
 
-                  // close dialog after a successful posting
-                  if (dialogRef) dialogRef.close({ mode: 'saved' });
-                  if (onSuccess) onSuccess(data);
+            //       // call update client
+            //       this.UpdateClient(changed, row, isNew);
 
-                  this.dataSource.openSnackBar(saveSuccess, 'X', 1500);
-                },
-                (err) => {
-                  this.dataSource.openSnackBar(saveError, 'X', 5000);
-                  console.log('Error: ', err);
-                  if (onError) onError(err);
-                  subs.unsubscribe();
-                }
-              );
-            }
+            //       // close dialog after a successful posting
+            //       if (dialogRef) dialogRef.close({ mode: 'saved' });
+            //       if (onSuccess) onSuccess(data);
+
+            //       this.dataSource.openSnackBar(saveSuccess, 'X', 1500);
+            //     },
+            //     (err) => {
+            //       this.dataSource.openSnackBar(saveError, 'X', 5000);
+            //       console.log('Error: ', err);
+            //       if (onError) onError(err);
+            //       subs.unsubscribe();
+            //     }
+            //   );
+            // }
           } else {
             this.dataSource.openSnackBar('Continue editing record.', 'X', 1500);
             if (onCancel) onCancel(null);
@@ -547,37 +684,248 @@ export class FormCommon {
     }
   }
 
-  UpdateClient(data: any, row?: any, isNew?: boolean) {
-    // post changed data taken from the add/edit form object
+  PostUpdate(args: {
+    row: any;
+    dataToPost: any;
+    userStampFields?: Array<string>;
+    dateStampFields?: Array<string>;
+    extraPostParam?: any;
+    revField?: string;
+    isNew?: boolean;
+    onSuccess?: Function;
+    onError?: Function;
+    dialogRef?: any;
+    recolorTree?: boolean;
+    requeryGrid?: boolean;
+    requeryDetails?: boolean;
+    assetId?: number;
+    messages?: {
+      msgProgress?: string;
+      msgSuccess?: string;
+      msgError?: string;
+    };
+  }) {
+    // deconstruct arguments
+    let {
+      row,
+      dataToPost,
+      userStampFields,
+      dateStampFields,
+      extraPostParam,
+      revField,
+      isNew,
+      onSuccess,
+      onError,
+      dialogRef,
+      recolorTree,
+      requeryGrid,
+      requeryDetails,
+      assetId,
+      messages,
+    } = args;
 
-    if (isNew) isNew = false;
-    if (!row) row = this.currentRow;
+    if (!messages) messages = {};
+    let { msgProgress, msgSuccess, msgError } = messages;
+    let errorMessage: string = 'undefined error.';
 
-    for (let field in data) {
-      const value = data[field];
+    if (!msgProgress) msgProgress = 'Posting data. Please wait...';
+    if (!msgSuccess) msgSuccess = 'Data posted successfully.';
+    if (!msgError) msgError = '`Error posting data: ${errorMessage}`';
 
-      // update main form obj value
-      const ctrl = this.mainFormObject.get(field);
-      if (ctrl) {
-        ctrl.setValue(value);
-      } else {
-        console.log(`Control ${field} not found.`);
-      }
+    // get table specific parameters
+    const tbl = this.sourceTable;
+    const tableCode = tbl.tableCode;
+    const keyName = tbl.keyName;
 
-      // update currentRow or supplied row value
-      row[field] = value;
+    // set record's key field value if not yet set,
+    // which normally is the case on editing mode.
+    // when mode is adding a new record, key value is
+    // normally set at the calling component, with integer value
+    // less than zero (0) to indicate that a new record is
+    // to be created
+    if (dataToPost[keyName] == undefined) dataToPost[keyName] = row[keyName];
 
-      // update grid value if not new record
-      if (this.mainGrid._currentRow)
-        if (this.mainGrid._currentRow[field] != undefined && !isNew)
-          this.mainGrid._currentRow[field] = value;
-    } // end of for
-    if (this.mainGrid._currentRow && !isNew){
-      // clear cached row information
-      this.mainGrid._currentRow.ClearCachedInfo()
+    // handle stamps
+    if (userStampFields) {
+      // set value of fields to contain the current user's
+      // name as enumerated in the calling (add/edit/delete) component
+      // eg. CREATED_BY, UPDATED_BY, etc.
+      userStampFields.forEach((fieldName) => {
+        if (dataToPost[fieldName] != this.ds.userInfo.name)
+          dataToPost[fieldName] = this.ds.userInfo.name;
+      });
+    }
+    if (dateStampFields) {
+      // set value of fields to contain the current date
+      // name as enumerated in the calling (add/edit/delete) component
+      // eg. CREATED_DATE, UPDATED_DATE, etc.
+      dateStampFields.forEach(
+        (fieldName) => (dataToPost[fieldName] = this.ds.dateStampString)
+      );
     }
 
+    // scan all date type data in changed and make sure that the
+    // values are in YYYY-MM-ddThh:mm:ss format
 
+    // get container table of the row object
+    if (tbl)
+      // loop through all changed fields and reformat
+      // date field values if it contains the actual date object
+      for (const fieldName in dataToPost) {
+        if (tbl.GetColumnType(fieldName) == 'Date') {
+          // make sure that if the value in changed object
+          // is an object type, reformat it accordingly
+          if (typeof dataToPost[fieldName] == 'object')
+            // field contains true date object
+            dataToPost[fieldName] = this.ds.dateToString(dataToPost[fieldName]);
+        }
+      } // end for for fieldName in changed
+
+    // if revision field name is specified, up-rev the value
+    if (revField) dataToPost[revField] = row[revField] + 1;
+
+    // initialize form data variable
+    const formData = {};
+
+    // populate formData main object
+    formData[tableCode] = [dataToPost];
+
+    // handle other post parameters passed through extraPostParam
+    if (extraPostParam) {
+      // this is additional post instruction parameters that will
+      // be requested together with the main table row post instruction.
+      // parameter value has the following format
+      /*
+       *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
+       *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
+       *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
+       */
+
+      for (const key in extraPostParam) formData[key] = extraPostParam[key];
+    }
+
+    // get observable post object
+    const obs = this.ds.Post(formData);
+
+    if (obs) {
+      // send progress feedback to client
+      this.dataSource.openSnackBar(msgProgress, 'X', 1000);
+
+      const subs = obs.subscribe(
+        (data) => {
+          subs.unsubscribe();
+
+          // call update client
+          this.UpdateClient({
+            data: dataToPost,
+            recolorTree: recolorTree,
+            requeryGrid: requeryGrid,
+            requeryDetails: requeryDetails,
+            assetId: assetId,
+          });
+
+          // call onSuccess listener
+          if (onSuccess) onSuccess(data);
+
+          // close dialog after a successful posting
+          if (dialogRef) dialogRef.close({ mode: 'saved' });
+
+          this.dataSource.openSnackBar(msgSuccess, 'X', 1500);
+        },
+        (err) => {
+          subs.unsubscribe();
+
+          errorMessage = err.message;
+          this.dataSource.openSnackBar(eval(msgError), 'X', 5000);
+
+          // call onSuccess listener
+          if (onError) onError(err);
+        }
+      );
+    }
+  }
+
+  ResetTreeStatus() {
+    this.ds.treeColorData = null; // will trigger re-fetching of tree color data
+    this.treeView.ResetStatus(); // will set all status to value that will allow re-assignment of color
+  }
+
+  UpdateClient(args: {
+    data?: any;
+    recolorTree?: boolean;
+    requeryGrid?: boolean;
+    requeryDetails?: boolean;
+    assetId?: number;
+  }) {
+    const { data, recolorTree, requeryGrid, requeryDetails, assetId } = args;
+
+    const row = this.currentRow;
+
+    if (requeryGrid && row) {
+      // emulate tree click by setting current node on the tree
+      // if this is called, there is no need to perform field level update
+
+      const assetLookup = row.XTRA.assetLookup;
+
+      if (assetId) {
+        const searchLocation = assetLookup.find((a) => a.key == assetId);
+        if (searchLocation)
+          this.treeView.SetCurrentNode(searchLocation.location);
+      }
+    } else if (data) {
+      // perform field level update on details and data grid
+      for (let field in data) {
+      }
+    }
+
+    if (recolorTree)
+      // get new colorset and paint the tree
+      setTimeout(() => this.ResetTreeStatus(), 10);
+
+    if (requeryDetails && row) {
+
+    }
+
+    // // post changed data taken from the add/edit form object
+
+    // if (isNew) isNew = false;
+    // if (isDelete) isDelete = false;
+    // if (!row) row = this.currentRow;
+
+    // let reqGrid: boolean = isDelete || isNew;
+
+    // // re-query current row
+
+    // // or
+
+    // return;
+
+    // for (let field in data) {
+    //   const value = data[field];
+
+    //   // update main form obj value
+    //   const ctrl = this.mainFormObject.get(field);
+    //   if (ctrl) {
+    //     ctrl.setValue(value);
+    //   } else {
+    //     console.log(`Control ${field} not found.`);
+    //   }
+
+    //   // update currentRow or supplied row value
+    //   row[field] = value;
+
+    //   // update grid value if not new record
+    //   if (this.mainGrid._currentRow)
+    //     if (this.mainGrid._currentRow[field] != undefined && !isNew)
+    //       this.mainGrid._currentRow[field] = value;
+    // } // end of for
+    // if (this.mainGrid._currentRow && !isNew) {
+    //   // clear cached row information
+    //   console.log('CLEAR CACHED INFO');
+    //   this.mainGrid._currentRow.ClearCachedInfo();
+    // }
+
+    // update
   }
 
   ResetData(form: FormGroup, row: any) {
@@ -625,8 +973,8 @@ export class FormCommon {
     }
   }
 
-  GridRowClick(event) {
-    const row: any = event.row;
+  GridRowClick(row:any) {
+    //const row: any = event.row;
     if (!row) return;
 
     // get table object definition
@@ -698,9 +1046,11 @@ export class FormCommon {
 
             // set current row's tree location position data
             this._currentRow.XTRA = {
-              TRE_NOD_LOC:e.processed.data[1] ? ( e.processed.data[1].length
-                ? e.processed.data[1][0]['TRE_NOD_LOC']
-                : null):null,
+              TRE_NOD_LOC: e.processed.data[1]
+                ? e.processed.data[1].length
+                  ? e.processed.data[1][0]['TRE_NOD_LOC']
+                  : null
+                : null,
             };
 
             this._currentRow.XTRA = {

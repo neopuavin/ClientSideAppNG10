@@ -249,7 +249,7 @@ export class DatasetBase extends AppCommonMethods {
 
     // form url here with encoded parameters
     const jString  = JSON.stringify(jsonParams);
-    console.log(jString);
+    // console.log(jString);
     let url: string = this.apiUrl + '?_p=' + btoa(jString);
 
     //let tableRows: Array<Array<any>> = [];

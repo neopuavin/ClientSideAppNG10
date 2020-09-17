@@ -97,7 +97,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
       ],
       {
         onSuccess: (data) => {
-          console.log('\nSuccess on keeping alive! ' + this.ds.dateStampString, data);
+          // console.log('\nSuccess on keeping alive! ' + this.ds.dateStampString, data);
         },
         onError:(err)=>{
           console.log('\nError on keeping alive! ' + this.ds.dateStampString, err);

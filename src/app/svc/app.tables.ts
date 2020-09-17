@@ -1,5 +1,5 @@
 /***********************************************************************
-* Automatically generated on 9/16/2020 2:38:28 PM
+* Automatically generated on 9/17/2020 7:04:04 PM
 ***********************************************************************/
 
 import { AppCommonMethodsService } from '../api/svc/app-common-methods.service';
@@ -73,6 +73,8 @@ export class TblAnomalies extends TableBase {
 	this.columns.push(new ColumnInfo('AN_NOTIFICATION_STATUS', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_ASSMNT', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('AN_DELETED', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('AN_DELETED_BY', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('AN_DELETED_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_AVAIL_COMMENTS', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('AN_TITLE', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_ATTACHMENTS', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
@@ -178,6 +180,8 @@ export class TblAnomaliesRow extends TableRowBase{
 		public AN_NOTIFICATION_STATUS?:string, 
 		public AN_ASSMNT?:string, 
 		public AN_DELETED?:number, 
+		public AN_DELETED_BY?:string, 
+		public AN_DELETED_DATE?:Date, 
 		public AN_AVAIL_COMMENTS?:string, 
 		public AN_TITLE?:string, 
 		public AN_ATTACHMENTS?:number, 
@@ -291,6 +295,8 @@ export class TblAnomaliesArchive extends TableBase {
 	this.columns.push(new ColumnInfo('AN_NOTIFICATION_STATUS', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_ASSMNT', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('AN_DELETED', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('AN_DELETED_BY', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('AN_DELETED_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_AVAIL_COMMENTS', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('AN_TITLE', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_ATTACHMENTS', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
@@ -400,6 +406,8 @@ export class TblAnomaliesArchiveRow extends TableRowBase{
 		public AN_NOTIFICATION_STATUS?:string, 
 		public AN_ASSMNT?:string, 
 		public AN_DELETED?:number, 
+		public AN_DELETED_BY?:string, 
+		public AN_DELETED_DATE?:Date, 
 		public AN_AVAIL_COMMENTS?:string, 
 		public AN_TITLE?:string, 
 		public AN_ATTACHMENTS?:number, 

@@ -193,18 +193,11 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
         recolorRequired = true;
     }
 
-    // if(changed['AN_DATE_IDENT']){
-    //   const tbl = this.row._parentTable;
-    //   const cols = tbl.columns;
-    //   const fld = cols.find(f=>f.name=='AN_DATE_IDENT');
-    //   console.log(tbl,fld,typeof(this.row['AN_UPD_DATE']), typeof(changed['AN_DATE_IDENT']), changed['AN_DATE_IDENT'].getFullYear());
-    // }
 
-    // return;
 
-    // console.log('SAVE PARAMETERS:',archive['ANA_ARCHIVE_DATE'], archive, userStamps, dateStamps, xtraParam);
 
     this.data.showMask = true;
+
     setTimeout(() => {
       this.data.parent.SaveData({
         form: this.formObject,
@@ -214,25 +207,33 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
         userStampFields: userStamps,
         dateStampFields: dateStamps,
         revField: isNew ? '' : 'AN_REVNO',
+        dialogRef: dialogRef,
+
+        requeryGrid:recolorRequired,
+        requeryDetails:!isNew,
+        recolorTree:recolorRequired,
+        assetId:this.formObject.get('AN_ASSET_ID').value,
+
         messages: {
-          saveWarning: isNew
+          msgWarning: isNew
             ? 'You are about to save newly created anomaly.<br/><br/>Do you want to continue?'
             : undefined,
-            saveSuccess:isNew ?'New anomaly created.' : undefined
+          msgSuccess: isNew ? 'New anomaly created.' : undefined,
         },
-        onSuccess: (data) => {
-          if (dialogRef) dialogRef.close({ mode: 'saved' });
-          if (recolorRequired) {
-            this.ResetTreeStatus();
-            const searchLocation = this.assetLookup.find(
-              (a) => a.key == this.formObject.get('AN_ASSET_ID').value
-            );
-            if (searchLocation) {
-              this.data.parent.treeView.SetCurrentNode(searchLocation.location);
-            }
-            //console.log("ASSET LOOKUP:" , this.assetLookup,  this.formObject.get('AN_ASSET_ID').value);
-            //this.data.parent.treeView.SetCurrentNode();
-          }
+        onSuccess: (data?:any) => {
+          // if (dialogRef) dialogRef.close({ mode: 'saved' });
+
+          // if (recolorRequired) {
+          //   this.ResetTreeStatus();
+          //   const searchLocation = this.assetLookup.find(
+          //     (a) => a.key == this.formObject.get('AN_ASSET_ID').value
+          //   );
+          //   if (searchLocation) {
+          //     this.data.parent.treeView.SetCurrentNode(searchLocation.location);
+          //   }
+          //   //console.log("ASSET LOOKUP:" , this.assetLookup,  this.formObject.get('AN_ASSET_ID').value);
+          //   //this.data.parent.treeView.SetCurrentNode();
+          // }
           // if (isNew) refresh list
         },
         onError: (err) => {

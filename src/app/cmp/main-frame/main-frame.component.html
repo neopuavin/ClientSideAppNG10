@@ -100,7 +100,7 @@
           <!-- width=0 is necessary to prevent content to control the width of the panel-->
           <!-- Modules -->
           <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
-            [sourceTable]="ds.tblAnomalies" [assetField]="'AN_ASSET_ID'" *ngIf="activeModule==1"></app-anomaly>
+            [sourceTable]="ds.tblAnomalies" [deletedFlagField] = "'AN_DELETED'" [assetField]="'AN_ASSET_ID'" *ngIf="activeModule==1"></app-anomaly>
 
           <app-design-data [treeView]="setValueTo(treeView,undefined)" [moduleId]="2" [sourceTable]="ds.tblDesignData"
             [assetField]="''" *ngIf="activeModule==2">

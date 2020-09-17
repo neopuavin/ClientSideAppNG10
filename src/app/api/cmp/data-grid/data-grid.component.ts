@@ -65,12 +65,14 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
             // console.log("Currentrow:",keyName,keyVal,"Focus Element(retry):",focusElement,this.sourceRows);
             if (focusElement) {
               focusElement.focus();
-              this.rowClick.emit({ row: value, e: null });
+              // this.rowClick.emit({ row: value, e: null });
+              this.rowClick.emit(value);
             }
           }, 100);
         } else {
           focusElement.focus();
-          this.rowClick.emit({ row: value, e: null });
+          // this.rowClick.emit({ row: value, e: null });
+          this.rowClick.emit(value);
           // console.log("Currentrow:",keyName,keyVal,"Focus Element(orig):",focusElement,this.sourceRows);
         }
       }
@@ -322,7 +324,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public _currentRow: any = null;
 
-  public RowClick(event: any, row: any) {
+  public RowClick(row: any) {
     this.currentRow = row;
   }
 
@@ -574,15 +576,13 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!c.colorParams) return null;
     if (!c.colorParams.foreGround) return null;
 
-    let value:any = null;
+    let value: any = null;
     if (!c.fieldName && r.CELL_TEXT != undefined) {
-
       const colKey = c.fieldKey;
       value = r.CELL_TEXT[colKey];
-
-    }else if(c.fieldName){
+    } else if (c.fieldName) {
       value = r[c.fieldName];
-    }else{
+    } else {
       return null;
     }
 
@@ -594,15 +594,13 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!c.colorParams) return null;
     if (!c.colorParams.backGround) return null;
 
-    let value:any = null;
+    let value: any = null;
     if (!c.fieldName && r.CELL_TEXT != undefined) {
-
       const colKey = c.fieldKey;
       value = r.CELL_TEXT[colKey];
-
-    }else if(c.fieldName){
+    } else if (c.fieldName) {
       value = r[c.fieldName];
-    }else{
+    } else {
       return null;
     }
 
@@ -661,6 +659,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       if (lkpParams.lookupSource)
         value = this.cellTextFromLookupParams(r, c, value);
 
+    // WARNING: Setting timeout just to eliminate changed value error
+    // will significantly slow down cell rendering
+    //setTimeout(() => (r.CELL_TEXT[c.fieldKey] = value), 0);
     r.CELL_TEXT[c.fieldKey] = value;
 
     return value; // //eval("`${r[AN_ID]}`");
@@ -707,8 +708,13 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       recordValue = true;
     }
 
+    // WARNING: Setting timeout just to eliminate changed value error
+    // will significantly slow down cell rendering
+    // if (recordValue) setTimeout(() => (r.CELL_TEXT[c.fieldKey] = value), 0);
+
     // cache only cell text non-native value
     if (recordValue) r.CELL_TEXT[c.fieldKey] = value;
+
 
     return value;
   }

@@ -348,7 +348,7 @@ export class AnomalyComponent
           lookupDisplayField: 'code',
           lookupValueField: 'object',
         },
-        displayFormat: '${AN_RISK_RANK_SEVERITY}${AN_RISK_RANK_LIKELIHOOD}',
+        displayFormat: '',
       })
       .AddColumn({
         fieldName: 'AN_RISK_RANK_SEVERITY',
@@ -684,10 +684,7 @@ export class AnomalyComponent
       });
   }
 
-  ResetTreeStatus() {
-    this.ds.treeColorData = null; // will trigger re-fetching of tree color data
-    this.treeView.ResetStatus(); // will set all status to value that will allow re-assignment of color
-  }
+
 
   EditRecordEvent(args: any) {
     // override function
@@ -742,17 +739,24 @@ export class AnomalyComponent
       });
   }
 
-  DeleteRecordEvent(args: any) {
-    if (!this.currentRow) {
-      // prompt to select a record if currentRow is null
-      this.dataSource.Confirm(
-        'No current record',
-        'Please select an Anomaly record to delete'
-      );
-      return;
-    }
+  DeleteRecordEventLocal(args: any) {
+    console.log(' this.currentRow:', this.currentRow);
+    const row = this.currentRow;
+    this.DeleteRecordEvent({
+      row: this.currentRow,
+      messages: {
+        msgTitle:
+          'Confirm record deletion' +
+          (row ? ` of Anomaly Ref#${row['AN_REF']}` : ''),
+        msgWarning: `You are about to delete the currently selected anomaly record.<br/><br/>Do you want to continue?`,
+      },
+      userStampFields: ['AN_DELETED_BY'],
+      dateStampFields: ['AN_DELETED_DATE'],
+    });
+  }
 
-    // this.OpenAssetSelector();
+  DeleteSelectedRecord() {
+    console.log('Execute delete');
   }
 
   PrintRecordEvent(args: any) {

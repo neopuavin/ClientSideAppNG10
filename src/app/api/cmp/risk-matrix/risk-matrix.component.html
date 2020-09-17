@@ -1,12 +1,15 @@
 <app-ph-box1 *ngIf="!isReady" [stripHeight]="phHeight" [backSize]="phBackSize" [duration]="phDuration"></app-ph-box1>
 <div id="wrapper">
-  <div class="" id="wrapper_label"><h5>Severity<span *ngIf="severityText">: {{severityText}}</span></h5></div>
+  <div class="" id="wrapper_label">
+    <h5>Severity<span *ngIf="severityText">: {{severityText}}</span></h5>
+  </div>
   <div class="" id="wrapper_mtx">
     <div id="heading1">
       <div><span>Likelihood<span *ngIf="likelihoodText">: {{likelihoodText}}</span></span></div>
     </div>
     <div id="heading2">
-      <div class="">&nbsp;</div>
+      <div class="bg-warning d-flex"><i class="fa fa-trash text-danger" style="margin:auto auto;cursor:pointer;"
+          (click)="RemoveRisk($event)"matTooltipPosition="bottom" matTooltip="Click to remove risk assignment..."></i></div>
       <div *ngFor="let lik of riskMatrixData.lik" [style.background]="lik.back" [style.color]="lik.fore"
         matTooltipPosition="above" [matTooltip]="lik.text + '['+ lik.code +']'">
         <span>{{lik.code}}</span>
@@ -27,6 +30,5 @@
         <span *ngIf="!isWithData">&nbsp;</span>
       </div>
     </div>
-  </div>  <!-- wrapper_mtx -->
+  </div> <!-- wrapper_mtx -->
 </div>
-

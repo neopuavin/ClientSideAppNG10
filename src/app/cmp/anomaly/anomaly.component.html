@@ -1,5 +1,5 @@
 <app-form-header [title]="moduleTitle" (editClick)="EditRecordEvent($event)" (addClick)="AddRecordEvent($event)"
-  (deleteClick)="DeleteRecordEvent($event)" (searchKeyEvent)="SearchEvent($event)"
+  (deleteClick)="DeleteRecordEventLocal($event)" (searchKeyEvent)="SearchEvent($event)"
   (printClick)="PrintRecordEvent($event)" (excelClick)="SendToExcelEvent($event)"
   (filterClick)="SearchEvent($event)"
   [rights]="rights">

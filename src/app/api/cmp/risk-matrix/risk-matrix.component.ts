@@ -123,4 +123,10 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
     const lik = this.riskMatrixData.lik.find((i) => i.key == this.likelihood);
     return lik ? lik.text : '';
   }
+
+  RemoveRisk(event:any){
+    this.likelihood = null;
+    this.severity = null;
+  }
+
 }
