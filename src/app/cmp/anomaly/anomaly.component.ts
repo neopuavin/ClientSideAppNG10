@@ -684,8 +684,6 @@ export class AnomalyComponent
       });
   }
 
-
-
   EditRecordEvent(args: any) {
     // override function
 
@@ -740,7 +738,6 @@ export class AnomalyComponent
   }
 
   DeleteRecordEventLocal(args: any) {
-    console.log(' this.currentRow:', this.currentRow);
     const row = this.currentRow;
     this.DeleteRecordEvent({
       row: this.currentRow,
@@ -749,6 +746,7 @@ export class AnomalyComponent
           'Confirm record deletion' +
           (row ? ` of Anomaly Ref#${row['AN_REF']}` : ''),
         msgWarning: `You are about to delete the currently selected anomaly record.<br/><br/>Do you want to continue?`,
+        msgSuccess: `Anomaly Ref#${row['AN_REF']} was successfully deleted`
       },
       userStampFields: ['AN_DELETED_BY'],
       dateStampFields: ['AN_DELETED_DATE'],

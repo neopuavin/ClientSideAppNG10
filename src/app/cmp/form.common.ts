@@ -451,7 +451,6 @@ export class FormCommon {
               );
               return;
             }
-            console.log('Row ID:', row[tbl.keyName]);
 
             // initialize form data variable
             const formData = {};
@@ -460,11 +459,36 @@ export class FormCommon {
             // set key value
             changed[tbl.keyName] = row[tbl.keyName];
 
+            // set deleted flag field to 1 if defined
+            changed[this.deletedFlagField] = 1;
+
             // set user stamp update
             // set user date update
 
             // populate formData main object
             formData[tbl.tableCode] = [changed];
+            const assetId = this.assetField ? row[this.assetField] : null;
+
+            console.log('Row ID:', row[tbl.keyName], "changed:",formData,"assetId:",assetId,"row:",row);
+
+            this.PostUpdate({
+              row: row,
+              dataToPost: changed,
+              userStampFields: userStampFields,
+              dateStampFields: dateStampFields,
+              onSuccess: onSuccess,
+              onError: onError,
+              recolorTree:true,
+              requeryGrid:true,
+              messages:{
+                msgProgress:msgProgress,
+                msgSuccess:msgSuccess,
+                msgError:msgError,
+              },
+              assetId:assetId
+            });
+
+
           }
       });
   }
@@ -511,8 +535,6 @@ export class FormCommon {
       messages,
     } = args;
 
-    console.log('DIALOGREF:', dialogRef);
-
     if (isNew == undefined) isNew = false;
 
     // set messages
@@ -530,6 +552,8 @@ export class FormCommon {
     const changed = this.DataChanged(form, row, isNew);
 
     if (changed) {
+      const assetId = row && this.assetField ? row[this.assetField]  : null;
+
       this.dataSource
         .Confirm('Confirm Save', saveWarning, {
           width: 500,
@@ -550,121 +574,13 @@ export class FormCommon {
               dialogRef: dialogRef,
               onSuccess: onSuccess,
               onError: onError,
-              recolorTree,
-              requeryGrid,
-              requeryDetails,
+              recolorTree:recolorTree,
+              requeryGrid:requeryGrid,
+              requeryDetails:requeryDetails,
+              assetId:assetId
             });
 
-            // // get table specific parameters
-            // const tbl = this.sourceTable;
-            // const tableCode = tbl.tableCode;
-            // const keyName = tbl.keyName;
 
-            // // set record's key field value if not yet set,
-            // // which normally is the case on editing mode.
-            // // when mode is adding a new record, key value is
-            // // normally set at the calling component, with integer value
-            // // less than zero (0) to indicate that a new record is
-            // // to be created
-
-            // if (changed[keyName] == undefined) changed[keyName] = row[keyName];
-
-            // // handle stamps
-            // if (userStampFields) {
-            //   // set value of fields to contain the current user's
-            //   // name as enumerated in the calling (add/edit/delete) component
-            //   // eg. CREATED_BY, UPDATED_BY, etc.
-            //   userStampFields.forEach((fieldName) => {
-            //     if (changed[fieldName] != this.ds.userInfo.name)
-            //       changed[fieldName] = this.ds.userInfo.name;
-            //   });
-            // }
-            // if (dateStampFields) {
-            //   // set value of fields to contain the current date
-            //   // name as enumerated in the calling (add/edit/delete) component
-            //   // eg. CREATED_DATE, UPDATED_DATE, etc.
-            //   dateStampFields.forEach(
-            //     (fieldName) => (changed[fieldName] = this.ds.dateStampString)
-            //   );
-            // }
-
-            // // scan all date type data in changed and make sure that the
-            // // values are in YYYY-MM-ddThh:mm:ss format
-
-            // // get container table of the row object
-            // const table = row._parentTable;
-            // if (table)
-            //   // loop through all changed fields and reformat
-            //   // date field values if it contains the actual date object
-            //   for (const fieldName in changed) {
-            //     if (table.GetColumnType(fieldName) == 'Date') {
-            //       // make sure that if the value in changed object
-            //       // is an object type, reformat it accordingly
-            //       if (typeof changed[fieldName] == 'object')
-            //         // field contains true date object
-            //         changed[fieldName] = this.ds.dateToString(
-            //           changed[fieldName]
-            //         );
-            //     }
-            //   } // end for for fieldName in changed
-
-            // // if revision field name is specified, up-rev the value
-            // if (revField) changed[revField] = row[revField] + 1;
-
-            // // initialize form data variable
-            // const formData = {};
-
-            // // populate formData main object
-            // formData[tableCode] = [changed];
-
-            // // handle other post parameters passed through extraPostParam
-            // if (extraPostParam) {
-            //   // this is additional post instruction parameters that will
-            //   // be requested together with the main table row post instruction.
-            //   // parameter value has the following format
-            //   /*
-            //    *  {tableCode1:Array<<record data1>[,record data2][,record data#]>},
-            //    *  {tableCode2:Array<<record data1>[,record data2][,record data#]>},
-            //    *  {tableCode#:Array<<record data1>[,record data2][,record data#]>},
-            //    */
-
-            //   for (const key in extraPostParam)
-            //     formData[key] = extraPostParam[key];
-            // }
-
-            // // console.log('formData:', formData);
-            // console.log(
-            //   '\nuserStampFields:',
-            //   userStampFields,
-            //   '\nformData:',
-            //   formData
-            // );
-
-            // const obs = this.ds.Post(formData);
-
-            // if (obs) {
-            //   this.dataSource.openSnackBar(postingNow, 'X', 1000);
-            //   const subs = obs.subscribe(
-            //     (data) => {
-            //       subs.unsubscribe();
-
-            //       // call update client
-            //       this.UpdateClient(changed, row, isNew);
-
-            //       // close dialog after a successful posting
-            //       if (dialogRef) dialogRef.close({ mode: 'saved' });
-            //       if (onSuccess) onSuccess(data);
-
-            //       this.dataSource.openSnackBar(saveSuccess, 'X', 1500);
-            //     },
-            //     (err) => {
-            //       this.dataSource.openSnackBar(saveError, 'X', 5000);
-            //       console.log('Error: ', err);
-            //       if (onError) onError(err);
-            //       subs.unsubscribe();
-            //     }
-            //   );
-            // }
           } else {
             this.dataSource.openSnackBar('Continue editing record.', 'X', 1500);
             if (onCancel) onCancel(null);
@@ -817,6 +733,7 @@ export class FormCommon {
 
           // call update client
           this.UpdateClient({
+            row: row,
             data: dataToPost,
             recolorTree: recolorTree,
             requeryGrid: requeryGrid,
@@ -851,30 +768,71 @@ export class FormCommon {
   }
 
   UpdateClient(args: {
+    row?: any;
     data?: any;
     recolorTree?: boolean;
     requeryGrid?: boolean;
     requeryDetails?: boolean;
     assetId?: number;
   }) {
-    const { data, recolorTree, requeryGrid, requeryDetails, assetId } = args;
+    const {
+      row,
+      data,
+      recolorTree,
+      requeryGrid,
+      requeryDetails,
+      assetId,
+    } = args;
 
-    const row = this.currentRow;
+    const tbl = row ? row.parentTable : null;
 
-    if (requeryGrid && row) {
+    if (!tbl && !requeryGrid) return; // table definition must exist in order to perform client update....
+
+    const keyName = tbl ? tbl.keyName : null;
+
+    if (requeryGrid) {
       // emulate tree click by setting current node on the tree
       // if this is called, there is no need to perform field level update
 
       const assetLookup = row.XTRA.assetLookup;
+      console.log(
+        '\nassetLookup:',
+        assetLookup,"\nassetId:",assetId)
 
       if (assetId) {
         const searchLocation = assetLookup.find((a) => a.key == assetId);
+        console.log(
+          '\nassetLookup:',
+          assetLookup,
+          '\nsearchLocation:',
+          searchLocation
+        );
         if (searchLocation)
           this.treeView.SetCurrentNode(searchLocation.location);
       }
     } else if (data) {
-      // perform field level update on details and data grid
-      for (let field in data) {
+      const gridRow = this.mainGrid._currentRow;
+
+      if (gridRow) {
+        if (
+          data[keyName] == row[keyName] &&
+          data[keyName] == gridRow[keyName]
+        ) {
+          for (let field in data) {
+            if (field != keyName) {
+              console.log(`${field}: ${data[field]}`);
+              row[field] = data[field];
+              gridRow[field] = data[field];
+            }
+          }
+
+          // call data scatter for all details tab forms
+          this.mainFormCollection.forEach((f) => f.Scatter(true));
+
+          // clear grod row cached values
+          gridRow.ClearCachedInfo();
+        }
+        console.log('\nRow:', row, '\nGridRow:', gridRow, '\nData:', data);
       }
     }
 
@@ -883,7 +841,6 @@ export class FormCommon {
       setTimeout(() => this.ResetTreeStatus(), 10);
 
     if (requeryDetails && row) {
-
     }
 
     // // post changed data taken from the add/edit form object
@@ -969,11 +926,12 @@ export class FormCommon {
       this._sourceRow = this._currentRow;
     } else if (this.mainGrid) {
       this.mainGrid.currentRow = row;
-      this.GridRowClick({ row: row, e: null });
+      //this.GridRowClick({ row: row, e: null });
+      this.GridRowClick(row);
     }
   }
 
-  GridRowClick(row:any) {
+  GridRowClick(row: any, forceExtract?: boolean) {
     //const row: any = event.row;
     if (!row) return;
 
@@ -988,32 +946,40 @@ export class FormCommon {
 
     //if row is already in the buffer array,
     // set to buffer record to current row and exit this method
-    const buf = this.mainRecordsBuffer.find((br) => br[keyName] == key);
+    if (!forceExtract) {
+      const bufIndex = this.mainRecordsBuffer.findIndex(
+        (br) => br[keyName] == key
+      );
 
-    if (buf) {
-      // triggers form scatter
-      this._currentRow = buf;
-      this._sourceRow = this._currentRow;
-      // console.log("Get from buffer! ",this.mainRecordsBuffer.length);
-      return;
+      if (bufIndex != -1) {
+        // triggers form scatter
+        this._currentRow = this.mainRecordsBuffer[bufIndex];
+        this._sourceRow = this._currentRow;
+        console.log('From buffer');
+        return;
+      }
     }
 
-    let assetKey: number = null;
-    if (this.assetField) {
+    if (this.assetField)
       // if asset fieldname is defined, get asset information infomation
       // from related tables (ie. asset code, desctription)
-      assetKey = row[this.assetField];
+      this.ExtractCurrentRow(key, row[this.assetField]);
+  }
 
-      // select all fields in the main table, NODE_ID and NODE_DESC from the nodesAttrib table
-      includedFields = tableCode + '.*`NODE_ID`NODE_DESC';
+  ExtractCurrentRow(key: any, assetId: number) {
+    const tbl = this.sourceTable;
+    const keyName = tbl.keyName;
+    const tableCode = tbl.tableCode;
 
-      // append table relationship to node attrib
-      tableCode += `|-node,${this.assetField},REC_TAG;`;
-    }
+    // check if record is buffered and remove it if it is.
+    const bufIndex = this.mainRecordsBuffer.findIndex(
+      (br) => br[keyName] == key
+    );
+    if (bufIndex != -1) this.mainRecordsBuffer.splice(bufIndex, 1);
 
     this.suppressPendingRequestFlag = true;
 
-    // set all isDataLoading flag to true
+    // set isDataLoading flag for all mainForm subforms to true to display wating status
     this._loadingTimeoutHandle = setTimeout(() => {
       this.mainFormCollection.forEach((f) => (f.isDataLoading = true));
       this._isRowWaiting = true;
@@ -1022,16 +988,18 @@ export class FormCommon {
     this.ds.Get(
       [
         {
-          code: tableCode,
+          // append table relationship to node attrib
+          code: tableCode + `|-node,${this.assetField},REC_TAG;`,
           key: key,
-          includedFields: includedFields,
+          // get all fields from base table and asset node information
+          includedFields: tableCode + '.*`NODE_ID`NODE_DESC',
           snapshot: true,
         },
         {
           // get tre_nod_loc on a separate sub request because this is faster than
           // relating the struct table to the current selected data row
           code: 'tre',
-          filter: `{TRE_DAT_TAG|${assetKey}}^{TRE_DAT_TYPE|${this.ds.currentTreeId}}`, // `{TRE_DAT_TAG|${+assetKey}}`,
+          filter: `{TRE_DAT_TAG|${assetId}}^{TRE_DAT_TYPE|${this.ds.currentTreeId}}`,
           includedFields: 'TRE_NOD_LOC',
           snapshot: true,
         },
@@ -1054,6 +1022,7 @@ export class FormCommon {
             };
 
             this._currentRow.XTRA = {
+              // build asset lookup's initial element within the extracted row
               assetLookup: [
                 {
                   key: this._currentRow[this.assetField],
@@ -1063,8 +1032,6 @@ export class FormCommon {
                 },
               ],
             };
-
-            // set current row asset lookup
           }
 
           // add currentRow to buffer
@@ -1075,7 +1042,6 @@ export class FormCommon {
 
           // call module's local override function
           this.GridRowClickLocal(e);
-          // console.log("this.mainRecordsBuffer.length: ",this.mainRecordsBuffer.length);
 
           // if timeout for loading mask is not reached before data is received,
           // cancel timeout set!

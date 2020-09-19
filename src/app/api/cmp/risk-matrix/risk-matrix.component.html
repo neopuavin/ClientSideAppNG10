@@ -8,8 +8,11 @@
       <div><span>Likelihood<span *ngIf="likelihoodText">: {{likelihoodText}}</span></span></div>
     </div>
     <div id="heading2">
-      <div class="bg-warning d-flex"><i class="fa fa-trash text-danger" style="margin:auto auto;cursor:pointer;"
-          (click)="RemoveRisk($event)"matTooltipPosition="bottom" matTooltip="Click to remove risk assignment..."></i></div>
+      <div class="d-flex" [ngClass]="{'bg-light':false}"><span *ngIf="readOnly">&nbsp;</span>
+        <i *ngIf="!readOnly" class="fa fa-trash text-danger"
+        style="margin:auto auto;cursor:pointer;font-size:0.9em;text-shadow: white 0px 0px 10px;"
+          (click)="RemoveRisk($event)" matTooltipPosition="right"
+          matTooltip="Click to remove risk assignment..."></i></div>
       <div *ngFor="let lik of riskMatrixData.lik" [style.background]="lik.back" [style.color]="lik.fore"
         matTooltipPosition="above" [matTooltip]="lik.text + '['+ lik.code +']'">
         <span>{{lik.code}}</span>

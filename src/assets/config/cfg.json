@@ -132,9 +132,12 @@
     "url_deploy": "http://ngimsa.ivideolib.com/api/app",
     "url_use_deploy": false,
     "app_version": {
-      "ver": "Alpha 1.3.9",
-      "build": "20200911",
+      "ver": "Alpha 1.4.0",
+      "build": "20200919",
       "updates": [
+        "Completed Anomaly delet action",
+        "Streamlined refresh routines after add/edit/delete action",
+        "Started working on data grid column resizing and filtering",
         "Fixed data grid scrolling issue (ping-pong behavior)",
         "Anomaly Delete in progress",
         "Anomaly Create almost complete",
@@ -151,6 +154,13 @@
         "Changed banner layout"
       ],
       "history": [
+        {
+          "ver": "Alpha 1.3.9",
+          "build": "20200911",
+          "updates": [
+            "Fixed data grid scrolling issue (ping-pong behavior)"
+          ]
+        },
         {
           "ver": "Alpha 1.3.8",
           "build": "20200909",

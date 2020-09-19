@@ -303,47 +303,20 @@ export class AppDataset extends DatasetBase {
   private _subData = {};
   // dictionary of asset id where keys are set to the tableCode
   private _prevAsset = {};
-  // public treeFilteredData(dataTable: any, filterField: string): Array<any> {
-  //   const treeNode = this.currTreeNode;
-  //   const treeData = this.mainTreeData;
-  //   const rows = dataTable.rows;
-  //   const tableCode = dataTable.tableCode;
 
-  //   if (treeData == null || treeNode == null || rows.length == 0) return [];
-
-  //   if (this._prevAsset[tableCode] != treeNode.id) {
-  //     this._subData[tableCode] = [];
-
-  //     // get all assets under the selected location
-  //     const subLocations = treeData.filter((n: TreeViewNode) =>
-  //       n.loc.startsWith(treeNode.loc)
-  //     );
-
-  //     if (subLocations) {
-  //       // iterate through the selected nodes and filter all anomalies under each location
-  //       subLocations.forEach((r: TreeViewNode) => {
-  //         const anoms = rows.filter((row) => row[filterField] == r.did);
-  //         anoms.forEach((ar: TblAnomaliesRow) =>
-  //           this._subData[tableCode].push(ar)
-  //         );
-  //       });
-  //     }
-  //     this._prevAsset = treeNode.id;
-  //   }
-  //   return this._subData[tableCode];
-  // }
-  //***************************************************************************************/
 
   //***************************** Extract data *********************************/
-
   private _mainData: any = {};
 
   public TimeVars: any = {};
 
-  private _treeColorData: Array<{ location: string; status: number }> = [];
   private _processingTreeColorData: boolean = false;
+
+  private _treeColorData: Array<{ location: string; status: number }> = [];
   public get treeColorData(): Array<{ location: string; status: number }> {
-    //`max(AN_CURR_CLASS)@MAX_CURR
+    /*********************************************************************
+    * Extracts tree color records based on integrity status
+    **********************************************************************/
     if (this._treeColorData.length == 0 && !this._processingTreeColorData) {
       this.Get(
         [
@@ -351,7 +324,7 @@ export class AppDataset extends DatasetBase {
             code: 'tre|-an,TRE_DAT_TAG,AN_ASSET_ID',
             includedFields:
               'TRE_NOD_LOC`max(AN_ORIG_CLASS)@MAX_ORIG`max(AN_CURR_CLASS)@MAX_CURR',
-            filter: `{TRE_DAT_TYPE|${this.currentTreeId}}`,
+            filter: `{TRE_DAT_TYPE|${this.currentTreeId}}^({AN_DELETED|0}|{AN_DELETED|null})`,
             snapshot: true,
           },
         ],
@@ -374,6 +347,7 @@ export class AppDataset extends DatasetBase {
     }
     return this._treeColorData;
   }
+
   public set treeColorData(value: Array<{ location: string; status: number }>) {
     if (!value) value = [];
     this._treeColorData = value;
