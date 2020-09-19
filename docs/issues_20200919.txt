@@ -1,0 +1,6 @@
+pending issues:
+1. [ok] client update routine not requiring grid refresh
+2. [ok] null values on update not posting properly
+3. [ok] apply PostData on Record Delete routine
+4. When current class is updated, grid and tree updates but when edit function is called again, the old value still shows
+5. Search tree SearchRowClick event not working

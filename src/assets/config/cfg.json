@@ -135,9 +135,11 @@
       "ver": "Alpha 1.4.0",
       "build": "20200919",
       "updates": [
-        "Completed Anomaly delet action",
+        "Completed Anomaly delete action",
         "Streamlined refresh routines after add/edit/delete action",
         "Started working on data grid column resizing and filtering",
+        "Fixed tree search set-node-on-item-click event",
+        "Fixed null data filtering and update issues",
         "Fixed data grid scrolling issue (ping-pong behavior)",
         "Anomaly Delete in progress",
         "Anomaly Create almost complete",

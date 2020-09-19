@@ -484,8 +484,11 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
     this.ProcessTree();
   }
 
-  SearchRowClick(e: { row: any; e: any }) {
-    this.SetCurrentNode(e.row.loc);
+  // SearchRowClick(e: { row: any; e: any }) {
+  SearchRowClick(e: any) {
+    // console.log("\nE:",e)
+    // this.SetCurrentNode(e.row.loc);
+    this.SetCurrentNode(e.loc)
   }
 
   SetCurrentNode(loc: string, tree?: TreeViewComponent) {
