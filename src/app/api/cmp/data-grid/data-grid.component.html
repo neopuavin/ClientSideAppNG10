@@ -11,13 +11,9 @@
     </div> -->
 
     <!-- actual visible column headers -->
-    <div *ngIf="isWithVisibleColumns" class="grid-header-row"
-      (mousemove)="headerMouse($event)"
-      (mouseout)="headerMouse($event)"
-      (mousedown)="headerMouse($event)"
-      (mouseup)="headerMouse($event)"
-      (mouseout)="headerMouse($event)"
-      [style.cursor]="headerMaskCursor" [style.margin-left.px]="leftScrollOffset"
+    <div *ngIf="isWithVisibleColumns" class="grid-header-row" (mousemove)="headerMouse($event)"
+      (mouseout)="headerMouse($event)" (mousedown)="headerMouse($event)" (mouseup)="headerMouse($event)"
+      (mouseout)="headerMouse($event)" [style.cursor]="headerMaskCursor" [style.margin-left.px]="leftScrollOffset"
       [style.padding-left.px]="RowHeaderWidth" style="position:relative;" [style.min-height.px]="rowHeaderHeight"
       [style.max-height.px]="rowHeaderHeight">
 
@@ -33,13 +29,25 @@
       <!-- <div style="position:absolute;box-sizing:border-box ;flex-grow:0;flex-shrink:0;background:lime; max-width: 2px;border:none; border-left:1px solid red;border-right:1px solid red;font-size:1px;">&nbsp;</div> -->
       <!-- <div style="border-left:1px solid red;position:absolute;"></div> -->
       <div id="vsep" *ngIf="showResizeCursor" [style.width.px]="handleOffset*2" [style.left.px]="getHandleLeft"
-      (mousedown)="splitCursorMouse($event)"
-      (mouseup)="splitCursorMouse($event)"
-      >&nbsp;</div>
+        (mousedown)="splitCursorMouse($event)" (mouseup)="splitCursorMouse($event)">&nbsp;</div>
 
       <!-- generate row cells -->
       <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)"
-        class="noselect" [attr.id]="'h_'+ci" [style.max-width.px]="cellWidth(h,ci)">{{h.caption}}</div>
+        class="noselect d-flex" [attr.id]="'h_'+ci" [style.max-width.px]="cellWidth(h,ci)" [style.padding.px]="0">
+        <div class="header-text">{{h.caption}}</div>
+        <div class="header-filter" *ngIf="h.allowFilter">
+          <div class="d-flex">
+            <i class="fa" matTooltipPosition="below" matTooltipShowDelay="500"  *ngIf="h.sortAsc || h.sortDesc"
+              matTooltip="Sorting in descending order applied, click to toggle sort order..."
+              [ngClass]="{'fa-sort-alpha-up':h.sortAsc, 'fa-sort-alpha-down-alt':h.sortDesc}"></i>
+            <i class="fa fa-filter"  *ngIf="h.filters.length" matTooltipPosition="below" matTooltipShowDelay="500"
+              matTooltip="Data filtering applied, click to toggle off/on..."></i>
+          </div>
+
+          <i class="fa fa-caret-down" matTooltipPosition="below" matTooltipShowDelay="500"
+            matTooltip="Click to set filter parameters"></i>
+        </div>
+      </div>
 
       <!-- generate row end padding cell -->
       <div *ngIf="headerPadWidth!=0" [style.min-width.px]="headerPadWidth" [style.max-width.px]="headerPadWidth">&nbsp;
@@ -58,17 +66,15 @@
   </div>
 
   <cdk-virtual-scroll-viewport *ngIf="isWithVisibleColumns" id="grid-view-port" #gridViewPort
-    [style.height.px]="portHeight" [itemSize]="options.rowHeight"
-    [maxBufferPx]="options.rowHeight * bufferRows" [minBufferPx]="options.rowHeight * bufferRows">
+    [style.height.px]="portHeight" [itemSize]="options.rowHeight" [maxBufferPx]="options.rowHeight * bufferRows"
+    [minBufferPx]="options.rowHeight * bufferRows">
     <div class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
     <div class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
     <div class="grid-prompt noselect" *ngIf="isLoadingData"><i
         class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
 
     <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;" [style.height.px]="options.rowHeight"
-      [style.padding-left.px]="RowHeaderWidth" (click)="RowClick(r)"
-      [ngClass]="RowClass(r)"
-      style="position:relative;">
+      [style.padding-left.px]="RowHeaderWidth" (click)="RowClick(r)" [ngClass]="RowClass(r)" style="position:relative;">
 
       <!-- Detail Row Header Start -->
       <div class="row-header" [style.max-width.px]="RowHeaderWidth" [style.min-width.px]="RowHeaderWidth"

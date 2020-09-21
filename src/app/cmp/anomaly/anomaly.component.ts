@@ -132,6 +132,7 @@ export class AnomalyComponent
         caption: 'ID',
         align: center,
         isKey: true,
+        allowFilter:false
       })
       .AddColumn({
         fieldName: 'AN_REF',

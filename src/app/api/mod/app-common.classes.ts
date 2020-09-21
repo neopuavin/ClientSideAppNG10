@@ -14,7 +14,12 @@ export interface IDataColumn {
   caption?: string;
   aggregateFuction?: string;
   forLookup?: boolean;
-  value?:any;
+  value?: any;
+
+  allowFilter?: boolean;
+  sortAsc?: boolean;
+  sortDesc?: boolean;
+  filters?: Array<any>;
 
   // when supplied, inline lookup will be generated. Object of key-value pairs
   // which will be used to search for display text of data field.
@@ -22,6 +27,7 @@ export interface IDataColumn {
   // In the return object, this will be set as one of the elements in
   // the inline lokkup object
   // returnObject.lookups.FIELD_NAME_DISPLAY_FIELD.key#
+
   displayField?: string;
   visible?: boolean;
   isKey?: boolean;
@@ -75,13 +81,13 @@ export interface ILookupItem {
   fore?: string;
 }
 
-export interface IUserInfo{
-  key:number;
-  id:string;
-  name:string;
-  email:string;
-  phone:string;
-  rights:any;
+export interface IUserInfo {
+  key: number;
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  rights: any;
 }
 
 export class DataColumn {
@@ -109,6 +115,11 @@ export class DataColumn {
   public caption: string;
   public isKey: boolean;
   public visible: boolean = true;
+
+  public allowFilter: boolean;
+  public sortAsc: boolean;
+  public sortDesc: boolean;
+  public filters: Array<any>;
 }
 
 export class DataOption {

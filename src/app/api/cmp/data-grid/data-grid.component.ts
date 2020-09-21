@@ -933,6 +933,12 @@ export class DataGridColum extends DataColumn {
     this.isKey = args.isKey;
     this.displayFormat = args.displayFormat;
 
+    this.allowFilter = args.allowFilter ? args.allowFilter : true;
+    this.sortAsc = args.sortAsc;
+    this.sortDesc = args.sortDesc;
+
+    if(this.allowFilter) this.filters = args.filters ? args.filters : [];
+
     if (args.visible != undefined) this.visible = args.visible;
 
     this.dateFormat = args.dateFormat;

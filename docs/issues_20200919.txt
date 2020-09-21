@@ -4,3 +4,24 @@ pending issues:
 3. [ok] apply PostData on Record Delete routine
 4. When current class is updated, grid and tree updates but when edit function is called again, the old value still shows
 5. Search tree SearchRowClick event not working
+
+
+
+// test Get request for unique data
+
+http://soga-alv/NgArbi/api/app/?
+table=an|-tre,AN_ASSET_ID,TRE_DAT_TAG;-node,AN_ASSET_ID,REC_TAG;`node@alkp,AN_ASSET_ID;`lkp@ocls,AN_ORIG_CLASS;`lkp@ccls,AN_CURR_CLASS;`lkp@oacls,AN_ORIG_AVAIL_CLASS;`lkp@cacls,AN_CURR_AVAIL_CLASS;`lkp@stat,AN_STATUS;`lkp@mareq,AN_MAINT_REQ;`lkp@sapstat,AN_WO_STATUS;`lkp@risksev,AN_RISK_RANK_SEVERITY;`lkp@risklik,AN_RISK_RANK_LIKELIHOOD;
+&filter={TRE_NOD_LOC|"aaaa","aaaa%"}
+&pageSize=1000
+&pageNumber=1
+&includedFields=AN_ID`AN_REF`AN_REVNO`AN_TITLE`AN_DESC`alkp.NODE_DESC@ASSETNAME`AN_ASSET_ID@^ASSETNAME`stat.LKP_DESC_B@STATUS`AN_STATUS@^STATUS`AN_DATE_IDENT`AN_RAISED_BY`AN_RAISED_DATE`ocls.LKP_DESC_B@OCLASS`AN_ORIG_CLASS@^OCLASS`ccls.LKP_DESC_B@CCLASS`AN_CURR_CLASS@^CCLASS`oacls.LKP_DESC_B@OACLASS`AN_ORIG_AVAIL_CLASS@^OACLASS`cacls.LKP_DESC_B@CACLASS`AN_CURR_AVAIL_CLASS@^CACLASS`LKP_DESC_A
+&includedFields=AN_TITLE
+&unique=1
+
+// drag and drop youtube
+https://www.youtube.com/watch?v=NyZSIhzz5Do
+// resize youtube
+https://www.youtube.com/watch?v=4qyuNBlc8ho
+
+// vanilla js drag-and-drop
+https://www.youtube.com/watch?v=jfYWwQrtzzY

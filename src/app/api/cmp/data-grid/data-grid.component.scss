@@ -17,10 +17,10 @@ $test_col_with: 400px;
     // font-size: 0.65em;
     cursor: default;
   }
-  div.row-header:hover{
+  div.row-header:hover {
     //background:red !important;
     color: $bs_info !important;
-    background:$bs_warning_light !important;
+    background: $bs_warning_light !important;
   }
   #grid-header {
     overflow: hidden;
@@ -47,11 +47,11 @@ $test_col_with: 400px;
         text-overflow: ellipsis;
         text-align: center;
       }
-      > div#vsep{
-        padding:0px;
-        font-size:0px;
-        border-left:1px solid black;
-        border-right:1px solid black;
+      > div#vsep {
+        padding: 0px;
+        font-size: 0px;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
         background: $grid_header_border_color;
         position: absolute;
         box-sizing: border-box;
@@ -64,19 +64,85 @@ $test_col_with: 400px;
         // background-color: red;
       }
 
+      .header-text {
+        margin-left: 2px;
+        flex: 1 1 0;
+        margin: 0px 0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        // background: yellow;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+      .header-filter {
+        margin-left: 2px;
+        margin-right: 3px;
+        justify-content: flex-end;
+        display: flex;
+        flex-direction: column;
+        min-width: 18px;
+        max-width: 18px;
+        font-size: 0.9em;
+        > div:first-child {
+          // background: $bs_warning;
+          > i{
+            flex: 1 1 0;
+            border: 1px solid transparent;
+            padding: 0px;
+            cursor: pointer;
+          }
+          > i:hover{
+            color: $bs_info;
+            background-color: $bs_warning_light;
+            border: 1px solid $bs_info;
+
+          }
+          // > i:first-child {
+          //   // sort icon
+          //   // background: cyan;
+          //   cursor: pointer;
+          // }
+          // > i:first-child:hover {
+          //   color: $bs_info;
+          //   background-color: $bs_warning_light;
+          // }
+          > i:last-child {
+            // filter icon
+            font-size: 0.6em;
+          }
+          // > i:last-child:hover {
+          //   color: $bs_info;
+          //   background-color: $bs_warning_light;
+          // }
+        }
+        > i:last-child {
+          // drop arrow
+          // background: $bs_danger;
+          padding: 0px;
+          border: 1px solid transparent;
+          cursor: pointer;
+        }
+        > i:last-child:hover {
+          color: $bs_info;
+          background-color: $bs_warning_light;
+          border: 1px solid $bs_info;
+        }
+      }
     }
-    #barMenu{
-      margin-top:5px;
+    #barMenu {
+      margin-top: 5px;
       //padding-top:0px 0px;
       cursor: pointer;
-      font-size:1.2em;
+      font-size: 1.2em;
       //background:red;
     }
   }
   #grid-view-port {
     .grid-row:first-child {
       //border-top:1px solid $grid_header_border_color;
-
     }
     .grid-row {
       display: flex;
@@ -103,23 +169,21 @@ $test_col_with: 400px;
       }
 
       > div.row-header {
-        > i.pointer{
+        > i.pointer {
           display: none;
         }
-        > i.wait{
-          visibility:hidden;
+        > i.wait {
+          visibility: hidden;
           font-size: 0.7em;
         }
-
-
       }
 
-      .row-focus{
-        width:0px;
-        height:0px;
+      .row-focus {
+        width: 0px;
+        height: 0px;
         background-color: red;
-        border:none;
-        opacity:0;
+        border: none;
+        opacity: 0;
       }
     }
     .grid-row:hover {
@@ -132,12 +196,12 @@ $test_col_with: 400px;
       background-color: $grid_row_selected_color;
       > div.row-header {
         background-color: $bs_warning_light !important;
-        > i.pointer  {
+        > i.pointer {
           display: inline;
           color: $bs_primary;
         }
-        > i.fa-spinner{
-          visibility:visible;
+        > i.fa-spinner {
+          visibility: visible;
         }
       }
     }
