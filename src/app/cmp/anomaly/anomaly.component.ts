@@ -102,6 +102,9 @@ export class AnomalyComponent
   }
 
   SetupGridColumns() {
+
+    if (this.moduleStateInitialized) return;
+
     const {
       center,
       minShort,
@@ -186,7 +189,7 @@ export class AnomalyComponent
       .AddColumn({
         fieldName: 'AN_ASSET_ID',
         minWidth: minLong,
-        filterType:FilterDataType.ASSET,
+        filterType: FilterDataType.ASSET,
         lookupParams: {
           inlineLookupTableAlias: 'alkp',
           inlineLookupTableField: 'NODE_DESC',
@@ -204,7 +207,7 @@ export class AnomalyComponent
           inlineLookupTableField: 'LKP_DESC_B',
         },
         //sortAsc:true,
-        sortDesc:true,
+        sortDesc: true,
         filters: [1],
       })
       .AddColumn({
@@ -349,10 +352,10 @@ export class AnomalyComponent
       .AddColumn({
         fieldAlias: 'RISK',
 
-        filterType:FilterDataType.MATRIX,
-        matrixData:this.ds.riskMatrixData,
-        matrixSeverity:'AN_RISK_RANK_SEVERITY',
-        matrixLikelihood:'AN_RISK_RANK_LIKELIHOOD',
+        filterType: FilterDataType.MATRIX,
+        matrixData: this.ds.riskMatrixData,
+        matrixSeverity: 'AN_RISK_RANK_SEVERITY',
+        matrixLikelihood: 'AN_RISK_RANK_LIKELIHOOD',
 
         value: 'M{AN_RISK_RANK_SEVERITY}{AN_RISK_RANK_LIKELIHOOD}',
         width: wd2,

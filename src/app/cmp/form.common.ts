@@ -1,6 +1,10 @@
 import { ColumnInfo } from './../api/mod/app-column.model';
 import { AppFormAComponent } from './../api/cmp/app-form-a/app-form-a.component';
-import { AppDataset, IAccessRights, ModuleState } from './../svc/app-dataset.service';
+import {
+  AppDataset,
+  IAccessRights,
+  ModuleState,
+} from './../svc/app-dataset.service';
 import { AppMainServiceService } from './../svc/app-main-service.service';
 import { RequestParams } from './../api/mod/app-params.model';
 
@@ -44,13 +48,15 @@ export class FormCommon {
 
   myForm: FormGroup = null;
 
-
   public suppressPendingRequestFlag: boolean = false;
 
   private _moduleTitle: string = '';
   private _moduleItem: any = null;
 
   CommonFormInit() {
+    // bypass this method if the module state object is already initialized
+    if(this.moduleStateInitialized) return;
+
     if (this.sourceTable != null && this.mainGridOptions != null) {
       // set initial join expression and filter parameters
       // *** base where ***
@@ -171,27 +177,27 @@ export class FormCommon {
     return this._sourceRow;
   }
 
+  public get moduleStateInitialized(): boolean {
+    return this.mainGridOptions.columns.length != 0;
+  }
 
-  public get mainGridOptions():DataGridOption{
+  public get mainGridOptions(): DataGridOption {
     return this.moduleState.mainGridOptions;
-
   }
-  public get mainTabsOptions():DataTabsOption{
+  public get mainTabsOptions(): DataTabsOption {
     return this.moduleState.mainTabsOptions;
-
   }
-  public get mainFormCollection(): Array<AppFormAComponent>{
+  public get mainFormCollection(): Array<AppFormAComponent> {
     return this.moduleState.mainFormCollection;
-
   }
-  public get mainFormObject(): FormGroup{
+  public get mainFormObject(): FormGroup {
     return this.moduleState.mainFormObject;
   }
-  public set mainFormObject(value : FormGroup){
-    this.moduleState.mainFormObject=value;
+  public set mainFormObject(value: FormGroup) {
+    this.moduleState.mainFormObject = value;
   }
-  public get mainRecordsBuffer(): Array<any>{
-    return this.moduleState.gridSourceRows;
+  public get mainRecordsBuffer(): Array<any> {
+    return this.moduleState.mainRecordsBuffer;
   }
 
   public get gridSourceRows(): Array<any> {
@@ -206,23 +212,25 @@ export class FormCommon {
     return this.moduleState.currentRow;
   }
 
-  public set currentRow(value:any) {
+  public set currentRow(value: any) {
     this.moduleState.currentRow = value;
   }
 
   public get gridSourceLookups(): Array<any> {
     return this.moduleState.gridSourceLookups;
   }
-  public set gridSourceLookups(value:Array<any>)  {
+  public set gridSourceLookups(value: Array<any>) {
     this.moduleState.gridSourceLookups = value;
   }
 
-  private _moduleState:ModuleState;
-  public get moduleState():ModuleState{
-    if(this._moduleState == undefined){
-      let  ms:ModuleState = this.ds.moduleStates.find(mState=>mState.moduleId == this.moduleId)
-      if(!ms){
-        ms=new ModuleState(this.moduleId);
+  private _moduleState: ModuleState;
+  public get moduleState(): ModuleState {
+    if (this._moduleState == undefined) {
+      let ms: ModuleState = this.ds.moduleStates.find(
+        (mState) => mState.moduleId == this.moduleId
+      );
+      if (!ms) {
+        ms = new ModuleState(this.moduleId);
         this.ds.moduleStates.push(ms);
       }
       this._moduleState = ms;
@@ -250,6 +258,7 @@ export class FormCommon {
   }
 
   SetupData(pageNumber?: number, pageSize?: number) {
+    console.log('FORM COMMON SetupData!');
     // Get initial table data, get
     //http://ngimsa.ivideolib.com/api/app/svyhdr/-/@tre|TRE_NOD_LOC/-/-/-/1/10000?key=$$$$$;,$$$$$;%25
 
@@ -277,11 +286,12 @@ export class FormCommon {
     location = `"${location.replace(/,/gi, '","')}"`;
 
     // base filter is on tree node location
-    let filter: string =this.assetField ? `{TRE_NOD_LOC|${location}}` : '';
+    let filter: string = this.assetField ? `{TRE_NOD_LOC|${location}}` : '';
     filter += this.deletedFlagField
       ? '^' + `({${this.deletedFlagField}|0}|{${this.deletedFlagField}|null})`
       : '';
     filter = `(${filter})`;
+    console.log('\nFILTER 1:', filter);
     this.SetFilterParams();
     // get filter defined within the
     if (this.deletedFlagField) {
@@ -289,6 +299,8 @@ export class FormCommon {
     }
     const localFilter = this.mainGridOptions.whereClause;
     filter += localFilter ? '^' + localFilter : '';
+    console.log('\nFILTER 2:', filter);
+    console.log('\nFROM CLAUSE:', this.mainGridOptions.fromClauseCode);
 
     // Base request parameters where initially common filtering and sorting is applied
     let requestParams: RequestParams = {
@@ -302,7 +314,7 @@ export class FormCommon {
       sortFields: this.mainGridOptions.orderByClause,
     };
 
-    // console.log(JSON.stringify(requestParams));
+    console.log('REQUEST PARAMS???:', JSON.stringify(requestParams));
 
     this.ds.Get([requestParams], {
       onSuccess: (data) => {
@@ -515,7 +527,16 @@ export class FormCommon {
             formData[tbl.tableCode] = [changed];
             const assetId = this.assetField ? row[this.assetField] : null;
 
-            console.log('Row ID:', row[tbl.keyName], "changed:",formData,"assetId:",assetId,"row:",row);
+            console.log(
+              'Row ID:',
+              row[tbl.keyName],
+              'changed:',
+              formData,
+              'assetId:',
+              assetId,
+              'row:',
+              row
+            );
 
             this.PostUpdate({
               row: row,
@@ -524,17 +545,15 @@ export class FormCommon {
               dateStampFields: dateStampFields,
               onSuccess: onSuccess,
               onError: onError,
-              recolorTree:true,
-              requeryGrid:true,
-              messages:{
-                msgProgress:msgProgress,
-                msgSuccess:msgSuccess,
-                msgError:msgError,
+              recolorTree: true,
+              requeryGrid: true,
+              messages: {
+                msgProgress: msgProgress,
+                msgSuccess: msgSuccess,
+                msgError: msgError,
               },
-              assetId:assetId
+              assetId: assetId,
             });
-
-
           }
       });
   }
@@ -598,7 +617,7 @@ export class FormCommon {
     const changed = this.DataChanged(form, row, isNew);
 
     if (changed) {
-      const assetId = row && this.assetField ? row[this.assetField]  : null;
+      const assetId = row && this.assetField ? row[this.assetField] : null;
 
       this.dataSource
         .Confirm('Confirm Save', saveWarning, {
@@ -620,13 +639,11 @@ export class FormCommon {
               dialogRef: dialogRef,
               onSuccess: onSuccess,
               onError: onError,
-              recolorTree:recolorTree,
-              requeryGrid:requeryGrid,
-              requeryDetails:requeryDetails,
-              assetId:assetId
+              recolorTree: recolorTree,
+              requeryGrid: requeryGrid,
+              requeryDetails: requeryDetails,
+              assetId: assetId,
             });
-
-
           } else {
             this.dataSource.openSnackBar('Continue editing record.', 'X', 1500);
             if (onCancel) onCancel(null);
@@ -841,9 +858,7 @@ export class FormCommon {
       // if this is called, there is no need to perform field level update
 
       const assetLookup = row.XTRA.assetLookup;
-      console.log(
-        '\nassetLookup:',
-        assetLookup,"\nassetId:",assetId)
+      console.log('\nassetLookup:', assetLookup, '\nassetId:', assetId);
 
       if (assetId) {
         const searchLocation = assetLookup.find((a) => a.key == assetId);
@@ -888,7 +903,6 @@ export class FormCommon {
 
     if (requeryDetails && row) {
     }
-
   }
 
   ResetData(form: FormGroup, row: any) {

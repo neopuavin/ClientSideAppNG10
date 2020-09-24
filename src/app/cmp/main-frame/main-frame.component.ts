@@ -226,6 +226,8 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
   }
 
   SetupDetailsData() {
+
+
     if (this.modReferenceLibrary) {
       this.modReferenceLibrary.SetupData();
     } else if (this.modAnomaly) {
@@ -233,7 +235,6 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     } else if (this.modDesignData) {
       this.modDesignData.SetupData();
     } else if (this.modSurveyData) {
-      console.log('SetupDetailsData....');
       this.modSurveyData.SetupData();
     }
   }

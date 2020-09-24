@@ -56,14 +56,27 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() gridPortHeight: number = 768;
 
+  // this is to allow usage of external object as current row of the grid
+  @Input() gridCurrentRow: any;
 
   private _currentRow: any = null;
-  public get currentRow():any{
-    return this._currentRow
+
+  private get currentRowObject(): any {
+    return this.gridCurrentRow != undefined
+      ? this.gridCurrentRow
+      : this._currentRow;
+  }
+
+  private set currentRowObject(value: any) {
+    if (this.gridCurrentRow != undefined) this.gridCurrentRow = value;
+    else this._currentRow = value;
+  }
+
+  public get currentRow(): any {
+    return this.currentRowObject;
   }
 
   public set currentRow(value: any) {
-
     const keyName = this.options.keyColumnName;
     if (keyName && value) {
       const keyVal = value[keyName];
@@ -90,10 +103,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     /**    const focusElement = event.srcElement.parentNode.querySelector('.row-focus');
     if(focusElement)focusElement.focus();
  */
-    this._currentRow = value;
+    this.currentRowObject = value;
   }
-
-
 
   private debugMode: boolean = false;
 
