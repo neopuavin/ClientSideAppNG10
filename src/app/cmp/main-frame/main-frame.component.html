@@ -99,21 +99,25 @@
         <div id="pnl-center" [style.width.px]="0">
           <!-- width=0 is necessary to prevent content to control the width of the panel-->
           <!-- Modules -->
-          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
-            [sourceTable]="ds.tblAnomalies" [deletedFlagField] = "'AN_DELETED'" [assetField]="'AN_ASSET_ID'" *ngIf="activeModule==1"></app-anomaly>
 
-          <app-design-data [treeView]="setValueTo(treeView,undefined)" [moduleId]="2" [sourceTable]="ds.tblDesignData"
-            [assetField]="''" *ngIf="activeModule==2">
-          </app-design-data>
+          <app-design-data [treeView]="setValueTo(treeView,undefined)"
+            *ngIf="activeModule==2"
+            [moduleId]="2" [sourceTable]="ds.tblDesignData"
+            [assetField]="''"></app-design-data>
+
+          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
+            [sourceTable]="ds.tblAnomalies"  *ngIf="activeModule==1" [deletedFlagField] = "'AN_DELETED'" [assetField]="'AN_ASSET_ID'"></app-anomaly>
+
           <app-chemical-database [treeView]="treeView" [moduleId]="3" *ngIf="activeModule==3"></app-chemical-database>
           <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4">
           </app-risk-based-inspection>
           <app-survey-data [treeView]="treeView" [moduleId]="5" [sourceTable]="ds.tblSurveyHeader"
             *ngIf="activeModule==5"></app-survey-data>
           <app-freespan [treeView]="treeView" [moduleId]="6" *ngIf="activeModule==6"></app-freespan>
-          <app-reference-library [treeView]="treeView" [sourceTable]="ds.tblRefFiles" [moduleId]="7"
-            *ngIf="activeModule==7">
-          </app-reference-library>
+
+          <app-reference-library [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="7"
+            [sourceTable]="ds.tblAnomalies" [deletedFlagField] = "'RF_DELETED'" [assetField]="'RF_ASSET_ID'" *ngIf="activeModule==7"></app-reference-library>
+
           <app-seismic [treeView]="treeView" [moduleId]="8" *ngIf="activeModule==8"></app-seismic>
 
           <!-- Tools -->

@@ -1,4 +1,33 @@
+<!-- <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <mat-icon>more_vert</mat-icon>
+</button> -->
+
+
 <div id="grid-wrapper" *ngIf="isReady">
+
+  <mat-menu #menu="matMenu" style="overflow: hidden;">
+    <!-- <app-filter-parameters></app-filter-parameters> -->
+    <ul class="list-group py-0">
+      <li class="list-group-item py-1">Sort Oldest M to Newest</li>
+      <li class="list-group-item py-1">Sort Newest to Oldest</li>
+      <li class="list-group-item py-1">Item 3</li>
+      <li class="list-group-item py-1">Item 4</li>
+    </ul>
+    <!-- <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Redial</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Check voice mail</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Disable alerts</span>
+    </button> -->
+  </mat-menu>
+
+
   <div *ngIf="false" id="grid-toolbar">Toolbar</div>
   <div #gridHeader id="grid-header" [style.min-height.px]="headerHeight" [style.max-height.px]="headerHeight"
     style="position: relative;">
@@ -28,23 +57,29 @@
       <!-- grip handle -->
       <!-- <div style="position:absolute;box-sizing:border-box ;flex-grow:0;flex-shrink:0;background:lime; max-width: 2px;border:none; border-left:1px solid red;border-right:1px solid red;font-size:1px;">&nbsp;</div> -->
       <!-- <div style="border-left:1px solid red;position:absolute;"></div> -->
-      <div id="vsep" *ngIf="showResizeCursor" [style.width.px]="handleOffset*2" [style.left.px]="getHandleLeft"
+      <div id="vsep" *ngIf="false && showResizeCursor" [style.width.px]="handleOffset*2" [style.left.px]="getHandleLeft"
         (mousedown)="splitCursorMouse($event)" (mouseup)="splitCursorMouse($event)">&nbsp;</div>
 
       <!-- generate row cells -->
       <div *ngFor="let h of options.visibleColumns;let ci=index;" [style.min-width.px]="cellWidth(h,ci)"
         class="noselect d-flex" [attr.id]="'h_'+ci" [style.max-width.px]="cellWidth(h,ci)" [style.padding.px]="0">
-        <div class="header-text">{{h.caption}}</div>
-        <div class="header-filter" *ngIf="h.allowFilter">
+        <div class="header-text"
+          [ngClass]="{'header-with-filter-or-sort':(h.sortAsc||h.sortDesc|| (h.filters ? h.filters.length : false)) && h.allowFilter &&  activeFiltering}">
+          {{h.caption}}</div>
+        <div class="header-filter" [ngClass]="{'header-with-filter-or-sort':h.sortAsc||h.sortDesc|| h.filters.length}"
+          *ngIf="h.allowFilter && activeFiltering">
           <div class="d-flex">
-            <i class="fa" matTooltipPosition="below" matTooltipShowDelay="500"  *ngIf="h.sortAsc || h.sortDesc"
+            <i class="fa" matTooltipPosition="below" matTooltipShowDelay="500" *ngIf="h.sortAsc || h.sortDesc"
               matTooltip="Sorting in descending order applied, click to toggle sort order..."
               [ngClass]="{'fa-sort-alpha-up':h.sortAsc, 'fa-sort-alpha-down-alt':h.sortDesc}"></i>
-            <i class="fa fa-filter"  *ngIf="h.filters.length" matTooltipPosition="below" matTooltipShowDelay="500"
+            <i class="fa fa-filter" *ngIf="h.filters.length" matTooltipPosition="below" matTooltipShowDelay="500"
               matTooltip="Data filtering applied, click to toggle off/on..."></i>
           </div>
 
-          <i class="fa fa-caret-down" matTooltipPosition="below" matTooltipShowDelay="500"
+          <i class="fa fa-caret-down"
+            (click)="OpenFilter(h)"
+            matTooltipPosition="below"
+            matTooltipShowDelay="500"
             matTooltip="Click to set filter parameters"></i>
         </div>
       </div>
@@ -68,9 +103,9 @@
   <cdk-virtual-scroll-viewport *ngIf="isWithVisibleColumns" id="grid-view-port" #gridViewPort
     [style.height.px]="portHeight" [itemSize]="options.rowHeight" [maxBufferPx]="options.rowHeight * bufferRows"
     [minBufferPx]="options.rowHeight * bufferRows">
-    <div class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
-    <div class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
-    <div class="grid-prompt noselect" *ngIf="isLoadingData"><i
+    <div [style.width.px]="totalCellWidths" class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
+    <div [style.width.px]="totalCellWidths" class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
+    <div [style.width.px]="totalCellWidths" class="grid-prompt noselect" *ngIf="isLoadingData"><i
         class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
 
     <div class="grid-row" *cdkVirtualFor="let r of dataSource;let i=index;" [style.height.px]="options.rowHeight"
@@ -140,3 +175,11 @@
   </div>
 
 </div>
+<!--
+<div class="dropdown-menu">
+  <a class="dropdown-item" href="#">Action</a>
+  <a class="dropdown-item" href="#">Another action</a>
+  <a class="dropdown-item" href="#">Something else here</a>
+  <div class="dropdown-divider"></div>
+  <a class="dropdown-item" href="#">Separated link</a>
+</div> -->

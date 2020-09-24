@@ -313,9 +313,9 @@ export class AnomAddEditComponent implements OnInit, AfterViewInit {
   }
 
   ChangeDate(e: any) {
-    this.dataSource.SelectDate(e.source).subscribe((result) => {
-      console.log(`Dialog result: ${result}`, e);
-    });
+    // this.dataSource.SelectDate(e.source).subscribe((result) => {
+    //   console.log(`Dialog result: ${result}`, e);
+    // });
   }
 
   ResetTreeStatus() {

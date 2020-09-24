@@ -1,3 +1,4 @@
+import { FilterParametersComponent } from './../filter-parameters/filter-parameters.component';
 import { DataGridColMgtComponent } from './data-grid-col-mgt.component';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
@@ -50,6 +51,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() showMenu: boolean = false;
   @Input() ManagmentOpener: any = null;
+
+  @Input() activeFiltering: boolean = false;
 
   @Input() gridPortHeight: number = 768;
 
@@ -147,10 +150,20 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       );
 
-      console.log('Set SCROLL EVENT!');
-
       setTimeout(() => (this._changeValuesNow = true), 12);
+
+      this.OpenFilterForDebug();
     }, 10);
+  }
+
+  OpenFilterForDebug() {
+    return;
+    const col: DataColumn = this.options.columns.find(
+      (c) => c.fieldName == 'AN_REF'
+    );
+    if (!col) return;
+
+    this.OpenFilter(col);
   }
 
   ngOnDestroy() {
@@ -309,6 +322,19 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // dialogRef.afterClosed().subscribe((result) => {
     //   console.log(`Dialog result: ${result}`);
     // });
+  }
+
+  OpenFilter(column: DataColumn) {
+    let ref: MatDialogRef<FilterParametersComponent, any>;
+
+    ref = this.dialog.open(FilterParametersComponent, {
+      minWidth: '300px',
+      minHeight: '550px',
+      disableClose: false,
+      data: { column: column, table: this.sourceTable },
+    });
+
+    return ref.afterClosed();
   }
 
   private _isReady: boolean = false;
@@ -518,11 +544,17 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   _cellWidths: Array<number> = null;
+  _cellTotalWidth: number = 0;
   public get cellWidths(): Array<number> {
     if (this.gridHeaderGuide && !this._cellWidths) {
       const widths: Array<number> = [];
       const cells = this.gridHeaderGuide.querySelectorAll('div');
-      cells.forEach((cell) => widths.push(cell.offsetWidth));
+      this._cellTotalWidth = 0;
+      cells.forEach((cell) => {
+        widths.push(cell.offsetWidth);
+        this._cellTotalWidth += cell.offsetWidth;
+      });
+
       this._cellWidths = widths;
     }
     return this._cellWidths;
@@ -533,6 +565,10 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       // return cells[idx + 1].offsetWidth;
     }
      */
+  }
+
+  public get totalCellWidths(): number {
+    return this._cellTotalWidth;
   }
 
   resetColumnWidths() {
@@ -715,7 +751,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // cache only cell text non-native value
     if (recordValue) r.CELL_TEXT[c.fieldKey] = value;
 
-
     return value;
   }
 
@@ -892,7 +927,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._showResizeCursor;
   }
   public get headerMaskCursor(): string {
-    //return 'default';
+    return 'default';
     return this._showResizeCursor ? 'ew-resize' : 'default';
   }
 
@@ -918,6 +953,15 @@ export interface IDataGridColumn extends IDataColumn {
   noZero?: boolean;
   order?: number;
   displayFormat?: string;
+
+  allowFilter?: boolean;
+  sortAsc?: boolean;
+  sortDesc?: boolean;
+  filters?: Array<any>;
+  filterType?: number;
+  matrixData?: any;
+  matrixSeverity?: string;
+  matrixLikelihood?: string;
 }
 
 export class DataGridColum extends DataColumn {
@@ -933,11 +977,16 @@ export class DataGridColum extends DataColumn {
     this.isKey = args.isKey;
     this.displayFormat = args.displayFormat;
 
-    this.allowFilter = args.allowFilter ? args.allowFilter : true;
+    this.allowFilter = args.allowFilter != undefined ? args.allowFilter : true;
     this.sortAsc = args.sortAsc;
     this.sortDesc = args.sortDesc;
 
-    if(this.allowFilter) this.filters = args.filters ? args.filters : [];
+    if (this.allowFilter) this.filters = args.filters ? args.filters : [];
+    this.filterType = args.filterType; // == undefined ? 1 : args.filterType;
+
+    this.matrixData = args.matrixData;
+    this.matrixSeverity = args.matrixSeverity;
+    this.matrixLikelihood = args.matrixLikelihood;
 
     if (args.visible != undefined) this.visible = args.visible;
 
@@ -961,6 +1010,15 @@ export class DataGridColum extends DataColumn {
   public lookupParams: ILookupParams;
   public value: any;
   public displayFormat: string;
+
+  public allowFilter: boolean;
+  public sortAsc: boolean;
+  public sortDesc: boolean;
+  public filters: Array<any>;
+  public filterType: number;
+  public matrixData: any;
+  public matrixSeverity: string;
+  public matrixLikelihood: string;
 }
 
 export class DataGridOption extends DataOption {

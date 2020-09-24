@@ -1,6 +1,6 @@
 import { ColumnInfo } from './../api/mod/app-column.model';
 import { AppFormAComponent } from './../api/cmp/app-form-a/app-form-a.component';
-import { AppDataset, IAccessRights } from './../svc/app-dataset.service';
+import { AppDataset, IAccessRights, ModuleState } from './../svc/app-dataset.service';
 import { AppMainServiceService } from './../svc/app-main-service.service';
 import { RequestParams } from './../api/mod/app-params.model';
 
@@ -182,7 +182,21 @@ export class FormCommon {
   }
   private _gridSourceLookups: Array<any> = [];
   public get gridSourceLookups(): Array<any> {
+
     return this._gridSourceLookups;
+  }
+
+  private _moduleState:ModuleState;
+  public get moduleState():ModuleState{
+    if(this._moduleState == undefined){
+      let  ms:ModuleState = this.ds.moduleStates.find(mState=>mState.moduleId == this.moduleId)
+      if(!ms){
+        ms=new ModuleState(this.moduleId);
+        this.ds.moduleStates.push(ms);
+      }
+      this._moduleState = ms;
+    }
+    return this._moduleState;
   }
 
   public AddGridAssetLookupItem(key: number, name: string) {
@@ -232,7 +246,7 @@ export class FormCommon {
     location = `"${location.replace(/,/gi, '","')}"`;
 
     // base filter is on tree node location
-    let filter: string = `{TRE_NOD_LOC|${location}}`;
+    let filter: string =this.assetField ? `{TRE_NOD_LOC|${location}}` : '';
     filter += this.deletedFlagField
       ? '^' + `({${this.deletedFlagField}|0}|{${this.deletedFlagField}|null})`
       : '';
@@ -266,8 +280,6 @@ export class FormCommon {
 
         // inline lookup definitions
         this._gridSourceLookups = data.processed.lookups[0];
-
-        //console.log("this._gridSourceLookups:",this.gridSourceLookups['ASSETNAME']);
 
         // refresh data grid to display extracted data
         if (this.mainGrid) this.mainGrid.Refresh();

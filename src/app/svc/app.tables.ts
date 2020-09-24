@@ -1,5 +1,5 @@
 /***********************************************************************
-* Automatically generated on 9/21/2020 11:23:05 AM
+* Automatically generated on 9/21/2020 10:28:05 PM
 ***********************************************************************/
 
 import { AppCommonMethodsService } from '../api/svc/app-common-methods.service';
@@ -617,10 +617,10 @@ export class TblDesignData extends TableBase {
 	this.columns.push(new ColumnInfo('DD_PARAM_UNIT', 'number', 'Unit', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('DD_PARAM_NOTES', 'string', 'Notes', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('DD_PARAM_REF', 'string', 'References', '', -1, -1, -1, -1, -1, false, false, true, this));
-	this.columns.push(new ColumnInfo('DD_Created', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_CreatedBy', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_Updated', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_UpdatedBy', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('DD_UPDATE_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('DD_DELETED', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('DD_DELETED_BY', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('DD_DELTED_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 
     this.InitializeTable();
 
@@ -652,10 +652,10 @@ export class TblDesignDataRow extends TableRowBase{
 		public DD_PARAM_UNIT?:number, 
 		public DD_PARAM_NOTES?:string, 
 		public DD_PARAM_REF?:string, 
-		public DD_Created?:Date, 
-		public DD_CreatedBy?:string, 
-		public DD_Updated?:Date, 
-		public DD_UpdatedBy?:string){
+		public DD_UPDATE_DATE?:Date, 
+		public DD_DELETED?:number, 
+		public DD_DELETED_BY?:string, 
+		public DD_DELTED_DATE?:Date){
     super();
 
   }
@@ -688,10 +688,6 @@ export class TblDesignDataParams extends TableBase {
 	this.columns.push(new ColumnInfo('DD_PARAM_CODE', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('DD_PARAM_NAME', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('DD_PARAM_TYPE', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_PARAM_Created', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_PARAM_CreatedBy', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_PARAM_Updated', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('DD_PARAM_UpdatedBy', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 
     this.InitializeTable();
 
@@ -719,11 +715,7 @@ export class TblDesignDataParamsRow extends TableRowBase{
 		public DD_PARAM?:number, 
 		public DD_PARAM_CODE?:string, 
 		public DD_PARAM_NAME?:string, 
-		public DD_PARAM_TYPE?:number, 
-		public DD_PARAM_Created?:Date, 
-		public DD_PARAM_CreatedBy?:string, 
-		public DD_PARAM_Updated?:Date, 
-		public DD_PARAM_UpdatedBy?:string){
+		public DD_PARAM_TYPE?:number){
     super();
 
   }
@@ -1170,13 +1162,13 @@ export class TblRefFiles extends TableBase {
 
 	this.columns.push(new ColumnInfo('RF_ID', 'number', 'ID', '', 0, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_TYPE', 'number', 'Type', '', -1, -1, 0, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('RF_DESC', 'string', 'Title', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('RF_DESC', 'string', 'Title', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('RF_CLASS', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_UPLDATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_REF_NO', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_REVNO', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_REVDATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('RF_FILENAME', 'string', 'Filename', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('RF_FILENAME', 'string', 'Filename', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('RF_PATH', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_REFNOX', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_CONTRACTOR', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
@@ -1185,6 +1177,9 @@ export class TblRefFiles extends TableBase {
 	this.columns.push(new ColumnInfo('RF_UPDBY', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_UPDDATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('RF_NOTES', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
+	this.columns.push(new ColumnInfo('RF_DELETED', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('RF_DELETED_BY', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('RF_DELETED_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 
     this.InitializeTable();
 
@@ -1225,7 +1220,10 @@ export class TblRefFilesRow extends TableRowBase{
 		public RF_LLID?:string, 
 		public RF_UPDBY?:string, 
 		public RF_UPDDATE?:Date, 
-		public RF_NOTES?:string){
+		public RF_NOTES?:string, 
+		public RF_DELETED?:number, 
+		public RF_DELETED_BY?:string, 
+		public RF_DELETED_DATE?:Date){
     super();
 
   }

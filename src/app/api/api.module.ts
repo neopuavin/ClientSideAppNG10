@@ -15,6 +15,7 @@ import { DataTabsComponent } from './cmp/data-tabs/data-tabs.component';
 import { PanelAComponent } from './cmp/panel-a/panel-a.component';
 import { AppFormAComponent } from './cmp/app-form-a/app-form-a.component';
 import { FormHeaderComponent } from './cmp/form-header/form-header.component';
+import { FilterParametersComponent } from './cmp/filter-parameters/filter-parameters.component';
 
 const declare = [
   AppFormAComponent,
@@ -25,7 +26,8 @@ const declare = [
   DataGridComponent,
   TreeViewComponent,
   FormHeaderComponent,
-  DataGridColMgtComponent
+  DataGridColMgtComponent,
+  FilterParametersComponent
 ];
 
 @NgModule({

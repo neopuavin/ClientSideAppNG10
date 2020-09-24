@@ -53,7 +53,8 @@
       [style.background]="background" [readonly]="true" [value]="displayDate"
       class="form-control flex-grow-1 form-control-sm py-0 my-0">
     <!--make actual date field as hidden but also make it's origin the same as the display field so that the date picker will appear at the bottom of the display field-->
-    <input #input type="text" style="visibility:hidden;position:absolute;background:yellow;z-index:-1"
+    <input #input type="text"
+      style="visibility:hidden;position:absolute;background:yellow;z-index:-1"
       [formControlName]="fieldName" [matDatepicker]="picker">
     <div *ngIf="!isReadOnly" class="input-group-append">
       <div class="input-group-text p-0 d-flex" [style.width.px]="controlHeight">

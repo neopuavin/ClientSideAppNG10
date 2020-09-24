@@ -66,6 +66,7 @@ button {
   // background: cyan;
   display: flex !important;
   flex-direction: column !important;
+  padding:0px !important;
   //padding-left:0px !important;
   //padding-right:0px !important;
 }
@@ -98,7 +99,7 @@ button {
 }
 
 [mat-dialog-title] {
-  margin: -24px -24px 0px -24px !important;
+  // margin: -24px -24px 0px -24px !important;
   padding: 10px 24px;
   background: $bs_warning;
   color: $fore_color_dark;
@@ -107,9 +108,10 @@ button {
 }
 
 mat-dialog-content {
-  margin-left: -24px !important;
-  margin-right: -24px !important;
-  padding: 0px 0px;
+  // margin-left: -24px !important;
+  // margin-right: -24px !important;
+  padding: 0px !important;
+  margin: 0px !important;
 
   display: flex !important;
   flex-direction: column !important;
@@ -125,8 +127,12 @@ mat-dialog-content {
   //   background: lime;
 }
 mat-dialog-actions {
-  margin-left: -24px !important;
-  margin-right: -24px !important;
+
+  padding: 0px !important;
+  margin: 0px !important;
+
+  // margin-left: -24px !important;
+  // margin-right: -24px !important;
 
   // background: lime !important;
   button {

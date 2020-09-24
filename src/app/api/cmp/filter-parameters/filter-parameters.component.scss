@@ -1,0 +1,182 @@
+@import "../../../../appcssvars.scss";
+:host {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 0 !important;
+  padding: 0px !important;
+}
+
+::ng-deep.mat-dialog-container {
+  resize: both;
+  overflow: hidden;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0px !important;
+}
+
+#details {
+  // background: lime;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  > div.menu-item {
+    display: flex;
+    flex-direction: column;
+    > div {
+      span {
+        font-family: $form_label_font-family;
+        padding-top: 3px;
+        cursor: default;
+      }
+      span.fa-stack {
+        padding: 0px;
+        margin: 0px;
+        // background: yellow;
+        i {
+          padding: 0px;
+        }
+      }
+
+      i {
+        padding: 5px;
+        width: 30px;
+        text-align: center;
+        border: 1px solid transparent;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+      i.active {
+        border: 1px solid $bs_info;
+        background: $bs_warning_light;
+      }
+      i.text-maroon {
+        color: maroon;
+      }
+    }
+  }
+  > div.sep {
+    padding-bottom: 6px;
+    border-bottom: 1px solid #efefef;
+  }
+
+  .form-group {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 4px;
+    label {
+      font-family: $form_label_font-family;
+      font-size: 0.95em;
+      white-space: nowrap;
+      margin-right: 5px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding: 0px;
+    }
+
+    .form-control[type="text"],
+    textarea.form-control,
+    select,
+    .form-control option {
+      // background-color: lime;
+      font-size: 0.95em;
+      font-family: $form_input_font-family;
+      height: 30px;
+    }
+    // .form-control select option {
+    //   padding: 10px 10px;
+    //   line-height: 30px;
+    // }
+  }
+}
+
+// .form-group {
+//   label {
+//     font-family: $form_label_font-family;
+//     font-size: 0.95em;
+//     white-space: nowrap;
+//     margin-right: 5px;
+//     margin-top: 0px;
+//     margin-bottom: 0px;
+//     padding: 0px;
+//   }
+
+//   .form-control[type="text"],
+//   textarea.form-control,
+//   select,
+//   .form-control option {
+//     // background-color: lime;
+//     font-size: 0.95em;
+//     font-family: $form_input_font-family;
+//     height:30px;
+//   }
+//   // .form-control select option {
+//   //   padding: 10px 10px;
+//   //   line-height: 30px;
+//   // }
+// }
+
+// mat-dialog-container{
+//   padding:0px !important;
+// }
+
+[mat-dialog-title] {
+  font-family: $form_header_font-family;
+  // margin: -24px -24px 0px -24px !important;
+  padding: 0px 10px;
+  background: $bs_warning;
+  color: $fore_color_dark;
+  // text-shadow: gray 1px 1px 1px;
+  cursor: move;
+  margin-bottom: 0px;
+  // text-align: center;
+}
+
+mat-dialog-content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 0 !important;
+  overflow: hidden;
+
+  //   background: lime;
+  // .mat-typography{
+  //   margin: -24px -24px 0px -24px !important;
+  // }
+}
+mat-dialog-actions {
+  margin-left: -24px !important;
+  margin-right: -24px !important;
+
+  // background: lime !important;
+  button {
+    height: 30px !important;
+    font-family: $form_button_font-family !important;
+    font-size: 0.9em !important;
+  }
+}
+
+// mat-menu button{
+//   background:red !important;
+// }
+
+// [mat-menu-item]{
+//   height:30px;
+//   padding:0px;
+// }
+
+::ng-deep .customize {
+  // background: red;
+  // button{
+  //   padding:0px;
+  //   height: 30px;
+  //   margin:0px;
+  // }
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  button.mat-menu-item {
+    background-color: white;
+    line-height:35px;
+    height:35px;
+  }
+}
+
+

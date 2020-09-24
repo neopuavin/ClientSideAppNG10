@@ -16,11 +16,6 @@ export interface IDataColumn {
   forLookup?: boolean;
   value?: any;
 
-  allowFilter?: boolean;
-  sortAsc?: boolean;
-  sortDesc?: boolean;
-  filters?: Array<any>;
-
   // when supplied, inline lookup will be generated. Object of key-value pairs
   // which will be used to search for display text of data field.
   // {key1:displayValue1,...,key#:displayValue#}
@@ -823,4 +818,22 @@ export enum SQLSelectFieldMode {
   JOIN_SEPARATOR = ';',
   FIELD_SEPARATOR = ',',
   ALIAS_SEPARATOR = '@',
+}
+
+/********************************* filtering ***************************************/
+
+export interface IFilterOperator {
+  prmt: string;
+  optr: string;
+  apsw: number;
+}
+
+export enum FilterDataType {
+  TEXT = 1,
+  DATE = 2,
+  NUMBER = 4,
+  BOOLEAN = 8,
+  MATRIX = 16,
+  ASSET = 32,
+  LOOKUP = 64,
 }

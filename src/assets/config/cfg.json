@@ -78,20 +78,21 @@
           "label": "Anomaly",
           "active": true,
           "init_fields": "AN_ID`AN_TITLE`ASSET_ID`AN_ORIG_CLASS`AN_CURR_CLASS",
-          "ready": true
+          "ready": true,
+          "loaded":false
         },
-        { "id": 2, "label": "Design Data", "active": false, "ready": true },
-        { "id": 3, "label": "Chemical Database", "active": false },
-        { "id": 4, "label": "Risk Based Inspection", "active": false },
-        { "id": 5, "label": "Survey Data", "active": false, "ready": true },
-        { "id": 6, "label": "Freespan", "active": false, "ready": false },
+        { "id": 2, "label": "Design Data", "active": false, "ready": true, "loaded":false },
+        { "id": 3, "label": "Chemical Database", "active": false, "loaded":false },
+        { "id": 4, "label": "Risk Based Inspection", "active": false, "loaded":false },
+        { "id": 5, "label": "Survey Data", "active": false, "ready": true, "loaded":false },
+        { "id": 6, "label": "Freespan", "active": false, "ready": false, "loaded":false },
         {
           "id": 7,
           "label": "Reference Library",
           "active": false,
-          "ready": true
+          "ready": true, "loaded":false
         },
-        { "id": 8, "label": "Seismic", "active": false }
+        { "id": 8, "label": "Seismic", "active": false, "loaded":false }
       ]
     },
     {
@@ -100,9 +101,9 @@
       "active": false,
       "icon": "fa fa-wrench",
       "subMenu": [
-        { "id": 9, "label": "User Management", "active": false },
-        { "id": 10, "label": "Asset Management", "active": false },
-        { "id": 11, "label": "Survey Upload", "active": false }
+        { "id": 9, "label": "User Management", "active": false , "loaded":false},
+        { "id": 10, "label": "Asset Management", "active": false , "loaded":false},
+        { "id": 11, "label": "Survey Upload", "active": false , "loaded":false}
       ]
     },
     {

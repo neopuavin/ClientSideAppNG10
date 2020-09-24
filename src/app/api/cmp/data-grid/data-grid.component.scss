@@ -5,6 +5,18 @@ $test_col_with: 400px;
   flex-direction: column;
   margin: 0px;
   height: 100%;
+
+
+  #filter-menu{
+    // background-color: magenta !important;
+    // ul.list-group{
+    //   li.list-group-item{
+    //     font-family: $grid_body_font-family !important;
+    //     background: lime;
+    //   }
+    // }
+  }
+
   div.row-header {
     font-family: $grid_body_font-family;
     font-weight: normal !important;
@@ -64,54 +76,58 @@ $test_col_with: 400px;
         // background-color: red;
       }
 
+      .header-with-filter-or-sort{
+        background: $bs_warning_light;
+        color:$bs_info;
+      }
+
       .header-text {
         margin-left: 2px;
         flex: 1 1 0;
         margin: 0px 0px;
         overflow: hidden;
         text-overflow: ellipsis;
-        // background: yellow;
-        display: flex;
+        // display: flex; // this causes text overflow disappear
         flex-direction: column;
         justify-content: center;
         padding-left: 2px;
         padding-right: 2px;
       }
       .header-filter {
-        margin-left: 2px;
-        margin-right: 3px;
         justify-content: flex-end;
         display: flex;
         flex-direction: column;
-        min-width: 18px;
-        max-width: 18px;
-        font-size: 0.9em;
+        min-width: 20px;
+        max-width: 20px;
+        font-size: 1.2em;
         > div:first-child {
           // background: $bs_warning;
-          > i{
+          min-height: 12px;
+          max-height: 12px;
+          order: 1;
+          > i {
             flex: 1 1 0;
             border: 1px solid transparent;
-            padding: 0px;
+            padding: 1px;
             cursor: pointer;
+            //padding-top: 1px;
           }
-          > i:hover{
+          > i:hover {
             color: $bs_info;
             background-color: $bs_warning_light;
             border: 1px solid $bs_info;
-
           }
-          // > i:first-child {
-          //   // sort icon
-          //   // background: cyan;
-          //   cursor: pointer;
-          // }
+          > i:first-child {
+            // sort icon
+            font-size: 0.6em;
+          }
           // > i:first-child:hover {
           //   color: $bs_info;
           //   background-color: $bs_warning_light;
           // }
           > i:last-child {
             // filter icon
-            font-size: 0.6em;
+            font-size: 0.5em;
           }
           // > i:last-child:hover {
           //   color: $bs_info;
@@ -124,6 +140,7 @@ $test_col_with: 400px;
           padding: 0px;
           border: 1px solid transparent;
           cursor: pointer;
+          flex: 1 1 0;
         }
         > i:last-child:hover {
           color: $bs_info;
@@ -259,7 +276,6 @@ $test_col_with: 400px;
     nav {
       padding: 2px 2px;
       margin: 0px 0px;
-      //background-color: lime;
       ul {
         margin: 0px;
         li.page-item {

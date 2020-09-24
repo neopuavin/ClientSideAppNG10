@@ -93,8 +93,6 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
     this.excelClick.emit(event);
   }
 
-
-
   FilterClick(event: any) {
     this.filterClick.emit(event);
   }

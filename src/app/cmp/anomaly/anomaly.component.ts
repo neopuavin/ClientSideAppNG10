@@ -1,6 +1,9 @@
 import { DataGridColum } from './../../api/cmp/data-grid/data-grid.component';
-import { TblAnomaliesRow } from './../../svc/app.tables';
-import { DataOption, ILookupItem } from './../../api/mod/app-common.classes';
+import {
+  DataOption,
+  IFilterOperator,
+  FilterDataType,
+} from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { FormCommon } from './../form.common';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
@@ -132,7 +135,9 @@ export class AnomalyComponent
         caption: 'ID',
         align: center,
         isKey: true,
-        allowFilter:false
+        allowFilter: false,
+        sortAsc: true,
+        // filters:[1],
       })
       .AddColumn({
         fieldName: 'AN_REF',
@@ -181,6 +186,7 @@ export class AnomalyComponent
       .AddColumn({
         fieldName: 'AN_ASSET_ID',
         minWidth: minLong,
+        filterType:FilterDataType.ASSET,
         lookupParams: {
           inlineLookupTableAlias: 'alkp',
           inlineLookupTableField: 'NODE_DESC',
@@ -197,6 +203,9 @@ export class AnomalyComponent
           inlineLookupTableAlias: 'stat',
           inlineLookupTableField: 'LKP_DESC_B',
         },
+        //sortAsc:true,
+        sortDesc:true,
+        filters: [1],
       })
       .AddColumn({
         fieldName: 'AN_WO_REF',
@@ -339,6 +348,12 @@ export class AnomalyComponent
       })
       .AddColumn({
         fieldAlias: 'RISK',
+
+        filterType:FilterDataType.MATRIX,
+        matrixData:this.ds.riskMatrixData,
+        matrixSeverity:'AN_RISK_RANK_SEVERITY',
+        matrixLikelihood:'AN_RISK_RANK_LIKELIHOOD',
+
         value: 'M{AN_RISK_RANK_SEVERITY}{AN_RISK_RANK_LIKELIHOOD}',
         width: wd2,
         align: center,
@@ -747,7 +762,7 @@ export class AnomalyComponent
           'Confirm record deletion' +
           (row ? ` of Anomaly Ref#${row['AN_REF']}` : ''),
         msgWarning: `You are about to delete the currently selected anomaly record.<br/><br/>Do you want to continue?`,
-        msgSuccess: `Anomaly Ref#${row['AN_REF']} was successfully deleted`
+        msgSuccess: `Anomaly Ref#${row['AN_REF']} was successfully deleted`,
       },
       userStampFields: ['AN_DELETED_BY'],
       dateStampFields: ['AN_DELETED_DATE'],
