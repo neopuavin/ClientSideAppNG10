@@ -1,6 +1,9 @@
+import { AppFormAComponent } from './../api/cmp/app-form-a/app-form-a.component';
+import { DataTabsOption } from './../api/cmp/data-tabs/data-tabs.component';
+import { DataGridOption } from './../api/cmp/data-grid/data-grid.component';
 import { CellTextAlign } from 'src/app/api/cmp/data-grid/data-grid.component';
 import { ILookupItem } from './../api/mod/app-common.classes';
-import { IDataSource } from './app-main-service.service';
+import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { IAppVersion, RequestParams } from './../api/mod/app-params.model';
 import {
   TreeViewNode,
@@ -954,8 +957,17 @@ export class ModuleState {
   constructor(_moduleId: number) {
     this.moduleId = _moduleId;
   }
+
   public moduleId: number;
-  public gridSourceLookups: any;
+  public gridSourceLookups: Array<any>;
+  public gridSourceRows: Array<any>;
+  public currentRow: any = null;
+
+  public mainGridOptions: DataGridOption = new DataGridOption([]);
+  public mainTabsOptions: DataTabsOption = new DataTabsOption([]);
+  public mainFormCollection: Array<AppFormAComponent> = [];
+  public mainFormObject: FormGroup = new FormGroup({});
+  public mainRecordsBuffer: Array<any> = [];
 }
 
 export interface IAccessRights {

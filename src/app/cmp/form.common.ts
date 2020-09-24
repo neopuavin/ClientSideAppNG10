@@ -44,11 +44,6 @@ export class FormCommon {
 
   myForm: FormGroup = null;
 
-  public mainGridOptions = new DataGridOption([]);
-  public mainTabsOptions = new DataTabsOption([]);
-  public mainFormCollection: Array<AppFormAComponent> = [];
-  public mainFormObject: FormGroup = new FormGroup({});
-  public mainRecordsBuffer: Array<any> = [];
 
   public suppressPendingRequestFlag: boolean = false;
 
@@ -176,14 +171,50 @@ export class FormCommon {
     return this._sourceRow;
   }
 
-  private _gridSourceRows: Array<any> = [];
-  public get gridSourceRows(): Array<any> {
-    return this._gridSourceRows;
-  }
-  private _gridSourceLookups: Array<any> = [];
-  public get gridSourceLookups(): Array<any> {
 
-    return this._gridSourceLookups;
+  public get mainGridOptions():DataGridOption{
+    return this.moduleState.mainGridOptions;
+
+  }
+  public get mainTabsOptions():DataTabsOption{
+    return this.moduleState.mainTabsOptions;
+
+  }
+  public get mainFormCollection(): Array<AppFormAComponent>{
+    return this.moduleState.mainFormCollection;
+
+  }
+  public get mainFormObject(): FormGroup{
+    return this.moduleState.mainFormObject;
+  }
+  public set mainFormObject(value : FormGroup){
+    this.moduleState.mainFormObject=value;
+  }
+  public get mainRecordsBuffer(): Array<any>{
+    return this.moduleState.gridSourceRows;
+  }
+
+  public get gridSourceRows(): Array<any> {
+    return this.moduleState.gridSourceRows;
+  }
+
+  public set gridSourceRows(value: Array<any>) {
+    this.moduleState.gridSourceRows = value;
+  }
+
+  public get currentRow(): any {
+    return this.moduleState.currentRow;
+  }
+
+  public set currentRow(value:any) {
+    this.moduleState.currentRow = value;
+  }
+
+  public get gridSourceLookups(): Array<any> {
+    return this.moduleState.gridSourceLookups;
+  }
+  public set gridSourceLookups(value:Array<any>)  {
+    this.moduleState.gridSourceLookups = value;
   }
 
   private _moduleState:ModuleState;
@@ -276,17 +307,20 @@ export class FormCommon {
     this.ds.Get([requestParams], {
       onSuccess: (data) => {
         // processed rows for the grid to display
-        this._gridSourceRows = data.processed.data[0];
+        // this._gridSourceRows = data.processed.data[0];
+        this.gridSourceRows = data.processed.data[0];
 
         // inline lookup definitions
-        this._gridSourceLookups = data.processed.lookups[0];
+        // this._gridSourceLookups = data.processed.lookups[0];
+        this.gridSourceLookups = data.processed.lookups[0];
 
         // refresh data grid to display extracted data
         if (this.mainGrid) this.mainGrid.Refresh();
 
         // reset current row
         let row: any = null;
-        if (this._gridSourceRows.length) row = this._gridSourceRows[0];
+        // if (this._gridSourceRows.length) row = this._gridSourceRows[0];
+        if (this.gridSourceRows.length) row = this.gridSourceRows[0];
 
         // console.log('RETURN DATA:', data, 'ROW:', row);
 
@@ -934,8 +968,8 @@ export class FormCommon {
   ResetCurrentRow(row?: any) {
     // sets current row in the gird and retrieves actual record to scatter on data form
     if (!row) {
-      this._currentRow = null;
-      this._sourceRow = this._currentRow;
+      this.currentRow = null;
+      this._sourceRow = this.currentRow;
     } else if (this.mainGrid) {
       this.mainGrid.currentRow = row;
       //this.GridRowClick({ row: row, e: null });
@@ -965,8 +999,8 @@ export class FormCommon {
 
       if (bufIndex != -1) {
         // triggers form scatter
-        this._currentRow = this.mainRecordsBuffer[bufIndex];
-        this._sourceRow = this._currentRow;
+        this.currentRow = this.mainRecordsBuffer[bufIndex];
+        this._sourceRow = this.currentRow;
         console.log('From buffer');
         return;
       }
@@ -1020,12 +1054,12 @@ export class FormCommon {
         onSuccess: (e) => {
           if (e.processed.data[0].length) {
             // set details current row data
-            this._currentRow = e.processed.data[0].length
+            this.currentRow = e.processed.data[0].length
               ? e.processed.data[0][0]
               : null;
 
             // set current row's tree location position data
-            this._currentRow.XTRA = {
+            this.currentRow.XTRA = {
               TRE_NOD_LOC: e.processed.data[1]
                 ? e.processed.data[1].length
                   ? e.processed.data[1][0]['TRE_NOD_LOC']
@@ -1033,24 +1067,24 @@ export class FormCommon {
                 : null,
             };
 
-            this._currentRow.XTRA = {
+            this.currentRow.XTRA = {
               // build asset lookup's initial element within the extracted row
               assetLookup: [
                 {
-                  key: this._currentRow[this.assetField],
-                  code: this._currentRow.XTRA.NODE_ID,
-                  text: this._currentRow.XTRA.NODE_DESC,
-                  location: this._currentRow.XTRA.TRE_NOD_LOC,
+                  key: this.currentRow[this.assetField],
+                  code: this.currentRow.XTRA.NODE_ID,
+                  text: this.currentRow.XTRA.NODE_DESC,
+                  location: this.currentRow.XTRA.TRE_NOD_LOC,
                 },
               ],
             };
           }
 
           // add currentRow to buffer
-          this.mainRecordsBuffer.push(this._currentRow);
+          this.mainRecordsBuffer.push(this.currentRow);
 
           // triggers form scatter
-          this._sourceRow = this._currentRow;
+          this._sourceRow = this.currentRow;
 
           // call module's local override function
           this.GridRowClickLocal(e);
@@ -1071,11 +1105,6 @@ export class FormCommon {
         },
       }
     );
-  }
-
-  private _currentRow: any = null;
-  public get currentRow(): any {
-    return this._currentRow;
   }
 
   public isCurrentRow(row: any): boolean {
@@ -1117,9 +1146,7 @@ export class FormCommon {
   }
 
   CancelUpdate() {
-    console.log('CancelUpdate:', this._currentRow);
     return;
-    console.log('CancelUpdate:', this._currentRow, this.mainFormObject);
     const formVal = this.mainFormObject.value;
 
     let patchValues = {};
