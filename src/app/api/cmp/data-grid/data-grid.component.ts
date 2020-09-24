@@ -56,9 +56,16 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() gridPortHeight: number = 768;
 
-  @Input() set currentRow(value: any) {
+
+  private _currentRow: any = null;
+  public get currentRow():any{
+    return this._currentRow
+  }
+
+  public set currentRow(value: any) {
+
     const keyName = this.options.keyColumnName;
-    if (keyName) {
+    if (keyName && value) {
       const keyVal = value[keyName];
       if (keyVal) {
         let focusElement: any = document.querySelector('#row_focus_' + keyVal);
@@ -85,6 +92,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
  */
     this._currentRow = value;
   }
+
+
 
   private debugMode: boolean = false;
 
@@ -348,8 +357,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return true;
   }
 
-  public _currentRow: any = null;
-
   public RowClick(row: any) {
     this.currentRow = row;
   }
@@ -476,7 +483,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     this._sourceProcessing = true;
 
     // reset current row
-    this._currentRow = null;
+    this.currentRow = null;
 
     setTimeout(() => {
       // initialize _dataSource array
@@ -835,8 +842,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   isCurrRow(row: any): boolean {
     const key = this.keyColumnName;
     if (!key) return false;
-    if (!this._currentRow) return false;
-    return this._currentRow[key] == row[key];
+    if (!this.currentRow) return false;
+    return this.currentRow[key] == row[key];
   }
 
   private _portHeight: number = 768;

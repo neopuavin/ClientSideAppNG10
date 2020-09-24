@@ -67,7 +67,9 @@
     [style.height.px]="SearchResultHeight" [style.visibility]="searched && searchCount!=0 ? 'visible' : 'hidden'">
       <div style="flex:1 1 0;background:white;" class="m-0 p-0">
         <app-data-grid #searchGrid (rowClick)="SearchRowClick($event)"
-          [sourceRows]="this.searchResult" [options]="gridOptions" [gridPortHeight]="200"></app-data-grid>
+          [sourceRows]="this.searchResult"
+          [options]="gridOptions"
+          [gridPortHeight]="200"></app-data-grid>
       </div>
       <!-- <div class="bg-warning" style="border:1px solid red;">&nbsp;</div> -->
     </div>

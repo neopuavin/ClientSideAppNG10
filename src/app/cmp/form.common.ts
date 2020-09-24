@@ -857,7 +857,7 @@ export class FormCommon {
           this.treeView.SetCurrentNode(searchLocation.location);
       }
     } else if (data) {
-      const gridRow = this.mainGrid._currentRow;
+      const gridRow = this.mainGrid.currentRow;
 
       if (gridRow) {
         if (
@@ -889,46 +889,6 @@ export class FormCommon {
     if (requeryDetails && row) {
     }
 
-    // // post changed data taken from the add/edit form object
-
-    // if (isNew) isNew = false;
-    // if (isDelete) isDelete = false;
-    // if (!row) row = this.currentRow;
-
-    // let reqGrid: boolean = isDelete || isNew;
-
-    // // re-query current row
-
-    // // or
-
-    // return;
-
-    // for (let field in data) {
-    //   const value = data[field];
-
-    //   // update main form obj value
-    //   const ctrl = this.mainFormObject.get(field);
-    //   if (ctrl) {
-    //     ctrl.setValue(value);
-    //   } else {
-    //     console.log(`Control ${field} not found.`);
-    //   }
-
-    //   // update currentRow or supplied row value
-    //   row[field] = value;
-
-    //   // update grid value if not new record
-    //   if (this.mainGrid._currentRow)
-    //     if (this.mainGrid._currentRow[field] != undefined && !isNew)
-    //       this.mainGrid._currentRow[field] = value;
-    // } // end of for
-    // if (this.mainGrid._currentRow && !isNew) {
-    //   // clear cached row information
-    //   console.log('CLEAR CACHED INFO');
-    //   this.mainGrid._currentRow.ClearCachedInfo();
-    // }
-
-    // update
   }
 
   ResetData(form: FormGroup, row: any) {
@@ -966,7 +926,7 @@ export class FormCommon {
   private _loadingTimeoutHandle: any = null;
 
   ResetCurrentRow(row?: any) {
-    // sets current row in the gird and retrieves actual record to scatter on data form
+    // sets current row in the grid and retrieves actual record to scatter on data form
     if (!row) {
       this.currentRow = null;
       this._sourceRow = this.currentRow;
