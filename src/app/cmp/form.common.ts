@@ -55,7 +55,7 @@ export class FormCommon {
 
   CommonFormInit() {
     // bypass this method if the module state object is already initialized
-    if(this.moduleStateInitialized) return;
+    if(this.moduleParamsInitialized) return;
 
     if (this.sourceTable != null && this.mainGridOptions != null) {
       // set initial join expression and filter parameters
@@ -177,8 +177,9 @@ export class FormCommon {
     return this._sourceRow;
   }
 
-  public get moduleStateInitialized(): boolean {
+  public get moduleParamsInitialized(): boolean {
     return this.mainGridOptions.columns.length != 0;
+    // return this.moduleState.setupDataCalled;
   }
 
   public get mainGridOptions(): DataGridOption {
@@ -269,6 +270,9 @@ export class FormCommon {
       return;
     }
 
+    // this flag is set to make sure that module initialization  is arleady called
+    this.moduleState.setupDataCalled = true;
+
     if (pageNumber == undefined || pageSize != undefined) pageNumber = 1;
 
     if (pageSize == undefined) {
@@ -291,7 +295,6 @@ export class FormCommon {
       ? '^' + `({${this.deletedFlagField}|0}|{${this.deletedFlagField}|null})`
       : '';
     filter = `(${filter})`;
-    console.log('\nFILTER 1:', filter);
     this.SetFilterParams();
     // get filter defined within the
     if (this.deletedFlagField) {
@@ -299,8 +302,6 @@ export class FormCommon {
     }
     const localFilter = this.mainGridOptions.whereClause;
     filter += localFilter ? '^' + localFilter : '';
-    console.log('\nFILTER 2:', filter);
-    console.log('\nFROM CLAUSE:', this.mainGridOptions.fromClauseCode);
 
     // Base request parameters where initially common filtering and sorting is applied
     let requestParams: RequestParams = {
@@ -314,7 +315,7 @@ export class FormCommon {
       sortFields: this.mainGridOptions.orderByClause,
     };
 
-    console.log('REQUEST PARAMS???:', JSON.stringify(requestParams));
+    // console.log('REQUEST PARAMS???:', JSON.stringify(requestParams));
 
     this.ds.Get([requestParams], {
       onSuccess: (data) => {

@@ -57,11 +57,26 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() gridPortHeight: number = 768;
 
   // this is to allow usage of external object as current row of the grid
-  @Input() gridCurrentRow: any;
+  @Input() gridDataSource: any;
+  private _dataSource: Array<any> = [];
+  private get dataSourceObject(): Array<any> {
+    // return this._dataSource;
 
+    return this.gridDataSource != undefined
+      ? this.gridDataSource
+      : this._dataSource;
+  }
+
+  private set dataSourceObject(value: Array<any>) {
+    if (this.gridDataSource != undefined) this.gridDataSource = value;
+    else this._dataSource = value;
+  }
+
+  @Input() gridCurrentRow: any;
   private _currentRow: any = null;
 
   private get currentRowObject(): any {
+    // return this._currentRow;
     return this.gridCurrentRow != undefined
       ? this.gridCurrentRow
       : this._currentRow;
@@ -436,7 +451,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return arr;
   }
 
-  private _dataSource: Array<any> = [];
   public lastDataSourceUpdatTime: number = 0;
 
   InitDataSource(): void {
@@ -485,8 +499,11 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  Refresh() {
+  Refresh(fromCachedData?: boolean) {
     // Refresh data grid source
+    if (fromCachedData) {
+      return;
+    }
 
     // set flag to make sure that the
     // UI does not repeatedly refresh while the
@@ -498,11 +515,14 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     setTimeout(() => {
       // initialize _dataSource array
-      this._dataSource = [];
+      // this._dataSource = [];
+      this.dataSourceObject = [];
       // populate _dataSource array with data from
       // source data collection
+      const dataSourceObject = this.dataSourceObject;
       this.SourceRows.forEach((r) => {
-        this._dataSource.push(r);
+        // this._dataSource.push(r);
+        dataSourceObject.push(r);
       });
       // turn off source processing flag to
       // finally display the requested data
@@ -524,7 +544,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public get dataSource(): Array<any> {
     if (this._sourceProcessing || this.isLoadingData) return [];
-    return this._dataSource;
+    // return this._dataSource;
+    return this.dataSourceObject;
   }
 
   public get recordStatus(): string {

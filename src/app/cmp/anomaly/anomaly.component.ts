@@ -91,19 +91,20 @@ export class AnomalyComponent
     // the next method calls must be executed within the ngOnInit lifecycle because
     // objects generated are needed in the template rendering.
 
-    // Set Common Data Settings
-    this.CommonFormInit();
+    // bypass setup tab because is was already called when the component was loaded once
+    if (!this.moduleParamsInitialized) {
+      // Set Common Data Settings
+      this.CommonFormInit();
 
-    // Call data grid option setup on success of getting all lookup dependencies
-    this.SetupGridColumns();
+      // Call data grid option setup on success of getting all lookup dependencies
+      this.SetupGridColumns();
 
-    // Setup details tab
-    this.SetupDetailsTab();
+      // Setup details tab
+      this.SetupDetailsTab();
+    }
   }
 
   SetupGridColumns() {
-
-    if (this.moduleStateInitialized) return;
 
     const {
       center,
@@ -611,6 +612,8 @@ export class AnomalyComponent
 
   GridRowClickLocal(data: any) {
     // redefinition of GridRowClickLocal
+    console.log('this.mainTabsOptions:', this.mainTabsOptions);
+
     const row = this.currentRow;
     this.mainTabsOptions.tabs[0].toolTip = row
       ? `[Ref#:${row.AN_REF}] ${row.AN_TITLE}`

@@ -816,6 +816,8 @@ export class ModuleState {
   public mainFormCollection: Array<AppFormAComponent> = [];
   public mainFormObject: FormGroup = new FormGroup({});
   public mainRecordsBuffer: Array<any> = [];
+
+  public setupDataCalled: boolean = false;
 }
 
 export interface IAccessRights {

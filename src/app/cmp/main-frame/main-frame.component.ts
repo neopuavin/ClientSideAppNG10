@@ -10,7 +10,7 @@ import {
   TreeViewComponent,
   TreeViewNode,
 } from './../../api/cmp/tree-view/tree-view.component';
-import { AppDataset } from './../../svc/app-dataset.service';
+import { AppDataset, ModuleState } from './../../svc/app-dataset.service';
 import {
   Component,
   OnInit,
@@ -84,7 +84,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     // Request data based on selected module....
   }
 
-  private _KeepAlive:any;
+  private _KeepAlive: any;
   KeepAlive() {
     this.ds.Get(
       [
@@ -99,9 +99,12 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
         onSuccess: (data) => {
           // console.log('\nSuccess on keeping alive! ' + this.ds.dateStampString, data);
         },
-        onError:(err)=>{
-          console.log('\nError on keeping alive! ' + this.ds.dateStampString, err);
-        }
+        onError: (err) => {
+          console.log(
+            '\nError on keeping alive! ' + this.ds.dateStampString,
+            err
+          );
+        },
       }
     );
 
@@ -180,7 +183,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     if (changeMenu) subm.find((e) => e.id == menuId).active = true;
 
     setTimeout(() => {
-      this.ReloadData();
+      this.SetupDetailsData(true);
     }, 1);
   }
 
@@ -212,37 +215,46 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
   menuLabel(menuItem: any): string {
     const lbl = menuItem.label;
     if (lbl == 'user-info') {
-      return this.ds.userInfo ? `Hi ${this.ds.userInfo.name} [${this.ds.userInfo.id}]` : 'Visitor';
+      return this.ds.userInfo
+        ? `Hi ${this.ds.userInfo.name} [${this.ds.userInfo.id}]`
+        : 'Visitor';
     } else {
       return menuItem.label;
     }
   }
 
-  ReloadData() {
-    // if (this.modReferenceLibrary)
-    //   if(this.modReferenceLibrary.reqInfo.)
-    //   this.modReferenceLibrary.mainGrid.Refresh();
-    this.SetupDetailsData();
+  SetupDetailsData(calledFromMenu?: boolean) {
+    if (calledFromMenu) console.log('FROM MENU CLICKED!');
+
+    let visibleModule: any = this.visibleModule;
+    if (visibleModule) {
+      const state: ModuleState = visibleModule.moduleState;
+      if (!state.setupDataCalled || !calledFromMenu) {
+        visibleModule.SetupData();
+      }else{
+        // refresh grid using the cached module state
+        if (visibleModule.mainGrid) visibleModule.mainGrid.Refresh();
+      }
+    }
   }
 
-  SetupDetailsData() {
-
-
-    if (this.modReferenceLibrary) {
-      this.modReferenceLibrary.SetupData();
-    } else if (this.modAnomaly) {
-      this.modAnomaly.SetupData();
-    } else if (this.modDesignData) {
-      this.modDesignData.SetupData();
-    } else if (this.modSurveyData) {
-      this.modSurveyData.SetupData();
-    }
+  public get visibleModule(): any {
+    if (this.modReferenceLibrary) return this.modReferenceLibrary;
+    else if (this.modAnomaly) return this.modAnomaly;
+    else if (this.modDesignData) return this.modDesignData;
+    else if (this.modSurveyData) return this.modSurveyData;
+    else return null;
+  }
+  public get visibleModuleState(): ModuleState {
+    let visibleModule: any = this.visibleModule;
+    return visibleModule ? visibleModule.moduleState : null;
   }
 
   TreeClick(n: TreeViewNode) {
     this.ds.mainTreeCurrentNode = n;
     this._NodePath = this.treeView.NodePath;
 
+    console.log('TREE CLICKED !!!');
     this.SetupDetailsData();
   }
 

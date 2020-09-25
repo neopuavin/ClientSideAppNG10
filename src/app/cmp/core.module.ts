@@ -18,9 +18,10 @@ import { ChemicalDatabaseModule } from './chemical-database/chemical-database.mo
 import { DesignDataModule } from './design-data/design-data.module';
 
 import { CommonPopupComponent } from './common-popup/common-popup.component';
+import { AppLandingComponent } from './app-landing/app-landing.component';
 import { AssetSelectorComponent } from './asset-selector/asset-selector.component';
 
-const declare = [CommonPopupComponent, AssetSelectorComponent];
+const declare = [AppLandingComponent, CommonPopupComponent, AssetSelectorComponent];
 const both = [
   // common modules
   APIModule,
@@ -39,11 +40,12 @@ const both = [
   SurveyDataModule,
   SurveyUploadModule,
   UserManagementModule
+
 ];
 
 @NgModule({
   declarations: declare,
   imports: [CommonModule,  both],
-  exports: [CommonPopupComponent, both],
+  exports: [CommonPopupComponent, AppLandingComponent, both],
 })
 export class CoreModule {}

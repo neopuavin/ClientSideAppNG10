@@ -100,13 +100,16 @@
           <!-- width=0 is necessary to prevent content to control the width of the panel-->
           <!-- Modules -->
 
+          <app-app-landing *ngIf="activeModule==-1"></app-app-landing>
+
+          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
+            [sourceTable]="ds.tblAnomalies"  *ngIf="activeModule==1" [deletedFlagField] = "'AN_DELETED'" [assetField]="'AN_ASSET_ID'"></app-anomaly>
+
           <app-design-data [treeView]="setValueTo(treeView,undefined)"
             *ngIf="activeModule==2"
             [moduleId]="2" [sourceTable]="ds.tblDesignData"
             [assetField]="''"></app-design-data>
 
-          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
-            [sourceTable]="ds.tblAnomalies"  *ngIf="activeModule==1" [deletedFlagField] = "'AN_DELETED'" [assetField]="'AN_ASSET_ID'"></app-anomaly>
 
           <app-chemical-database [treeView]="treeView" [moduleId]="3" *ngIf="activeModule==3"></app-chemical-database>
           <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4">
