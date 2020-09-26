@@ -3,7 +3,7 @@ import { DataTabsOption } from './../api/cmp/data-tabs/data-tabs.component';
 import { DataGridOption } from './../api/cmp/data-grid/data-grid.component';
 import { CellTextAlign } from 'src/app/api/cmp/data-grid/data-grid.component';
 import { ILookupItem } from './../api/mod/app-common.classes';
-import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { IAppVersion, RequestParams } from './../api/mod/app-params.model';
 import {
   TreeViewNode,
@@ -12,9 +12,7 @@ import {
 import { Relation } from './../api/svc/app-common.datatable';
 import { AppCommonMethodsService } from '../api/svc/app-common-methods.service';
 import { DatasetBase } from '../api/svc/app-common.dataset';
-import { Subscription, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 
 import * as appConfig from '../../assets/config/cfg.json';
 
@@ -808,8 +806,12 @@ export class ModuleState {
 
   public moduleId: number;
   public gridSourceLookups: Array<any>;
-  public gridSourceRows: Array<any>;
+
+  public gridDataSource: Array<any>;
+  public gridCurrentRow: Array<any>;
+
   public currentRow: any = null;
+  public currentNode:TreeViewNode=null;
 
   public mainGridOptions: DataGridOption = new DataGridOption([]);
   public mainTabsOptions: DataTabsOption = new DataTabsOption([]);

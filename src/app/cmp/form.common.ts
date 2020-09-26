@@ -202,11 +202,11 @@ export class FormCommon {
   }
 
   public get gridSourceRows(): Array<any> {
-    return this.moduleState.gridSourceRows;
+    return this.moduleState.gridDataSource;
   }
 
   public set gridSourceRows(value: Array<any>) {
-    this.moduleState.gridSourceRows = value;
+    this.moduleState.gridDataSource = value;
   }
 
   public get currentRow(): any {

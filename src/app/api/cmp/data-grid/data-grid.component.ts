@@ -501,9 +501,9 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   Refresh(fromCachedData?: boolean) {
     // Refresh data grid source
-    if (fromCachedData) {
-      return;
-    }
+    // if (fromCachedData) {
+    //   return;
+    // }
 
     // set flag to make sure that the
     // UI does not repeatedly refresh while the

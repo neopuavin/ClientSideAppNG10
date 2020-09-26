@@ -229,11 +229,15 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     let visibleModule: any = this.visibleModule;
     if (visibleModule) {
       const state: ModuleState = visibleModule.moduleState;
-      if (!state.setupDataCalled || !calledFromMenu) {
+      const node:TreeViewNode = state.currentNode;
+      const treeNode:TreeViewNode = this.ds.mainTreeCurrentNode;
+      const nodeChanged:boolean = !node ? true : node.loc != treeNode.loc;
+      if (!state.setupDataCalled || !calledFromMenu || nodeChanged) {
         visibleModule.SetupData();
+        state.currentNode = treeNode;
       }else{
         // refresh grid using the cached module state
-        if (visibleModule.mainGrid) visibleModule.mainGrid.Refresh();
+        if (visibleModule.mainGrid) visibleModule.mainGrid.Refresh(true);
       }
     }
   }

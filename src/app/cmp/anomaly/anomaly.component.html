@@ -29,6 +29,9 @@
       [gridPortHeight]="1080"
       [activeFiltering]="true"
 
+      [gridCurrentRow]="moduleState.gridCurrentRow"
+      [gridDataSource]="moduleState.gridDataSource"
+
       (rowClick)="GridRowClick($event)"
       (onColumnsChanged)="SetupData()"
       (pageSizeChange)="PageSizeChange($event)" (pageClick)="ChangePage($event)" [options]="mainGridOptions">
