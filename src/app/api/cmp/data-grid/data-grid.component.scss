@@ -137,7 +137,8 @@ $test_col_with: 400px;
         > i:last-child {
           // drop arrow
           // background: $bs_danger;
-          padding: 0px;
+          font-size: 0.8em;
+          padding: 0px !important;
           border: 1px solid transparent;
           cursor: pointer;
           flex: 1 1 0;

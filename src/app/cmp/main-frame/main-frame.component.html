@@ -19,7 +19,8 @@
     <div class="" id="nav-menu">
       <div class="" id="nav-menu-top">
         <span *ngFor="let m of menuList" class="noselect {{m.active ? 'active' : ''}}" (click)="menuClick(m.id)"><i
-            *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''" [class]="m.icon + ' mr-1'"></i>{{menuLabel(m)}}
+            *ngIf="m.icon" [title]="m.label == 'Help' ? ds.debugTrace : ''"
+            [class]="m.icon + ' mr-1'"></i>{{menuLabel(m)}}
         </span>
         <span id="notifiaction" class="px-0 m-0 ml-2">
           <i class="fa active" matTooltipPosition="below" [matTooltip]="notificationTip"
@@ -100,36 +101,47 @@
           <!-- width=0 is necessary to prevent content to control the width of the panel-->
           <!-- Modules -->
 
-          <app-app-landing *ngIf="activeModule==-1"></app-app-landing>
+          <!-- <app-app-landing *ngIf="activeModule==-1"></app-app-landing> -->
+          <p *ngIf="!mainTabsOptions">Module tabs not defined!</p>
 
-          <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
-            [sourceTable]="ds.tblAnomalies"  *ngIf="activeModule==1" [deletedFlagField] = "'AN_DELETED'" [assetField]="'AN_ASSET_ID'"></app-anomaly>
+          <app-data-tabs *ngIf="mainTabsOptions" #mainTab id="mainTabs"
+            [activeForeground]="'#1b365b'" [activeBackground]="'#ebf1fa'"
+            [options]="mainTabsOptions" [fluid]="true"
+            [withClose]="true"
+            (tabClicked)="TabClicked($event)" name="mainTabs">
+            <!-- <div *ngIf="activeTab.id==1">
+              <app-anom-general></app-anom-general>
+            </div> -->
+            <app-anomaly [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="1"
+              [sourceTable]="ds.tblAnomalies" *ngIf="activeModule==1" [deletedFlagField]="'AN_DELETED'"
+              [assetField]="'AN_ASSET_ID'"></app-anomaly>
 
-          <app-design-data [treeView]="setValueTo(treeView,undefined)"
-            *ngIf="activeModule==2"
-            [moduleId]="2" [sourceTable]="ds.tblDesignData"
-            [assetField]="''"></app-design-data>
+            <app-design-data [treeView]="setValueTo(treeView,undefined)" *ngIf="activeModule==2" [moduleId]="2"
+              [sourceTable]="ds.tblDesignData" [assetField]="''"></app-design-data>
 
 
-          <app-chemical-database [treeView]="treeView" [moduleId]="3" *ngIf="activeModule==3"></app-chemical-database>
-          <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4">
-          </app-risk-based-inspection>
-          <app-survey-data [treeView]="treeView" [moduleId]="5" [sourceTable]="ds.tblSurveyHeader"
-            *ngIf="activeModule==5"></app-survey-data>
-          <app-freespan [treeView]="treeView" [moduleId]="6" *ngIf="activeModule==6"></app-freespan>
+            <app-chemical-database [treeView]="treeView" [moduleId]="3" *ngIf="activeModule==3"></app-chemical-database>
+            <app-risk-based-inspection [treeView]="treeView" [moduleId]="4" *ngIf="activeModule==4">
+            </app-risk-based-inspection>
+            <app-survey-data [treeView]="treeView" [moduleId]="5" [sourceTable]="ds.tblSurveyHeader"
+              *ngIf="activeModule==5"></app-survey-data>
+            <app-freespan [treeView]="treeView" [moduleId]="6" *ngIf="activeModule==6"></app-freespan>
 
-          <app-reference-library [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="7"
-            [sourceTable]="ds.tblAnomalies" [deletedFlagField] = "'RF_DELETED'" [assetField]="'RF_ASSET_ID'" *ngIf="activeModule==7"></app-reference-library>
+            <app-reference-library [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="7"
+              [sourceTable]="ds.tblAnomalies" [deletedFlagField]="'RF_DELETED'" [assetField]="'RF_ASSET_ID'"
+              *ngIf="activeModule==7"></app-reference-library>
 
-          <app-seismic [treeView]="treeView" [moduleId]="8" *ngIf="activeModule==8"></app-seismic>
+            <app-seismic [treeView]="treeView" [moduleId]="8" *ngIf="activeModule==8"></app-seismic>
 
-          <!-- Tools -->
-          <app-user-management [moduleId]="9" *ngIf="activeModule==9"></app-user-management>
-          <app-asset-management [moduleId]="10" *ngIf="activeModule==10"></app-asset-management>
-          <app-survey-upload [moduleId]="11" *ngIf="activeModule==11"></app-survey-upload>
+            <!-- Tools -->
+            <app-user-management [moduleId]="9" *ngIf="activeModule==9"></app-user-management>
+            <app-asset-management [moduleId]="10" *ngIf="activeModule==10"></app-asset-management>
+            <app-survey-upload [moduleId]="11" *ngIf="activeModule==11"></app-survey-upload>
 
-          <app-settings [moduleId]="14" *ngIf="activeMenu.id==3" [formTitle]="'Application Settings'"></app-settings>
-        </div>
+            <app-settings [moduleId]="14" *ngIf="activeMenu.id==3" [formTitle]="'Application Settings'"></app-settings>
+
+          </app-data-tabs>
+
         <div *ngIf="false" [class]="'vsp' + (!this.panelSwitch.info ? ' vspc' : '')" (click)="SeparatorClick('info')">
         </div>
         <div *ngIf="false" id="pnl-right"

@@ -39,6 +39,7 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
   @Input() statusColor: {};
 
   @Input() searchMaxDisplayRows:number = 10;
+  @Input() gridPortHeight:number = 200;
 
   @Output() nodeClick: EventEmitter<any> = new EventEmitter();
   @Output() nodePMClick: EventEmitter<any> = new EventEmitter();

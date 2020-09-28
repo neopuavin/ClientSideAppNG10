@@ -15,12 +15,18 @@
         font-weight: bold;
         font-size: 0.8em;
         color: $bs_secondary;
-        i {
+        > i {
           margin-right: 2px;
+        }
+        > i.fa-times {
+          color:#c0c0c0 !important;
+        }
+        > i.fa-times:hover{
+          color:$bs_danger !important;
         }
       }
       button.active {
-        //background-color: beige;
+        // background-color: beige;
         color: $fore_color_dark;
       }
       button:focus{
@@ -47,5 +53,11 @@
     margin-top: 0px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
+
+  }
+  div.fluid{
+    padding:0px !important;
+    margin:0px !important;
+    border:none !important;
   }
 }

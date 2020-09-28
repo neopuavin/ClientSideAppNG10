@@ -1,3 +1,4 @@
+import { DataTabsOption } from './../../api/cmp/data-tabs/data-tabs.component';
 import { IUserInfo } from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { SurveyDataComponent } from './../survey-data/survey-data.component';
@@ -18,6 +19,7 @@ import {
   ViewChild,
   ComponentFactoryResolver,
 } from '@angular/core';
+import { DataTab } from 'src/app/api/cmp/data-tabs/data-tabs.component';
 
 @Component({
   selector: 'app-main-frame',
@@ -60,15 +62,8 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
         canDelete: true,
       },
     };
-    // this.ds.userInfo.key = 1;
-    // this.ds.userInfo.id = 'admin';
-    // this.ds.userInfo.name = 'Administrator';
-    // this.ds.userInfo.email = 'admin@domain.com';
-    // this.ds.userInfo.rights = {
-    //   canAdd: true,
-    //   canEdit: true,
-    //   canDelete: true,
-    // };
+
+    this.SetupDetailsTab();
 
     console.log('this.ds.userInfo: ', this.ds.userInfo);
   }
@@ -229,15 +224,18 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     let visibleModule: any = this.visibleModule;
     if (visibleModule) {
       const state: ModuleState = visibleModule.moduleState;
-      const node:TreeViewNode = state.currentNode;
-      const treeNode:TreeViewNode = this.ds.mainTreeCurrentNode;
-      const nodeChanged:boolean = !node ? true : node.loc != treeNode.loc;
+      const node: TreeViewNode = state.currentNode;
+      const treeNode: TreeViewNode = this.ds.mainTreeCurrentNode;
+      const nodeChanged: boolean = !node ? true : node.loc != treeNode.loc;
       if (!state.setupDataCalled || !calledFromMenu || nodeChanged) {
         visibleModule.SetupData();
         state.currentNode = treeNode;
-      }else{
+      } else {
         // refresh grid using the cached module state
-        if (visibleModule.mainGrid) visibleModule.mainGrid.Refresh(true);
+        if (visibleModule.mainGrid) {
+          visibleModule.mainGrid.Refresh(true);
+          visibleModule.GridRowClick();
+        }
       }
     }
   }
@@ -258,7 +256,6 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     this.ds.mainTreeCurrentNode = n;
     this._NodePath = this.treeView.NodePath;
 
-    console.log('TREE CLICKED !!!');
     this.SetupDetailsData();
   }
 
@@ -309,4 +306,46 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
 
     return this._NodePath;
   }
+
+  // ***************** Center Tab Controls ************************************
+
+  public mainTabsOptions: DataTabsOption = new DataTabsOption([]);
+
+  public get activeTab(): DataTab {
+    if (!this.mainTabsOptions.activeTab)
+      return new DataTab({ id: -1, label: 'unknown' });
+    return this.mainTabsOptions.activeTab;
+  }
+
+  SetupDetailsTab() {
+    // setup tab
+    this.mainTabsOptions
+      .AddTab({
+        id: 1,
+        label: 'Anomaly',
+        // icon: 'fa fa-info-circle',
+        // withClose:true,
+        active: true,
+      })
+      .AddTab({ id: 2, label: 'Design Data', icon: '', active: false })
+      .AddTab({ id: 3, label: 'Chemical Database', icon: '', active: false })
+      .AddTab({
+        id: 4,
+        label: 'Risk Based Inspection',
+        // icon: 'fa fa-info-circle',
+        // icon: '',
+        // active: true,
+      })
+      .AddTab({ id: 5, label: 'Survey Data', icon: '', active: false })
+      .AddTab({ id: 6, label: 'Freespan', icon: '', active: false })
+      .AddTab({ id: 7, label: 'Reference Library', icon: '', active: false })
+      .AddTab({
+        id: 8,
+        label: 'Seismic',
+        icon: '',
+        active: false,
+      });
+  }
+
+  TabClicked(event: any) {}
 }

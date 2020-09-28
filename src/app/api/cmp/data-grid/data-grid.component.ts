@@ -3,7 +3,7 @@ import { DataGridColMgtComponent } from './data-grid-col-mgt.component';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import * as moment from 'moment/moment';
-import { AppDataset } from './../../../svc/app-dataset.service';
+import { AppDataset, ModuleState } from './../../../svc/app-dataset.service';
 import {
   DataColumn,
   IDataColumn,
@@ -57,41 +57,49 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() gridPortHeight: number = 768;
 
   // this is to allow usage of external object as current row of the grid
-  @Input() gridDataSource: any;
+  @Input() moduleState:ModuleState;
+
   private _dataSource: Array<any> = [];
   private get dataSourceObject(): Array<any> {
     // return this._dataSource;
 
-    return this.gridDataSource != undefined
-      ? this.gridDataSource
+    return this.moduleState != undefined
+      ? this.moduleState.gridDataSource
       : this._dataSource;
   }
 
   private set dataSourceObject(value: Array<any>) {
-    if (this.gridDataSource != undefined) this.gridDataSource = value;
+    if (this.moduleState != undefined) this.moduleState.gridDataSource = value;
     else this._dataSource = value;
   }
 
-  @Input() gridCurrentRow: any;
+
   private _currentRow: any = null;
 
   private get currentRowObject(): any {
     // return this._currentRow;
-    return this.gridCurrentRow != undefined
-      ? this.gridCurrentRow
+    return this.moduleState != undefined
+      ? this.moduleState.gridCurrentRow
       : this._currentRow;
   }
 
-  private set currentRowObject(value: any) {
-    if (this.gridCurrentRow != undefined) this.gridCurrentRow = value;
-    else this._currentRow = value;
+  private set currentRowObject(value:any){
+    if(this.moduleState != undefined)
+    this.moduleState.gridCurrentRow=value
+    else
+    this._currentRow = value;
   }
 
   public get currentRow(): any {
-    return this.currentRowObject;
+    // return this._currentRow;
+    return this.currentRowObject
   }
 
   public set currentRow(value: any) {
+    console.log(
+      '\n******************** SET CURRENT ROW VALUE *******************',
+      value
+    );
     const keyName = this.options.keyColumnName;
     if (keyName && value) {
       const keyVal = value[keyName];
@@ -118,6 +126,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     /**    const focusElement = event.srcElement.parentNode.querySelector('.row-focus');
     if(focusElement)focusElement.focus();
  */
+    //this.gridCurrentRowIndex = 100;
     this.currentRowObject = value;
   }
 
@@ -210,6 +219,14 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    //this.gridActiveRow = {active:true, extra:"Hello world", date:new Date()};
+
+    console.log(
+      '\nngOnInit this.gridCurrentRow:',
+      this.moduleState ? this.moduleState.gridCurrentRow: null,
+      '\nthis.currentRow:',
+      this.currentRow
+    );
     //return;
     this._portHeight = this.gridPortHeight;
     this.InitDataSource();
@@ -384,6 +401,16 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public RowClick(row: any) {
+    // console.log(
+    //   '\nthis.gridCurrentRow:',
+    //   this.gridCurrentRow,
+    //   '\nthis._currentRow:',
+    //   this._currentRow,
+    //   '\nthis.currentRowObject:',
+    //   this.currentRowObject,
+    //   '\nthis.gridDataSource:',
+    //   this.gridDataSource
+    // );
     this.currentRow = row;
   }
 
@@ -508,10 +535,10 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // set flag to make sure that the
     // UI does not repeatedly refresh while the
     // _dataSource array is being populated
-    this._sourceProcessing = true;
+    // this._sourceProcessing = true;
 
     // reset current row
-    this.currentRow = null;
+    //this.currentRow = null;
 
     setTimeout(() => {
       // initialize _dataSource array
@@ -539,7 +566,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._sourceProcessing;
   }
   public get isNoRecord(): boolean {
-    return this._dataSource.length == 0 && !this.isRefreshing;
+    // return this._dataSource.length == 0 && !this.isRefreshing;
+    return this.dataSource.length == 0 && !this.isRefreshing;
   }
 
   public get dataSource(): Array<any> {
@@ -1073,7 +1101,7 @@ export class DataGridOption extends DataOption {
     }
   }
 
-  public rowHeaderHeight: number = 26;
+  public rowHeaderHeight: number = 24;
   public rowHeight: number = 20;
   public rowHeaderWidth: number = undefined;
   public noFooter: boolean = false;

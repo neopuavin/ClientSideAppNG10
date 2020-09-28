@@ -1,12 +1,22 @@
 <div #tabWrapper class="tab-wrapper" [style.height.px]="dataTabHeight">
+  <!-- <p>Tag section here!{{options.tabs.length}}</p> -->
     <ul class="nav nav-tabs">
 
 
       <li class="nav-item"  *ngFor="let t of options.tabs" mat>
         <button (click)="TabClicked(t)"
+          [style.background]="t.active && activeBackground ? activeBackground : null"
+          [style.color]="t.active && activeForeground ? activeForeground : null"
+          [style.border-bottom]="t.active && activeBackground ? '1px solid ' + activeBackground : null"
           [class]="'nav-link py-0 px-2 noselect' + (t.active ? ' active' : '')"
           [id]="'t_'+ t.id"  matTooltipPosition="below" [matTooltip]="t.toolTip"
-          href="#"><i *ngIf="t.icon" [class]="t.icon"></i>{{t.label}}</button>
+          href="#">
+          <i *ngIf="t.icon!=undefined" [class]="t.icon"></i>
+          <span>{{t.label}}</span>
+          <i *ngIf="(t.withClose==undefined && withClose) || (t.withClose == true)"
+            class="fa fa-times mr-0 ml-2" matTooltipPosition="below" [matTooltip]="'Close ' + t.label + ' module'"></i>
+        </button>
+
         <!-- <a (click)="TabClicked(t)"
           [class]="'nav-link py-0 px-2 noselect' + (t.active ? ' active' : '')"
           [id]="'t_'+ t.id"  matTooltipPosition="below" [matTooltip]="t.toolTip"
@@ -15,7 +25,7 @@
 
     </ul>
 
-    <div class="tab-pane p-1">
+    <div [ngClass]="{'tab-pane':true, 'fluid':fluid}">
       <ng-content></ng-content>
     </div>
   </div>

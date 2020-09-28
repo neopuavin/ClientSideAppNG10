@@ -25,6 +25,9 @@ export class AnomalyComponent
   ngOnInit(): void {
     // Setup Lookup data
     // setup lookup data....
+
+    console.log('@@@ ANOMALY this.moduleState:', this.moduleState);
+
     this.ds.SetLookupData(
       [
         { filterValue: 143 }, // Anomaly Status
@@ -105,7 +108,6 @@ export class AnomalyComponent
   }
 
   SetupGridColumns() {
-
     const {
       center,
       minShort,
@@ -559,8 +561,6 @@ export class AnomalyComponent
   }
 
   ngAfterViewInit(): void {
-    console.log('ngOnInit INIT!');
-
     try {
       let dato: DataOption = new DataOption();
       dato

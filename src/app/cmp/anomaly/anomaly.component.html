@@ -17,10 +17,12 @@
       [pageSize]="reqInfo.pageSize"
       [totalPages]="reqInfo.totalPages"
       [totalRecords]="reqInfo.totalRecords"
+
       [sourceRows]="gridSourceRows"
       [sourceLookups]="gridSourceLookups"
       [sourceTable]="sourceTable"
       [showMenu]="true"
+
       [promptNoRecords]="'No record(s) found. Please click a node on the tree to get data.'"
       [isLoadingData]="isLoadingData"
       [promptLoadingData]="promptLoadingData"
@@ -29,12 +31,14 @@
       [gridPortHeight]="1080"
       [activeFiltering]="true"
 
-      [gridCurrentRow]="moduleState.gridCurrentRow"
-      [gridDataSource]="moduleState.gridDataSource"
+      [moduleState]="moduleState"
 
       (rowClick)="GridRowClick($event)"
       (onColumnsChanged)="SetupData()"
-      (pageSizeChange)="PageSizeChange($event)" (pageClick)="ChangePage($event)" [options]="mainGridOptions">
+      (pageSizeChange)="PageSizeChange($event)"
+      (pageClick)="ChangePage($event)"
+
+      [options]="mainGridOptions">
     </app-data-grid>
   </div>
 

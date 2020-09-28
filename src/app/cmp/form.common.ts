@@ -55,7 +55,7 @@ export class FormCommon {
 
   CommonFormInit() {
     // bypass this method if the module state object is already initialized
-    if(this.moduleParamsInitialized) return;
+    if (this.moduleParamsInitialized) return;
 
     if (this.sourceTable != null && this.mainGridOptions != null) {
       // set initial join expression and filter parameters
@@ -122,7 +122,7 @@ export class FormCommon {
   }
 
   public get gridPanelHeight(): string {
-    return 'calc(100vh - ' + (this.detailsHeight + 116) + 'px)';
+    return 'calc(100vh - ' + (this.detailsHeight + 148) + 'px)';
   }
 
   public get reqInfo(): any {
@@ -231,6 +231,7 @@ export class FormCommon {
         (mState) => mState.moduleId == this.moduleId
       );
       if (!ms) {
+        console.log(`\n#### CREATE NEW ModuleState for Module(${this.moduleId}) #### `);
         ms = new ModuleState(this.moduleId);
         this.ds.moduleStates.push(ms);
       }
@@ -946,14 +947,18 @@ export class FormCommon {
       this.currentRow = null;
       this._sourceRow = this.currentRow;
     } else if (this.mainGrid) {
+      console.log('$$$$ RESET GRID CURRENT ROW $$$$');
       this.mainGrid.currentRow = row;
       //this.GridRowClick({ row: row, e: null });
       this.GridRowClick(row);
     }
   }
 
-  GridRowClick(row: any, forceExtract?: boolean) {
-    //const row: any = event.row;
+  GridRowClick(row?: any, forceExtract?: boolean) {
+
+    // if row is not supplied but moduleState.currentRow exist, use it as row parameter
+    if(!row && this.moduleState.currentRow) row = this.moduleState.currentRow;
+
     if (!row) return;
 
     // get table object definition
@@ -985,6 +990,15 @@ export class FormCommon {
       // if asset fieldname is defined, get asset information infomation
       // from related tables (ie. asset code, desctription)
       this.ExtractCurrentRow(key, row[this.assetField]);
+
+    console.log(
+      `GridRowClick MODULE STATE (${this.moduleId}) : `,
+      this.moduleState,
+      'this.mainGrid.currentRow:',
+      this.mainGrid.currentRow,
+      'this.mainGrid.gridCurrentRowIndex:',
+      this.mainGrid.moduleState ? this.mainGrid.moduleState.gridCurrentRow : null
+    );
   }
 
   ExtractCurrentRow(key: any, assetId: number) {
