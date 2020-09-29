@@ -339,6 +339,24 @@ export class AppDataset extends DatasetBase {
   public mainTreeColorLookup: Array<TblTreeStrucRow> = [];
 
   public moduleStates: Array<ModuleState> = [];
+  DeleteState(moduleId: number) {
+    if (this.moduleStates.length == 0) return;
+    const idx: number = this.moduleStates.findIndex(
+      (ms) => ms.moduleId == moduleId
+    );
+    if (idx != -1) {
+      this.moduleStates[idx].Destroy();
+      this.moduleStates.splice(idx, 1);
+    }
+  }
+  ClearStates(){
+    while(this.moduleStates.length)this.DeleteState(this.moduleStates[0].moduleId);
+  }
+
+  GetModuleState(moduleId: number):ModuleState{
+    if (this.moduleStates.length == 0) return null;
+    return this.moduleStates.find(ms=>ms.moduleId == moduleId);
+  }
 
   //public rootNodeId: number = 4667; // spex
   private _currentTreeId: number = 1;
@@ -953,7 +971,6 @@ export class AppDataset extends DatasetBase {
 
 export class ModuleState {
   constructor(_moduleId: number) {
-    console.log(`***** ModuleState ****** (${_moduleId}) insitiated.`);
     this.moduleId = _moduleId;
   }
 
@@ -966,10 +983,11 @@ export class ModuleState {
   // }
 
   public moduleId: number;
+
   public gridSourceLookups: Array<any>;
 
   public gridDataSource: Array<any> = [];
-  public gridCurrentRowIndex: number=-1;
+  public gridCurrentRowIndex: number = -1;
   public gridActiveRow: any = { active: true };
 
   public gridCurrentRow: any = { temp: true };
@@ -979,11 +997,26 @@ export class ModuleState {
 
   public mainGridOptions: DataGridOption = new DataGridOption([]);
   public mainTabsOptions: DataTabsOption = new DataTabsOption([]);
-  public mainFormCollection: Array<AppFormAComponent> = [];
   public mainFormObject: FormGroup = new FormGroup({});
+  public mainFormCollection: Array<AppFormAComponent> = [];
   public mainRecordsBuffer: Array<any> = [];
 
   public setupDataCalled: boolean = false;
+
+  Destroy(): void {
+    // clear all arrays
+    this.mainFormCollection = [];
+    this.mainRecordsBuffer = [];
+    this.gridDataSource = [];
+    this.gridSourceLookups = [];
+
+    // delete this.mainGridOptions;
+    // delete this.mainTabsOptions;
+    // delete this.mainFormObject;
+
+    // delete this.currentNode;
+    // delete this.currentRow;
+  }
 }
 
 export interface IAccessRights {

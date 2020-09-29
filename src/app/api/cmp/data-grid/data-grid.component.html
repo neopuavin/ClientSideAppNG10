@@ -105,6 +105,7 @@
     [minBufferPx]="options.rowHeight * bufferRows">
     <div [style.width.px]="totalCellWidths" class="grid-prompt noselect" *ngIf="isNoRecord && !isLoadingData">{{promptNoRecords}}</div>
     <div [style.width.px]="totalCellWidths" class="grid-prompt noselect" *ngIf="isRefreshing && !isLoadingData">{{promptRefresh}}</div>
+    <div class="grid-prompt noselect" *ngIf="isRepainting && !isLoadingData">...</div>
     <div [style.width.px]="totalCellWidths" class="grid-prompt noselect" *ngIf="isLoadingData"><i
         class="fa fa-spinner fa-spin fa-3x fa-fw"></i>{{promptLoadingData}}</div>
 

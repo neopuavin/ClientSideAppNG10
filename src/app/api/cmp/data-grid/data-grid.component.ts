@@ -535,7 +535,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // set flag to make sure that the
     // UI does not repeatedly refresh while the
     // _dataSource array is being populated
-    // this._sourceProcessing = true;
+    this._sourceProcessing = !fromCachedData;
+    this._isRepainting = fromCachedData;
 
     // reset current row
     //this.currentRow = null;
@@ -554,6 +555,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       // turn off source processing flag to
       // finally display the requested data
       this._sourceProcessing = false;
+      this._isRepainting = false;
     }, 10);
   }
 
@@ -564,6 +566,11 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   private _sourceProcessing: boolean = false;
   public get isRefreshing(): boolean {
     return this._sourceProcessing;
+  }
+
+  private _isRepainting:boolean = false;
+  public get isRepainting():boolean{
+    return this._isRepainting;
   }
   public get isNoRecord(): boolean {
     // return this._dataSource.length == 0 && !this.isRefreshing;

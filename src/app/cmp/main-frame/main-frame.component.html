@@ -29,7 +29,7 @@
 
       </div>
       <div class="" id="nav-menu-bottom">
-        <span *ngFor="let s of subMenu" class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
+        <span>{{ds.moduleStates.length}}</span><span *ngFor="let s of subMenu" class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
           [style.color]="s.ready ? null : 'gray'">{{s.label}}</span>
       </div>
     </div>
@@ -101,14 +101,19 @@
           <!-- width=0 is necessary to prevent content to control the width of the panel-->
           <!-- Modules -->
 
-          <!-- <app-app-landing *ngIf="activeModule==-1"></app-app-landing> -->
-          <p *ngIf="!mainTabsOptions">Module tabs not defined!</p>
+          <!-- <p *ngIf="!mainTabsOptions">Module tabs not defined!</p> -->
 
           <app-data-tabs *ngIf="mainTabsOptions" #mainTab id="mainTabs"
             [activeForeground]="'#1b365b'" [activeBackground]="'#ebf1fa'"
             [options]="mainTabsOptions" [fluid]="true"
             [withClose]="true"
-            (tabClicked)="TabClicked($event)" name="mainTabs">
+            (tabClicked)="TabClicked($event)"
+            (tabClosed)="TabClosed($event)"
+             name="mainTabs">
+
+          <app-app-landing *ngIf="ds.moduleStates.length==0"></app-app-landing>
+
+
             <!-- <div *ngIf="activeTab.id==1">
               <app-anom-general></app-anom-general>
             </div> -->
@@ -173,39 +178,40 @@
       <div id="pnl-bottom"></div>
 
     </div>
-    <div class="card-footer py-0 d-flex">
-      <span [title]="NodePath">Path:&nbsp;</span><span id="node-path"
-        style="overflow: hidden; text-overflow: ellipsis;">{{NodePath}}</span>
-      <span class="sp">&nbsp;</span>
-      <span>&nbsp;</span>
-      <!--Middle Footer-->
-      <span class="sp">&nbsp;</span>
+
+  </div><!--end of card body-->
+  <div class="card-footer py-0 d-flex">
+    <span [title]="NodePath">Path:&nbsp;</span><span id="node-path"
+      style="overflow: hidden; text-overflow: ellipsis;">{{NodePath}}</span>
+    <span class="sp">&nbsp;</span>
+    <span>&nbsp;</span>
+    <!--Middle Footer-->
+    <span class="sp">&nbsp;</span>
+    <div class="d-flex">
       <div class="d-flex">
-        <div class="d-flex">
 
-          <div id="view-cols" class="d-flex bg-light" title="Arrange panels in columns">
-            <div class="d-flex flex-column">
-              <div></div>
-              <div></div>
-            </div>
+        <div id="view-cols" class="d-flex bg-light" title="Arrange panels in columns">
+          <div class="d-flex flex-column">
             <div></div>
             <div></div>
           </div>
-
-          <div id="view-rows" class="d-flex bg-light" title="Arrange panels in rows">
-            <div class="d-flex flex-column">
-              <div></div>
-              <div></div>
-            </div>
-            <div class="d-flex flex-column">
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-
+          <div></div>
+          <div></div>
         </div>
-        <div>&nbsp;</div>
+
+        <div id="view-rows" class="d-flex bg-light" title="Arrange panels in rows">
+          <div class="d-flex flex-column">
+            <div></div>
+            <div></div>
+          </div>
+          <div class="d-flex flex-column">
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
       </div>
+      <div>&nbsp;</div>
     </div>
-  </div>
-</div>
+  </div><!-- card footer end -->
+</div><!-- card end -->

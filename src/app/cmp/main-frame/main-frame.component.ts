@@ -179,6 +179,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
 
     setTimeout(() => {
       this.SetupDetailsData(true);
+      this.SetupDetailsTab();
     }, 1);
   }
 
@@ -319,6 +320,35 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
 
   SetupDetailsTab() {
     // setup tab
+    const modules = this.subMenu;
+
+    if (modules.length == 0) {
+      this.mainTabsOptions.Clear();
+      return;
+    }
+
+    // remove unecessary tab(s)
+    const toRemove: Array<number> = [];
+    this.mainTabsOptions.tabs.forEach((t) => {
+      if (!this.ds.GetModuleState(t.id)) toRemove.push(t.id);
+    });
+    toRemove.forEach((id) => {
+      this.mainTabsOptions.RemoveTab(id);
+    });
+
+    this.ds.moduleStates.forEach((ms) => {
+      const sm = modules.find((m) => m.id == ms.moduleId);
+      this.mainTabsOptions.AddTab({
+        id: sm.id,
+        label: sm.label,
+        active: sm.active,
+      });
+    });
+
+    // add required tab(s)
+
+    return;
+
     this.mainTabsOptions
       .AddTab({
         id: 1,
@@ -348,4 +378,18 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
   }
 
   TabClicked(event: any) {}
+  TabClosed(tab: DataTab) {
+    // Remove module state
+    this.ds.DeleteState(tab.id);
+    // this.mainTabsOptions.RemoveTab(tab.id);
+    //console.log("TAB CLOSED:",this.mainTabsOptions);
+    // Call Tab Setup
+    this.SetupDetailsTab();
+
+    // Identify which module must be made active when a tab is closed
+    // execute this portion of the routine only if the closed tab is the active tab!!!
+    // set current active module
+    // this.subMenuClick(menuId: number) {
+    // console.log("\nthis.ds.moduleStates", this.ds.moduleStates,"\ntab.id:",tab.id,"\nthis.mainTabsOptions:",this.mainTabsOptions);
+  }
 }

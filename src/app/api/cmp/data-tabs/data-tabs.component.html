@@ -14,7 +14,7 @@
           <i *ngIf="t.icon!=undefined" [class]="t.icon"></i>
           <span>{{t.label}}</span>
           <i *ngIf="(t.withClose==undefined && withClose) || (t.withClose == true)"
-            class="fa fa-times mr-0 ml-2" matTooltipPosition="below" [matTooltip]="'Close ' + t.label + ' module'"></i>
+            (click)="closeTab(t)"class="fa fa-times mr-0 ml-2" matTooltipPosition="below" [matTooltip]="'Close ' + t.label + ' module'"></i>
         </button>
 
         <!-- <a (click)="TabClicked(t)"

@@ -122,7 +122,7 @@ export class FormCommon {
   }
 
   public get gridPanelHeight(): string {
-    return 'calc(100vh - ' + (this.detailsHeight + 148) + 'px)';
+    return 'calc(100vh - ' + (this.detailsHeight + 141) + 'px)';
   }
 
   public get reqInfo(): any {

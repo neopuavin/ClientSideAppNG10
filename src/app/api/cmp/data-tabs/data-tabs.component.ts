@@ -21,12 +21,13 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
   @Input() height: number = -1;
   @Input() fluid: boolean = false;
 
-  @Input() activeForeground:string = null;
-  @Input() activeBackground:string = null;
+  @Input() activeForeground: string = null;
+  @Input() activeBackground: string = null;
 
-  @Input() withClose:boolean = false;
+  @Input() withClose: boolean = false;
 
   @Output() tabClicked: EventEmitter<any> = new EventEmitter();
+  @Output() tabClosed: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('tabWrapper') tabWrapperObj: any;
   tabWrapper: HTMLElement = null;
@@ -56,9 +57,7 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
       this.initialized = true;
     }, 0);
 
-
-
-    console.log("TAB options:",this.options);
+    console.log('TAB options:', this.options);
   }
 
   public get dataTabHeight(): number {
@@ -72,12 +71,16 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
     return this.options.tabs.find((t) => t.active);
   }
 
+  public closeTab(tab:DataTab){
+    this.tabClosed.emit(tab);
+  }
+
   TabClicked(tab: DataTab) {
     //
     this.activeTab.active = false;
     tab.active = true;
-    const btn = (document.querySelector('#t_'+ tab.id)  as HTMLElement);
-    if(btn)btn.blur();
+    const btn = document.querySelector('#t_' + tab.id) as HTMLElement;
+    if (btn) btn.blur();
     //console.log(btn);
 
     this.tabClicked.emit(tab);
@@ -93,7 +96,7 @@ export interface IDataTab {
   loaded?: boolean;
   order?: number;
   parentOption?: DataTabsOption;
-  withClose?:boolean;
+  withClose?: boolean;
 }
 
 export class DataTab {
@@ -108,7 +111,6 @@ export class DataTab {
     this.active = args.active ? args.active : false;
     this.toolTip = args.toolTip;
     this.withClose = args.withClose;
-
   }
   public id: number;
   public label: string;
@@ -128,13 +130,16 @@ export class DataTabsOption {
     }
   }
 
-  private _tabsIndices:Array<number>=[]
+  private _tabsIndices: Array<number> = [];
   public AddTab(args: IDataTab): DataTabsOption {
-
     // the next 3 lines prevents re-creation of tab element if
     // the tab id is already recorded in _tabIndices
     const id = args.id;
-    if(this._tabsIndices.indexOf(id)!=-1) return;
+    const tabIdx = this._tabsIndices.indexOf(id);
+    if (tabIdx != -1) {
+      if (args.active != undefined) this.tabs[tabIdx].active = args.active;
+      return;
+    }
     this._tabsIndices.push(id);
 
     const tab = new DataTab(args);
@@ -144,6 +149,22 @@ export class DataTabsOption {
 
     this.tabs.push(tab);
     return this;
+  }
+
+  public Clear(): void {
+    while (this.tabs.length != 0) {
+      this.RemoveTab(this.tabs[0].id);
+    }
+  }
+
+  public RemoveTab(tabId: number): void {
+    if (this.tabs.length == 0) return;
+    let idx: number = this.tabs.findIndex((t) => t.id == tabId);
+    if (idx != -1) {
+      this.tabs.splice(idx, 1);
+      idx = this._tabsIndices.indexOf(tabId);
+      if (idx != -1) this._tabsIndices.splice(idx, 1);
+    }
   }
 
   public get activeTab(): DataTab {
