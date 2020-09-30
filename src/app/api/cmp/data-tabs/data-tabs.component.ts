@@ -77,7 +77,7 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
 
   TabClicked(tab: DataTab) {
     //
-    this.activeTab.active = false;
+    if(this.activeTab)this.activeTab.active = false;
     tab.active = true;
     const btn = document.querySelector('#t_' + tab.id) as HTMLElement;
     if (btn) btn.blur();

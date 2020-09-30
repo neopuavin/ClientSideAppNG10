@@ -29,7 +29,7 @@
 
       </div>
       <div class="" id="nav-menu-bottom">
-        <span>{{ds.moduleStates.length}}</span><span *ngFor="let s of subMenu" class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
+        <span *ngIf="false">{{ds.moduleStates.length}}</span><span *ngFor="let s of subMenu" class="noselect {{s.active ? 'active' : ''}}" (click)="subMenuClick(s.id)"
           [style.color]="s.ready ? null : 'gray'">{{s.label}}</span>
       </div>
     </div>

@@ -143,6 +143,10 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
     return this.menuList.find((e) => e.active);
   }
 
+  public get activeSubMenu(): any {
+    return this.subMenu.find((e) => e.active);
+  }
+
   public menuClick(menuId: number) {
     const menu: any = this.activeMenu;
     let changeMenu: boolean = false;
@@ -336,6 +340,7 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
       this.mainTabsOptions.RemoveTab(id);
     });
 
+    // add required tab(s) and/or tab update active status
     this.ds.moduleStates.forEach((ms) => {
       const sm = modules.find((m) => m.id == ms.moduleId);
       this.mainTabsOptions.AddTab({
@@ -344,47 +349,32 @@ export class MainFrameComponent implements OnInit, AfterViewInit {
         active: sm.active,
       });
     });
-
-    // add required tab(s)
-
-    return;
-
-    this.mainTabsOptions
-      .AddTab({
-        id: 1,
-        label: 'Anomaly',
-        // icon: 'fa fa-info-circle',
-        // withClose:true,
-        active: true,
-      })
-      .AddTab({ id: 2, label: 'Design Data', icon: '', active: false })
-      .AddTab({ id: 3, label: 'Chemical Database', icon: '', active: false })
-      .AddTab({
-        id: 4,
-        label: 'Risk Based Inspection',
-        // icon: 'fa fa-info-circle',
-        // icon: '',
-        // active: true,
-      })
-      .AddTab({ id: 5, label: 'Survey Data', icon: '', active: false })
-      .AddTab({ id: 6, label: 'Freespan', icon: '', active: false })
-      .AddTab({ id: 7, label: 'Reference Library', icon: '', active: false })
-      .AddTab({
-        id: 8,
-        label: 'Seismic',
-        icon: '',
-        active: false,
-      });
   }
 
-  TabClicked(event: any) {}
+  TabClicked(tab: DataTab) {
+    this.subMenuClick(tab.id);
+  }
   TabClosed(tab: DataTab) {
+    let newTabIndex: number = -1;
     // Remove module state
+    if (tab.active) {
+      // set active module
+      const activeSubMenu = this.activeSubMenu;
+      if (activeSubMenu) activeSubMenu.active = false;
+      if (this.mainTabsOptions.tabs.length > 1) {
+        const tabIndex = this.mainTabsOptions.tabs.indexOf(tab);
+        console.log("TAB INDEX:",tabIndex);
+        newTabIndex = tabIndex + (tabIndex ? -1 : 0);
+        // const newActiveTab:DataTab = this.mainTabsOptions.tabs[tabIndex - (tabIndex ? 1 : 0)]
+        // this.subMenuClick(newActiveTab.id);
+      }
+    }
+
     this.ds.DeleteState(tab.id);
-    // this.mainTabsOptions.RemoveTab(tab.id);
-    //console.log("TAB CLOSED:",this.mainTabsOptions);
-    // Call Tab Setup
     this.SetupDetailsTab();
+
+    // if tab that was closed is the active tab...
+    if(newTabIndex!=-1)setTimeout(()=>{this.TabClicked(this.mainTabsOptions.tabs[newTabIndex]);},10);
 
     // Identify which module must be made active when a tab is closed
     // execute this portion of the routine only if the closed tab is the active tab!!!
