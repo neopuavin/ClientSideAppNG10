@@ -26,6 +26,8 @@ export interface IDataColumn {
   displayField?: string;
   visible?: boolean;
   isKey?: boolean;
+
+  requiredFields?: Array<string>;
 }
 
 export interface IProcessRequestData {
@@ -96,6 +98,8 @@ export class DataColumn {
     this.aggregateFunction = args.aggregateFuction ? args.aggregateFuction : '';
     this.isKey = !args.isKey ? false : args.isKey;
 
+    this.requiredFields = args.requiredFields;
+
     // override default visibility value only if args.visibility is defined
     if (args.visible != undefined) this.visible = args.visible;
   }
@@ -115,6 +119,7 @@ export class DataColumn {
   public sortAsc: boolean;
   public sortDesc: boolean;
   public filters: Array<any>;
+  public requiredFields: Array<string>;
 }
 
 export class DataOption {
@@ -784,7 +789,11 @@ export class DataOption {
   }
 
   public get FieldList(): string {
-    const visibleFields = this.fields.filter((f) => f.visible);
+    // this will be set as the selected columns in the SQL statement
+
+    const visibleFields: Array<DataColumn> = this.fields.filter(
+      (f) => f.visible
+    );
 
     let ret: string = '';
 
@@ -793,8 +802,24 @@ export class DataOption {
       const fldExpr = this.GetFieldExpression(c);
       // if field expression is not yet in the return list string
       // append fldExpr
+      //if(c.requiredField)
       if (('`' + ret + '`').indexOf('`' + fldExpr + '`') == -1)
         ret += (ret.length == 0 ? '' : '`') + fldExpr;
+
+      if (c.requiredFields) {
+        console.log("c.requiredFields",c.requiredFields.join(","))
+        c.requiredFields.forEach((fn) => {
+          if (!visibleFields.find((vf) => vf.fieldName == fn)) {
+            // if required field is not one of the visible fields
+            const req = this.fields.find((rf) => rf.fieldName == fn);
+            if (req) {
+              const reqExpr = this.GetFieldExpression(req);
+              if (('`' + ret + '`').indexOf('`' + reqExpr + '`') == -1)
+                ret += (ret.length == 0 ? '' : '`') + reqExpr;
+            }
+          }
+        });
+      }
     });
 
     // console.log(

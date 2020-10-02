@@ -4,6 +4,8 @@
   flex-direction: column !important;
   flex: 1 1 0 !important;
   padding: 0px !important;
+  font-family: $form_label_font-family;
+  font-size:0.85em;
 }
 
 ::ng-deep.mat-dialog-container {
@@ -88,7 +90,19 @@
     // }
   }
 }
+textarea{
+  resize: none;
+}
 
+#action {
+  display: flex;
+  justify-content: center;
+  > button {
+    font-family: $grid_footer_font-family;
+    padding:4px 10px;
+    font-size:0.85em;
+  }
+}
 // .form-group {
 //   label {
 //     font-family: $form_label_font-family;
@@ -174,9 +188,7 @@ mat-dialog-actions {
   padding-bottom: 0px !important;
   button.mat-menu-item {
     background-color: white;
-    line-height:35px;
-    height:35px;
+    line-height: 35px;
+    height: 35px;
   }
 }
-
-

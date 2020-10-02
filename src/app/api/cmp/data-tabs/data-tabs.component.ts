@@ -42,14 +42,6 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.tabWrapper = this.tabWrapperObj.nativeElement;
 
-    if (this.tabWrapper) {
-      // console.log(
-      //   this.tabWrapperObj,
-      //   this.tabWrapper,
-      //   this.tabWrapper.parentElement.parentElement.offsetHeight
-      // );
-    }
-
     // passing through a setTimeout a setting for a flag solves the problem of
     // unwanted exception error thrown when bound property value is changed
     // while rendering the view.
@@ -57,7 +49,6 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
       this.initialized = true;
     }, 0);
 
-    console.log('TAB options:', this.options);
   }
 
   public get dataTabHeight(): number {
@@ -81,7 +72,6 @@ export class DataTabsComponent implements OnInit, AfterViewInit {
     tab.active = true;
     const btn = document.querySelector('#t_' + tab.id) as HTMLElement;
     if (btn) btn.blur();
-    //console.log(btn);
 
     this.tabClicked.emit(tab);
   }

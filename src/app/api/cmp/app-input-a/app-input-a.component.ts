@@ -161,32 +161,9 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
 
     this.form.RegisterField(this.fieldName);
 
-    // let control: any = this.form.formObject.get(this.fieldName);
-    // if (!control) {
-    //   // if control is not yet part of the form
-    //   const colVal = this.sourceRow ? this.sourceRow[this.fieldName] : null;
-
-    //   // register field as with initialized value when sourceRow is available
-    //   // this is a must to prevent reinitialization when Scatter method is called
-    //   if (this.sourceRow) this.MarkAsInitialized();
-
-    //   control = new FormControl(colVal);
-    //   this.form.formObject.addControl(this.fieldName, control);
-    // } else {
-    //   // control has previously been created
-    //   // console.log(this.fieldName,"Previously initialized!")
-    //   this.MarkAsInitialized();
-    // }
-
-
   }
 
   ngAfterViewInit() {
-    //console.log("readOnly:",this.form.readOnly,this.readOnly);
-    // if (this._input) {
-    //   const formObj = this.form.formObject;
-    //   const ctrl = formObj.get(this.fieldName);
-    // }
     setTimeout(() => (this._changeValueNow = true), 0);
     setTimeout(() => (this._isReady = true), 2000);
   }
@@ -216,7 +193,6 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     //   elem.style.background = 'red';
     // }
 
-    //console.log("control disabled:",this.form.formObject.get(this.fieldName).disabled);
 
     if (this.readOnly != undefined) return this.readOnly;
     if (this.form.readOnly != undefined) return this.form.readOnly;
@@ -358,7 +334,6 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     const ctrl = this.getFormControl;
     if (!ctrl) return '';
     if (this.isToggle) {
-      //console.log("this.getFormControl:",ctrl,ctrl.value);
       const tgl = this.toggleDisplay.find(t=>t.value==ctrl.value)
       return tgl ? tgl.display : `x-${ctrl.value + (JSON.stringify(this.toggleDisplay))}`;
 

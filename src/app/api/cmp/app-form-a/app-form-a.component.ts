@@ -66,8 +66,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {}
   ngAfterViewInit() {
-    // console.log();
-    // this.Scatter();
   }
 
   private _formFields: {};
@@ -92,7 +90,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
       this.formObject.addControl(fieldName, control);
     } else {
       // control has previously been created
-      // console.log(this.fieldName,"Previously initialized!")
       this.MarkAsInitialized(fieldName);
     }
     return control;
@@ -187,8 +184,6 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
 
     // resume control change event
     this.suspendControlChangeEvent = false;
-
-    // console.log('AfterScatter, recordChanged', recordChanged);
 
     this.afterScatter.emit(this);
   }

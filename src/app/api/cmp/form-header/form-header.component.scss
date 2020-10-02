@@ -4,7 +4,9 @@
   box-sizing: border-box;
   border-bottom: 1px solid $line_very_light_gray;
   //padding: 6px 12px;
-  padding: 0px 12px;
+  // padding: 0px 12px;
+  padding: 0px 0px;
+  padding-left:12px;
   background-color: $back_color_very_light_blue;
   height: $form_header_height;
 
@@ -32,7 +34,7 @@
       padding-top: 0px;
       padding-bottom: 0px;
       padding-left: 8px;
-      padding-right: 8px;
+      padding-right: 0px;
       width: 200px;
       border: 1px solid $line_very_light_gray;
       height:23px;
@@ -45,6 +47,7 @@
   }
   > div:last-child {
     //background-color: red;
+    // right-header
     padding-top: 0px;
     padding-bottom: 0px;
     button {
@@ -60,7 +63,14 @@
       //border:1px solid red;
     }
   }
+
+  .filter-on{
+    background-color: $bs_warning_light;
+    border: 1px solid $bs_info;
+  }
+
   .test_class{
     color: red;
   }
+
 }

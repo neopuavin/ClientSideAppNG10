@@ -25,7 +25,6 @@ export class AppComponent {
 
   public TestPost(){
     const ds = this.dataSource.ActiveSource.appDataset;
-    //console.log(ds.Post);
     ds.Post(null).subscribe(data=>{
       console.log("Data:",data);
     }, err=>{

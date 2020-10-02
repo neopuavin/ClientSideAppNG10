@@ -57,7 +57,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() gridPortHeight: number = 768;
 
   // this is to allow usage of external object as current row of the grid
-  @Input() moduleState:ModuleState;
+  @Input() moduleState: ModuleState;
 
   private _dataSource: Array<any> = [];
   private get dataSourceObject(): Array<any> {
@@ -73,7 +73,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     else this._dataSource = value;
   }
 
-
   private _currentRow: any = null;
 
   private get currentRowObject(): any {
@@ -83,23 +82,18 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       : this._currentRow;
   }
 
-  private set currentRowObject(value:any){
-    if(this.moduleState != undefined)
-    this.moduleState.gridCurrentRow=value
-    else
-    this._currentRow = value;
+  private set currentRowObject(value: any) {
+    if (this.moduleState != undefined) this.moduleState.gridCurrentRow = value;
+    else this._currentRow = value;
   }
 
   public get currentRow(): any {
     // return this._currentRow;
-    return this.currentRowObject
+    return this.currentRowObject;
   }
 
   public set currentRow(value: any) {
-    console.log(
-      '\n******************** SET CURRENT ROW VALUE *******************',
-      value
-    );
+
     const keyName = this.options.keyColumnName;
     if (keyName && value) {
       const keyVal = value[keyName];
@@ -108,7 +102,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!focusElement) {
           setTimeout(() => {
             focusElement = document.querySelector('#row_focus_' + keyVal);
-            // console.log("Currentrow:",keyName,keyVal,"Focus Element(retry):",focusElement,this.sourceRows);
             if (focusElement) {
               focusElement.focus();
               // this.rowClick.emit({ row: value, e: null });
@@ -119,7 +112,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
           focusElement.focus();
           // this.rowClick.emit({ row: value, e: null });
           this.rowClick.emit(value);
-          // console.log("Currentrow:",keyName,keyVal,"Focus Element(orig):",focusElement,this.sourceRows);
         }
       }
     }
@@ -219,15 +211,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    //this.gridActiveRow = {active:true, extra:"Hello world", date:new Date()};
 
-    console.log(
-      '\nngOnInit this.gridCurrentRow:',
-      this.moduleState ? this.moduleState.gridCurrentRow: null,
-      '\nthis.currentRow:',
-      this.currentRow
-    );
-    //return;
     this._portHeight = this.gridPortHeight;
     this.InitDataSource();
 
@@ -235,7 +219,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       this._isReady = true;
     }, 1);
 
-    //    console.log("this.pagesArray",this.pagesArray);
   }
 
   PageClick(event: any, page: number) {
@@ -246,7 +229,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // check if set of fields selected were part of the original (SetupData is called)
     // set of visible fields. if not onColumnsChanged must be fired!
 
-    console.log('fieldsArray:', fieldsArray);
     this.options.ShowColumns(fieldsArray);
 
     if (this.options.columnsDataNotAvailable) {
@@ -339,7 +321,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
         },
       ],
     }).subscribe((result) => {
-      console.log('Result:', result);
       if (!result) return;
       if (result.mode == 'accept') {
         // accept mode result comes with fields return parameter
@@ -371,9 +352,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return ref.afterClosed();
 
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   console.log(`Dialog result: ${result}`);
-    // });
   }
 
   OpenFilter(column: DataColumn) {
@@ -383,7 +361,12 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       minWidth: '300px',
       minHeight: '550px',
       disableClose: false,
-      data: { column: column, table: this.sourceTable },
+      //sourceLookups:this.sourceLookups,
+      data: {
+        column: column,
+        table: this.sourceTable,
+        sourceLookups: this.sourceLookups,
+      },
     });
 
     return ref.afterClosed();
@@ -401,16 +384,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public RowClick(row: any) {
-    // console.log(
-    //   '\nthis.gridCurrentRow:',
-    //   this.gridCurrentRow,
-    //   '\nthis._currentRow:',
-    //   this._currentRow,
-    //   '\nthis.currentRowObject:',
-    //   this.currentRowObject,
-    //   '\nthis.gridDataSource:',
-    //   this.gridDataSource
-    // );
+
     this.currentRow = row;
   }
 
@@ -560,7 +534,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   RefreshGridDisplay() {
-    // console.log("Rsizing!");
   }
 
   private _sourceProcessing: boolean = false;
@@ -568,8 +541,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._sourceProcessing;
   }
 
-  private _isRepainting:boolean = false;
-  public get isRepainting():boolean{
+  private _isRepainting: boolean = false;
+  public get isRepainting(): boolean {
     return this._isRepainting;
   }
   public get isNoRecord(): boolean {
@@ -595,12 +568,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       (this.totalRecords > 1 ? '(s)' : '')
     );
   }
-
-  // public setDataSource() {
-  //   console.log('SET DATA SOURCE');
-  //   return;
-  //   this._dataSource = this.ds.GetTableSnapShot(this.sourceTable);
-  // }
 
   //GetTableSnapShot
   public headerWidth(
@@ -655,7 +622,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   calcWidths() {
     this._cellWidths = null;
     setTimeout(() => {
-      console.log(this.cellWidths);
+      // console.log(this.cellWidths);
     }, 1000);
   }
 
@@ -896,7 +863,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         this.cellTip = null;
       }
-      //console.log(target.scrollWidth,target.offsetWidth,target.innerHTML);
     } else if (eType == 'mouseleave') {
       this.cellTip = null;
     }
@@ -1036,6 +1002,7 @@ export interface IDataGridColumn extends IDataColumn {
   matrixData?: any;
   matrixSeverity?: string;
   matrixLikelihood?: string;
+
 }
 
 export class DataGridColum extends DataColumn {
@@ -1061,6 +1028,7 @@ export class DataGridColum extends DataColumn {
     this.matrixData = args.matrixData;
     this.matrixSeverity = args.matrixSeverity;
     this.matrixLikelihood = args.matrixLikelihood;
+
 
     if (args.visible != undefined) this.visible = args.visible;
 

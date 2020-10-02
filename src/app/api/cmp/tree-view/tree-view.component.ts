@@ -69,21 +69,14 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.td,this.FlatTree());
-    //this.ProcessTree();
   }
 
   ngAfterViewInit() {
     this.gridOptions
       .SetRowHeaderHeight(24)
       .SetRowHeaderWidth(6)
-      .NoFooter // .AddColumn({
-      //   caption: 'Id',
-      //   fieldName: 'id',
-      //   visible:false,
-      //   isKey: true,
-      //   width:1
-      // })
+      .NoFooter
+
       .AddColumn({ caption: 'Code', fieldName: 'code', maxWidth: 100 ,allowFilter:false})
       .AddColumn({ caption: 'Name', fieldName: 'text', minWidth: 100 ,allowFilter:false})
       .ShowColumns(['code','text'])
@@ -426,7 +419,6 @@ export class TreeViewComponent implements OnInit, AfterViewInit {
         }, 50);
         break;
       default:
-        // console.log("OTHERWISE:",e);
     }
   }
 

@@ -64,6 +64,7 @@ export class AnomalyComponent
             // bind value lookup object
             const mtx = this.ds.riskMatrixData.mtx;
             riskColumn.lookupParams.lookupSource = mtx;
+            riskColumn.matrixData = this.ds.riskMatrixData;
             /**
              * from ...
              * {
@@ -144,6 +145,33 @@ export class AnomalyComponent
         allowFilter: false,
         sortAsc: true,
         // filters:[1],
+      })
+      .AddColumn({
+        fieldAlias: 'RISK',
+
+        // matrix type filter, matrixData is supplied with
+        // null value at this point, but will be assigned
+        // the correct value onSuccess method of the
+        // lookup extraction in ngOnInit lifecycle
+
+        filterType: FilterDataType.MATRIX,
+        matrixData: null,
+
+        matrixSeverity: 'AN_RISK_RANK_SEVERITY',
+        matrixLikelihood: 'AN_RISK_RANK_LIKELIHOOD',
+
+        value: 'M{AN_RISK_RANK_SEVERITY}{AN_RISK_RANK_LIKELIHOOD}',
+        width: wd2,
+        align: center,
+        caption: 'Risk',
+        colorParams: null,
+        lookupParams: {
+          lookupSource: null, // this will later be replaced with this.ds.riskMatrixData.mtx onSuccess of lookup retreival
+          lookupDisplayField: 'code',
+          lookupValueField: 'object',
+        },
+        displayFormat: '',
+        requiredFields: ['AN_RISK_RANK_SEVERITY', 'AN_RISK_RANK_LIKELIHOOD'],
       })
       .AddColumn({
         fieldName: 'AN_REF',
@@ -352,26 +380,7 @@ export class AnomalyComponent
           inlineLookupTableField: 'LKP_DESC_B',
         },
       })
-      .AddColumn({
-        fieldAlias: 'RISK',
 
-        filterType: FilterDataType.MATRIX,
-        matrixData: this.ds.riskMatrixData,
-        matrixSeverity: 'AN_RISK_RANK_SEVERITY',
-        matrixLikelihood: 'AN_RISK_RANK_LIKELIHOOD',
-
-        value: 'M{AN_RISK_RANK_SEVERITY}{AN_RISK_RANK_LIKELIHOOD}',
-        width: wd2,
-        align: center,
-        caption: 'Risk',
-        colorParams: null,
-        lookupParams: {
-          lookupSource: null, // this will later be replaced with this.ds.riskMatrixData.mtx onSuccess of lookup retreival
-          lookupDisplayField: 'code',
-          lookupValueField: 'object',
-        },
-        displayFormat: '',
-      })
       .AddColumn({
         fieldName: 'AN_RISK_RANK_SEVERITY',
         fieldAlias: 'SEVERITY',
@@ -381,7 +390,8 @@ export class AnomalyComponent
         lookupParams: {
           inlineLookupFieldAlias: 'SEV',
           inlineLookupTableAlias: 'risksev',
-          inlineLookupTableField: 'LKP_DESC_A',
+          // inlineLookupTableField: 'LKP_DESC_A',
+          inlineLookupTableField: 'LKP_DESC_B',
         },
       })
       .AddColumn({
@@ -393,7 +403,8 @@ export class AnomalyComponent
         lookupParams: {
           inlineLookupFieldAlias: 'LIK',
           inlineLookupTableAlias: 'risklik',
-          inlineLookupTableField: 'LKP_DESC_A',
+          // inlineLookupTableField: 'LKP_DESC_A',
+          inlineLookupTableField: 'LKP_DESC_B',
         },
       })
 
@@ -404,6 +415,7 @@ export class AnomalyComponent
       // show only selected fields to display
       .ShowColumns([
         'AN_ID',
+        'RISK',
         'AN_ASSET_ID',
         'AN_REF',
         'AN_REVNO',
@@ -414,7 +426,6 @@ export class AnomalyComponent
         'AN_CURR_CLASS',
         'AN_ORIG_AVAIL_CLASS',
         'AN_CURR_AVAIL_CLASS',
-        'RISK',
         // 'SEVERITY',
         // 'LIKELIHOOD',
         'AN_DATE_IDENT',
@@ -476,11 +487,11 @@ export class AnomalyComponent
       });
 
     console.log(
-      '\nselect:',
+      '\nSELECT field(s):',
       this.mainGridOptions.FieldList,
-      '\nfrom:',
+      '\n\nFROM:',
       this.mainGridOptions.fromClauseCode,
-      '\nwhere:',
+      '\n\nWHERE:',
       this.mainGridOptions.whereClause
     );
 

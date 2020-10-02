@@ -1,6 +1,7 @@
+import { TblLookups } from './../../../svc/app.tables';
 // import { FilterDataType } from './../../mod/app-common.classes';
 import { IDataGridColumn } from './../data-grid/data-grid.component';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ColumnInfo } from '../../mod/app-column.model';
@@ -45,51 +46,6 @@ export class FilterParametersComponent implements OnInit {
     '2019-nov-22',
   ];
 
-  // groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>
-  //   list.reduce((previous, currentItem) => {
-  //     const group = getKey(currentItem);
-  //     if (!previous[group]) previous[group] = [];
-  //     previous[group].push(currentItem);
-  //     return previous;
-  //   }, {} as Record<K, T[]>);
-
-  // people: Array<{
-  //   name: string;
-  //   age: number;
-  // }> = [
-  //   {
-  //     name: 'Kevin R',
-  //     age: 25,
-  //   },
-  //   {
-  //     name: 'Susan S',
-  //     age: 18,
-  //   },
-  //   {
-  //     name: 'Julia J',
-  //     age: 18,
-  //   },
-  //   {
-  //     name: 'Sarah C',
-  //     age: 25,
-  //   },
-  // ];
-
-  // group(arr) {
-  //   return arr.reduce((r, o) => {
-  //     console.log(r, o);
-  //     // var p = o.date.split("-");                             // get the parts: year, month and day
-  //     // var week = Math.floor(p.pop() / 7) + 1;                // calculate the week number (Math.floor(day / 7) + 1) and remove day from the parts array (p.pop())
-  //     // var month = p.reduce((o, p) => o[p] = o[p] || {}, r);  // get the month object (first, get the year object (if not create one), then get the month object (if not create one)
-  //     // if(month[week]) month[week].push(o);                   // if there is an array for this week in the month object, then push this object o into that array
-  //     // else month[week] = [o];                                // otherwise create a new array for this week that initially contains the object o
-  //     // return r;
-  //   }, {});
-  // }
-
-  //let array = [{"name":"example1","date":"2011-01-01"},{"name":"example1","date":"2011-01-02"},{"name":"example1","date":"2011-02-02"},{"name":"example1","date":"2011-02-15"},{"name":"example1","date":"2011-02-17"},{"name":"example1","date":"2012-01-01"},{"name":"example1","date":"2012-03-03"}];
-
-  //console.log(this.group(array));
 
   private _dataType: number = null;
   public get dataType(): number {
@@ -127,6 +83,10 @@ export class FilterParametersComponent implements OnInit {
     private dialogRef: MatDialogRef<FilterParametersComponent>
   ) {}
 
+  public get Lookups():any{
+    return this.data ? this.data.sourceLookups : null;
+  }
+
   public optrs: Array<IFilterOperator> = [
     {
       prmt: 'Equal To ...',
@@ -138,6 +98,16 @@ export class FilterParametersComponent implements OnInit {
       optr: 'neq',
       apsw: this.COMMON_TYPES | FilterDataType.BOOLEAN | FilterDataType.ASSET,
     },
+    // {
+    //   prmt: 'In ...',
+    //   optr: 'in',
+    //   apsw: this.COMMON_TYPES | FilterDataType.ASSET,
+    // },
+    // {
+    //   prmt: 'Not In ...',
+    //   optr: 'nin',
+    //   apsw: this.COMMON_TYPES | FilterDataType.ASSET,
+    // },
 
     { prmt: 'Less Than ...', optr: 'lt', apsw: this.TEXT_OR_NUMBER },
     {
@@ -178,7 +148,13 @@ export class FilterParametersComponent implements OnInit {
     return this._validOperators;
   }
 
-  public formData: FormGroup = new FormGroup({});
+  public formData: FormGroup = new FormGroup({
+    searchValues: new FormArray([
+      new FormControl(''),
+      new FormControl(''),
+      new FormControl(''),
+    ]),
+  });
 
   public columnData: Array<any> = [];
 
@@ -193,10 +169,9 @@ export class FilterParametersComponent implements OnInit {
     this.formData.addControl('dateEnd', new FormControl(null));
     this.formData.addControl('search', new FormControl(null));
 
-    //console.log('\n\n\nPARSED DATES!!!:', this.group(this.aData), '\n\n\n');
-    // const results = this.groupBy(this.people, (i) => i.name);
-    // console.log('results', results);
     this.testDateParse();
+
+    console.log('DATA COLUMN:', this.dataColumn,"LOOKUPS:",this.Lookups);
   }
 
   testData: Array<any> = [
@@ -210,13 +185,14 @@ export class FilterParametersComponent implements OnInit {
   ];
 
   testDateParse() {
-    this.testData.forEach(i=>{i.year=i.date.substr(0,4);i.month=i.date.substr(5,2);i.day=i.date.substr(8,2);})
-    const tmpArr = this.groupBy(this.testData,"year")
-    tmpArr.forEach(yr=>{
-      //console.log(yr.data)
+    this.testData.forEach((i) => {
+      i.year = i.date.substr(0, 4);
+      i.month = i.date.substr(5, 2);
+      i.day = i.date.substr(8, 2);
     });
-    //const tmpArr = this.groupBy(this.testData,"year")
-    console.log("\ntestData:",this.testData,"\ntmpArr:",tmpArr);
+    const tmpArr = this.groupBy(this.testData, 'year');
+    tmpArr.forEach((yr) => {
+    });
   }
 
   operatorSelected(op: IFilterOperator) {
@@ -341,10 +317,36 @@ export class FilterParametersComponent implements OnInit {
     return res != 0;
   }
 
+  public get operatorValue(): string {
+    return this.getFormControlValue('operatorValue');
+  }
+
+  public get searchValues(): FormArray {
+    return this.getFormControlValue('searchValues');
+  }
+
+  public get searchValue1(): any {
+    return this.getFormControlValue('searchValue1');
+  }
+  public get searchValue2(): any {
+    return this.getFormControlValue('searchValue2');
+  }
+
+  private getFormControlValue(controlName: string): any {
+    const ctrl = this.formData.get(controlName);
+    return ctrl ? ctrl.value : null;
+  }
+
   public get withSecondValue(): boolean {
     const optr = this.formData.get('operatorValue');
     if (!optr) return false;
-    return optr.value == 'btw' || optr.value == 'nbtw';
+    return !this.isIn && (optr.value == 'btw' || optr.value == 'nbtw');
+  }
+
+  public get isIn(): boolean {
+    const optr = this.formData.get('operatorValue');
+    if (!optr) return false;
+    return optr.value == 'in' || optr.value == 'nin';
   }
 
   private _columnCaption: string = null;
@@ -386,5 +388,33 @@ export class FilterParametersComponent implements OnInit {
     if (col) this._ColumnType = col.type;
 
     return this._ColumnType;
+  }
+
+  public get filterExpression(): string {
+    //const fmt="`{${this.dataColumn|${ret}|${this.}}`"
+
+    //let ret:string = this.operatorValue;
+    //return `{${this.dataColumn.fieldName|${this.operatorValue}|}`;
+
+    let optr = this.operatorValue;
+
+    let v1 = this.searchValue1;
+    let v2 = this.searchValue2;
+
+    if (optr == 'bgw') {
+      optr = 'lk';
+      v1 = v1 + '~';
+    } else if (optr == 'enw') {
+      optr = 'lk';
+      v1 = '~' + v1;
+    } else if (optr == 'lk') {
+      v1 = '~' + v1 + '~';
+    }
+
+    return `{${this.dataColumn.fieldName}|${optr}|${v1}${
+      optr == 'btw' || optr == 'nbtw' ? '^' + v2 : ''
+    }}`;
+
+    //${this.searchValues.value}
   }
 }

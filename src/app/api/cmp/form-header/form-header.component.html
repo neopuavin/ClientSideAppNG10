@@ -27,7 +27,7 @@
         (click)="ExcelClick($event)" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
         [matTooltip]="SetButtonTitle('excel')"><i class="far fa-file-excel mr-1 text-success"></i>Excel</button>
         <button *ngIf="printClick.observers.length" (focus)="onFocus($event)"
-        (click)="FilterClick($event)" class="btn btn-sm btn-link m-0" matTooltipPosition="below"
+        (click)="FilterClick($event)" class="btn btn-sm btn-link m-0" [ngClass]="{'filter-on':filteringState}" matTooltipPosition="below"
         [matTooltip]="SetButtonTitle('filter')">
         <i class="fa fa-filter text-info"></i>
         </button>

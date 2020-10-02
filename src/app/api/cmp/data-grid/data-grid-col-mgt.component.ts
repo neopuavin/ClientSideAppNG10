@@ -37,18 +37,10 @@ export class DataGridColMgtComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    // console.log("Managemnent Datae:",this.data);
-    //console.log()
     this.ResetSelection();
   }
 
   ngAfterViewInit() {
-    // console.log(
-    //   'this.actions:',
-    //   this.actions,
-    //   'contentHeight:',
-    //   this.contentHeight
-    // );
 
     setTimeout(()=>this._ready=true,10);
 
@@ -191,7 +183,6 @@ export class DataGridColMgtComponent implements OnInit, AfterViewInit {
   AcceptSelection(){
     let visibleFields:Array<string>=[];
     this.visible.forEach(i=>{
-      // console.log(i.id," => ",i.caption);
       visibleFields.push(i.id);
     })
 
@@ -229,6 +220,5 @@ export class DataGridColMgtComponent implements OnInit, AfterViewInit {
       this._hidden.sort((a, b) => a.order - b.order);
     });
 
-    //console.log('this.columns:', this.columns, this._visible, this._hidden);
   }
 }

@@ -1,118 +1,142 @@
 <h5 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="noselect">Filter/Sort settings
   for '{{columnCaption}}-({{ColumnType}})-({{dataType}})'</h5>
 
-<div id="details" class="container-fluid py-2" [formGroup]="formData">
-  <div id="sorting" class="form-group menu-item sep">
-    <div class="d-flex"><i class="fa fa-sort-alpha-up text-maroon active"></i><span (click)="testDateParse()">Sort Oldest to Newest</span></div>
-    <div class="d-flex"><i class="fa fa-sort-alpha-down-alt text-maroon"></i><span>Sort Newest to Oldest</span></div>
-  </div>
-  <div class="form-group menu-item">
-    <div class="d-flex">
-      <span class="fa-stack fa-1x">
-        <i class="fa fa-filter fa-stack-1x text-secondary"></i>
-        <i class="fa fa-times fa-stack text-danger mx-1 mt-0 pt-0"></i>
-      </span>
-      <!-- <i class="fa fa-filter"></i> -->
-      <span>Clear filter from '{{columnCaption}}'</span></div>
-  </div>
-  <div class="form-group">
-    <label for="">Search record where value is...</label>
+<app-app-form-a #detailForm [labelWidth]="90" [rowSpacing]="4" [formObject]="formData">
+  <app-panel-a>
+    <div id="details" class="container-fluid py-2" [formGroup]="formData">
+      <div id="sorting" class="form-group menu-item sep">
+        <div class="d-flex"><i class="fa fa-sort-alpha-up text-maroon active"></i><span (click)="testDateParse()">Sort
+            Oldest to Newest</span></div>
+        <div class="d-flex"><i class="fa fa-sort-alpha-down-alt text-maroon"></i><span>Sort Newest to Oldest</span>
+        </div>
+      </div>
+      <div class="form-group menu-item">
+        <div class="d-flex">
+          <span class="fa-stack fa-1x">
+            <i class="fa fa-filter fa-stack-1x text-secondary"></i>
+            <i class="fa fa-times fa-stack text-danger mx-1 mt-0 pt-0"></i>
+          </span>
+          <!-- <i class="fa fa-filter"></i> -->
+          <span>Clear filter from '{{columnCaption}}'</span></div>
+      </div>
+      <div class="form-group">
+        <label for="">Search record where value is...</label>
 
-    <div class="input-group">
-      <!-- <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <div class="input-group">
+          <!-- <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
         <mat-icon>more_vert</mat-icon>
       </button> -->
 
-      <div class="input-group">
-        <input formControlName="operatorPrompt" class="form-control" onfocus="javascript:this.blur();" type="text"
-          style="cursor:default;" placeholder="Select operator...">
-        <div class="input-group-append p-0 m-0">
-          <span class="input-group-text amber lighten-3 p-0 m-0">
-            <i class="fas fa-caret-right text-grey px-3" aria-hidden="true" [matMenuTriggerFor]="menu"
-              style="cursor:pointer;"></i></span>
+          <div class="input-group">
+            <input formControlName="operatorPrompt" class="form-control" onfocus="javascript:this.blur();" type="text"
+              style="cursor:default;" placeholder="Select operator...">
+            <div class="input-group-append p-0 m-0">
+              <span class="input-group-text amber lighten-3 p-0 m-0">
+                <i class="fas fa-caret-right text-grey px-3" aria-hidden="true" [matMenuTriggerFor]="menu"
+                  style="cursor:pointer;"></i></span>
+            </div>
+          </div>
+
         </div>
-      </div>
-
-    </div>
 
 
-    <!-- <select class="form-control form-control-sm m-0">
+        <!-- <select class="form-control form-control-sm m-0">
       <option *ngFor="let optr of validOperators">{{optr.prmt}}</option>
     </select> -->
 
 
-  </div>
+      </div>
 
-  <div class="form-group" *ngIf="isTextOrNumber" [ngClass]="{'sep':!withSecondValue}">
-    <input formControlName="searchValue1" class="form-control" type="text"
-      [placeholder]="withSecondValue?'Search lower limit Value ...':'Value to search...'">
-  </div>
+      <div class="form-group" *ngIf="isIn" formArrayName="searchValues">
+        <div *ngFor="let value of searchValues;index as idx;">
+          <input class="form-control mt-1" type="text" [formControlName]="idx"
+            [placeholder]="'Value to search ' + (idx+1) + '...'">
+        </div>
+      </div>
 
-  <div class="form-group sep" *ngIf="isTextOrNumber && withSecondValue">
-    <!-- <label for="">Enter Value 2</label> -->
-    <input formControlName="searchValue2" class="form-control" type="text" placeholder="Search upper limit Value ...">
-  </div>
+      <div class="form-group" *ngIf="isTextOrNumber && !isIn" [ngClass]="{'sep':!withSecondValue}">
+        <input formControlName="searchValue1" class="form-control" type="text"
+          [placeholder]="withSecondValue?'Search lower limit Value ...':'Value to search...'">
+      </div>
 
-  <div class="form-group" *ngIf="isDate && !withSecondValue">
-    <div class="input-group" style="position:relative;">
-      <!--using hidden text value control which with absolute position
+      <div class="form-group sep" *ngIf="isTextOrNumber && withSecondValue">
+        <!-- <label for="">Enter Value 2</label> -->
+        <input formControlName="searchValue2" class="form-control" type="text"
+          placeholder="Search upper limit Value ...">
+      </div>
+
+      <div class="form-group" *ngIf="(isDate && !withSecondValue) && !isIn">
+        <div class="input-group" style="position:relative;">
+          <!--using hidden text value control which with absolute position
         makes the picker appear below the display control-->
-      <input type="text" style="position:absolute;visibility:hidden;" formControlName="dateValue"
-        [matDatepicker]="picker" />
-      <input [value]="displayDate('dateValue')" class="form-control" type="text" placeholder="Select date">
-      <!-- [value]="displayDate"-->
-      <div class="input-group-append">
-        <span class="input-group-text amber lighten-3" id="basic-text1">
-          <i (click)="picker.open()" class="fa fa-calendar-alt text-grey px-0" style="cursor: pointer;"
-            aria-hidden="true"></i></span>
+          <input type="text" style="position:absolute;visibility:hidden;" formControlName="dateValue"
+            [matDatepicker]="picker" />
+          <input [value]="displayDate('dateValue')" class="form-control" type="text" placeholder="Select date">
+          <!-- [value]="displayDate"-->
+          <div class="input-group-append">
+            <span class="input-group-text amber lighten-3" id="basic-text1">
+              <i (click)="picker.open()" class="fa fa-calendar-alt text-grey px-0" style="cursor: pointer;"
+                aria-hidden="true"></i></span>
+          </div>
+        </div>
+        <mat-datepicker #picker></mat-datepicker>
       </div>
-    </div>
-    <mat-datepicker #picker></mat-datepicker>
-  </div>
 
-  <div class="form-group" *ngIf="isDate && withSecondValue">
-    <div class="input-group" style="position:relative;">
-      <!--using hidden text value control which with absolute position
+      <div class="form-group" *ngIf="isDate && withSecondValue">
+        <div class="input-group" style="position:relative;">
+          <!--using hidden text value control which with absolute position
         makes the picker appear below the display control-->
-      <mat-date-range-input [rangePicker]="pickerRange" style="position:absolute;visibility:hidden;">
-        <input matStartDate formControlName="dateStart" />
-        <input matEndDate formControlName="dateEnd" />
-      </mat-date-range-input>
-      <input [value]="displayDate('dateStart','dateEnd')" class="form-control" type="text"
-        placeholder="Select date range">
-      <!-- [value]="displayDate"-->
-      <div class="input-group-append">
-        <span class="input-group-text amber lighten-3" id="basic-text1">
-          <i (click)="pickerRange.open()" class="fa fa-calendar-alt text-grey px-0" style="cursor: pointer;"
-            aria-hidden="true"></i></span>
+          <mat-date-range-input [rangePicker]="pickerRange" style="position:absolute;visibility:hidden;">
+            <input matStartDate formControlName="dateStart" />
+            <input matEndDate formControlName="dateEnd" />
+          </mat-date-range-input>
+          <input [value]="displayDate('dateStart','dateEnd')" class="form-control" type="text"
+            placeholder="Select date range">
+          <!-- [value]="displayDate"-->
+          <div class="input-group-append">
+            <span class="input-group-text amber lighten-3" id="basic-text1">
+              <i (click)="pickerRange.open()" class="fa fa-calendar-alt text-grey px-0" style="cursor: pointer;"
+                aria-hidden="true"></i></span>
+          </div>
+        </div>
+        <mat-date-range-picker #pickerRange></mat-date-range-picker>
+
       </div>
-    </div>
-    <mat-date-range-picker #pickerRange></mat-date-range-picker>
 
-  </div>
+      <app-risk-matrix *ngIf="dataColumn.matrixData" [riskMatrixData]="dataColumn.matrixData"  [phHeight]="210"
+        [severityField]="'AN_RISK_RANK_SEVERITY'" [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'"></app-risk-matrix>
 
-  <div class="form-group mt-2">
-    <!-- <label for="">Search</label> -->
-    <div class="input-group">
-      <input formControlName="search" class="form-control" type="text" placeholder="Search">
-      <div class="input-group-append">
-        <span class="input-group-text amber lighten-3" id="basic-text1">
-          <i class="fas fa-search text-grey px-0" aria-hidden="true"></i></span>
+      <div class="form-group mt-2">
+        <!-- <label for="">Search</label> -->
+        <div class="input-group">
+          <input formControlName="search" class="form-control" type="text" placeholder="Search">
+          <div class="input-group-append">
+            <span class="input-group-text amber lighten-3" id="basic-text1">
+              <i class="fas fa-search text-grey px-0" aria-hidden="true"></i></span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div style="flex:1 1 0;border:1px solid #ebf1fa;display:flex;">
-<h5 style="margin:auto auto;color:red;">Grid data filtering is under construction</h5>
-  </div>
+      <div><textarea class="form-control form-control-sm" id="" cols="30" rows="5">{{filterExpression}}</textarea></div>
+      <div style="flex:1 1 0;border:1px solid #ebf1fa;display:flex;">
+        <h5 style="margin:auto auto;color:red;">Grid data filtering is under construction</h5>
+      </div>
 
-  <!-- <div class="spinner-border" role="status">
+      <!-- <div class="spinner-border" role="status">
     <span class="sr-only">Loading...</span>
   </div>
 
   <div class="spinner-grow" role="status">
     <span class="sr-only">Loading...</span>
   </div> -->
-</div>
+      <div id="action" class="pt-1">
+        <button class="btn btn-sm btn-secondary mx-1">Cancel</button>
+        <button class="btn btn-sm btn-warning mx-1">Apply</button>
+      </div>
+    </div>
+    <!--end of container-->
+  </app-panel-a>
+</app-app-form-a>
+
 
 <mat-menu #menu="matMenu" class="customize">
   <button (click)="operatorSelected(optr)" mat-menu-item

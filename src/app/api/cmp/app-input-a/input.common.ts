@@ -156,11 +156,6 @@ export abstract class InputCommon {
 
   private _changeValueNow:boolean = false;
   ngAfterViewInit() {
-    //console.log("readOnly:",this.form.readOnly,this.readOnly);
-    // if (this._input) {
-    //   const formObj = this.form.formObject;
-    //   const ctrl = formObj.get(this.fieldName);
-    // }
     setTimeout(()=>this._changeValueNow=true,0);
   }
 
@@ -190,12 +185,6 @@ export abstract class InputCommon {
   }
 
   public get isReadOnly(): boolean {
-    // let elem: HTMLElement = this._input.nativeElement;
-    // if(elem){
-    //   elem.style.background = 'red';
-    // }
-
-    //console.log("control disabled:",this.form.formObject.get(this.fieldName).disabled);
 
     if (this.readOnly != undefined) return this.readOnly;
     if (this.form.readOnly != undefined) return this.form.readOnly;

@@ -36,20 +36,16 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    //this.riskMatrixData();
-    //console.log(this.riskMatrixData());
-    // console.log("from RISK MATRIX this.form.formObject",this.form.formObject);
 
     // bind severity and likelihood fields to the form's formObject
     if (this.form) {
-      console.log("RISK MATRIX INIT!")
+      console.log("RISK MATRIX INIT!", this.riskMatrixData,"riskMatrixData.sev",this.riskMatrixData.sev)
       if (this.likelihoodField) console.log("CTL LIK:",this.form.RegisterField(this.likelihoodField));
       if (this.severityField) console.log("CTL SEV:",this.form.RegisterField(this.severityField));
     }
   }
 
   ngAfterViewInit() {
-    // console.log('riskMatrixData:', this.riskMatrixData);
     console.log(
       'from RISK MATRIX: ',
       this.likelihoodField,
@@ -90,7 +86,6 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   }
 
   private getFieldValue(fieldName: string): number {
-    // console.log("getFieldValue:",fieldName,this[fieldName], this.formObject)
     if (!fieldName || !this.formObject) return -1;
     const ctl = this.formObject.get(fieldName);
     if (!ctl) return 0;

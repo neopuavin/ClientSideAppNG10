@@ -19,7 +19,6 @@ export class PhBox1Component implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
-    // console.log("findKeyframesRule",this.findKeyframesRule('placeholder-content'));
   }
 
   // findKeyframesRule(rule) {

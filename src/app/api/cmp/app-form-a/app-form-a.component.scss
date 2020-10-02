@@ -1,0 +1,8 @@
+
+:host{
+  display: flex;  // this will make children flex...
+  // flex-direction: column;
+  // justify-content: stretch;
+  // background-color: yellow;
+  flex: 1 1 0;
+}

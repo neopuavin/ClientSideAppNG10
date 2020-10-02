@@ -231,7 +231,6 @@ export class FormCommon {
         (mState) => mState.moduleId == this.moduleId
       );
       if (!ms) {
-        console.log(`\n#### CREATE NEW ModuleState for Module(${this.moduleId}) #### `);
         ms = new ModuleState(this.moduleId);
         this.ds.moduleStates.push(ms);
       }
@@ -269,7 +268,10 @@ export class FormCommon {
     if (fieldList.length == 0) {
       console.log('DATA FIELD NOT SET');
       return;
+    }else{
+      console.log('\n\nDATA FIELD FIELD LIST:',fieldList);
     }
+
 
     // this flag is set to make sure that module initialization  is arleady called
     this.moduleState.setupDataCalled = true;
@@ -371,6 +373,12 @@ export class FormCommon {
   SearchEvent(args: any) {
     console.log('SearchEvent', args);
   }
+
+  FilterEvent(args: any) {
+    //console.log('FilterEvent', args);
+    this.moduleState.filteringActive = !this.moduleState.filteringActive;
+  }
+
 
   public GetRowFormObject(blankForm?: boolean): FormGroup {
     // create form object containing controls based on the entire

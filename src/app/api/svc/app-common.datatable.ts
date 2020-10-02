@@ -353,32 +353,7 @@ export class TableBase extends AppCommonMethods {
     if (this.Links() == null) return null;
     return this.Links()[0];
   }
-  /*
-  public ChildRow(childTableCode:string, row:any, localField?:string, groupId?:number):any{
-    let ret:any = {};
-    let child:any = this.ChildTable(childTableCode);
-    if(child){
-      // iterate through the links definition and look for one which corresponds to
-      // this child table. this is to identify the parent field to use when linking
-      // a parent field to the child key field
-      //
-      this.Links().forEach(lnk=>{
-        if(lnk.child_code == childTableCode){
-          if(lnk.link_type == "1to1" || lnk.link_type == "lookup"){
-            ret = child.Item(row[lnk.local_field], groupId);
-            if(lnk.link_type=="lookup"){
-              console.log("LOCAL FIELD:" ,lnk.local_field,
-                "row[lnk.local_field]:",row[lnk.local_field],
-                " RET: ",ret);
-            }
-          }
-        }
-      });
-    }
-    if(!ret && groupId!=undefined)this.GetRowsByGroup(groupId);
-    return ret;
-  }
-*/
+
   public ChildTable(childTableCode?: string): any {
     let childCode: string = '';
     if (childTableCode == undefined) {
@@ -462,16 +437,6 @@ export class TableBase extends AppCommonMethods {
 
     this._derivedRecords.push(rec);
     this.__Item['r_' + String(key)] = rec;
-    // if (!existing) {
-    //   this._derivedRecords.push(rec);
-    //   this.__Item['r_' + String(key)] = rec;
-    // } else {
-
-    //   // (pending) update existing record if not modified or obsolete
-
-    //   // console.log('Did not existing add the record');
-    //   // must update existing instead
-    // }
 
     return rec;
   }

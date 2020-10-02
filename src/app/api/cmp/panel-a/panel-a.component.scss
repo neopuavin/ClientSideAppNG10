@@ -1,8 +1,14 @@
+::ng-deep{
+  // background-color: cyan;
+}
 :host{
   flex:1 1 0;
-  // display: flex;
+
+  // background-color: magenta;
+  display: flex;  // this makes #wrapper flex and occupy entire height of the container
 
   // flex-direction: column;
+  // justify-content: stretch;
   // background:olive;
   // align-items: stretch;
 }
@@ -11,6 +17,7 @@
   display:flex;
   box-sizing: border-box;
   align-content: flex-end;
+  // background-color: lime;
   //justify-items: flex-start;
   // justify-content: space-between;
   // flex-direction: row;

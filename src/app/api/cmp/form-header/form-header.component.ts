@@ -17,6 +17,8 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
   @Input() title: string;
   @Input() rights: any = {};
 
+  @Input() filteringState: boolean = true;
+
   @Output() addClick: EventEmitter<any> = new EventEmitter();
   @Output() editClick: EventEmitter<any> = new EventEmitter();
   @Output() deleteClick: EventEmitter<any> = new EventEmitter();
@@ -27,7 +29,7 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
   @Output() filterClick: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('search') searchTextObj: any;
-  @ViewChild('formHeader') formHeader:any;
+  @ViewChild('formHeader') formHeader: any;
   searchText: HTMLElement = null;
 
   constructor() {}
@@ -39,8 +41,10 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
       return 'Edit selected record';
     } else if (type == 'delete') {
       return 'Delete selected record(s)';
-    } else if (type == 'excel') {
+    } else if (type == 'excelx') {
       return 'Extract list to Excel';
+    } else if (type == 'filter') {
+      return 'Toggle on/off data table filtering function';
     }
     return 'Sorry. This action is not yet avialable...';
   }
@@ -63,24 +67,23 @@ export class FormHeaderComponent implements OnInit, AfterViewInit {
     this.addClick.emit(event);
   }
 
-  onFocus(e:any){
+  onFocus(e: any) {
     e.srcElement.blur();
   }
 
   public get allowEdit(): boolean {
-    return this.rights.allowEdit
+    return this.rights.allowEdit;
   }
   EditClick(event: any) {
     this.editClick.emit(event);
   }
 
   public get allowDelete(): boolean {
-    return this.rights.allowDelete
+    return this.rights.allowDelete;
   }
   DeleteClick(event: any) {
     this.deleteClick.emit(event);
   }
-
 
   public get allowPrint(): boolean {
     return this.rights.allowPrint;
