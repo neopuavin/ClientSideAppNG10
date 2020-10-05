@@ -26,6 +26,11 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   @Input() likelihoodField: string;
   @Input() severityField: string;
 
+  @Input() selectedValues: Array<{
+    severity: number;
+    likelihood: number;
+  }> = null;
+
   @Input() readOnly: boolean = true;
 
   @Output() riskClick: EventEmitter<any> = new EventEmitter();
@@ -36,12 +41,18 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-
     // bind severity and likelihood fields to the form's formObject
     if (this.form) {
-      console.log("RISK MATRIX INIT!", this.riskMatrixData,"riskMatrixData.sev",this.riskMatrixData.sev)
-      if (this.likelihoodField) console.log("CTL LIK:",this.form.RegisterField(this.likelihoodField));
-      if (this.severityField) console.log("CTL SEV:",this.form.RegisterField(this.severityField));
+      console.log(
+        'RISK MATRIX INIT!',
+        this.riskMatrixData,
+        'riskMatrixData.sev',
+        this.riskMatrixData.sev
+      );
+      if (this.likelihoodField)
+        console.log('CTL LIK:', this.form.RegisterField(this.likelihoodField));
+      if (this.severityField)
+        console.log('CTL SEV:', this.form.RegisterField(this.severityField));
     }
   }
 
@@ -61,6 +72,7 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   }
 
   public get isWithData(): boolean {
+    if(this.selectedValues) return true;
     if (!this.severity) return false;
     if (!this.likelihood) return false;
     return true;
@@ -72,10 +84,38 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   }
 
   CellClick(sev: number, lik: number) {
+    console.log("this.selectedValues",this.selectedValues);
     if (this.readOnly) return;
+
+    if (this.selectedValues) {
+      const riskIndex = this.selectedValues.findIndex(
+        (v) => v.severity == sev && v.likelihood == lik
+      );
+      if (riskIndex == -1) {
+        // not yet selected, add to the collection
+        this.selectedValues.push({severity:sev,likelihood:lik});
+
+      } else {
+        // already selected, remove from the selection
+        this.selectedValues.splice(riskIndex);
+
+      }
+      return;
+    }
+
     this.severity = sev;
     this.likelihood = lik;
     this.riskClick.emit({ severity: sev, likelihood: lik });
+  }
+
+  public checkCell(sev: number, lik: number): boolean {
+    if (this.selectedValues)
+      return this.selectedValues.find(
+        (v) => v.severity == sev && v.likelihood == lik
+      )
+        ? true
+        : false;
+    return this.severity == sev && this.likelihood == lik;
   }
 
   public get severity(): number {
@@ -119,9 +159,8 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
     return lik ? lik.text : '';
   }
 
-  RemoveRisk(event:any){
+  RemoveRisk(event: any) {
     this.likelihood = null;
     this.severity = null;
   }
-
 }

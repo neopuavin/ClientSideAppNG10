@@ -17,6 +17,8 @@ export class FilterParametersComponent implements OnInit {
   @Input() dateFormat: string = 'DD-MMM-YYYY';
   @Input() dateTimeFormat: string = 'DD-MMM-YYYY, hh:mm:ss a';
 
+  public selectedValues:Array<{severity:number, likelihood:number}> =[];
+
   public COMMON_TYPES: number =
     FilterDataType.TEXT | FilterDataType.DATE | FilterDataType.NUMBER;
   public TEXT_OR_NUMBER: number = FilterDataType.TEXT | FilterDataType.NUMBER;

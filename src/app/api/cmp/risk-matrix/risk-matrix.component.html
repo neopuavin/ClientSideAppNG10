@@ -27,8 +27,8 @@
         [style.color]="riskMatrixData.mtx['M'+sev.key+lik.key].fore" matTooltipPosition="above"
         [matTooltip]="'Severity: ' + sev.text + ', Likelihood: ' + lik.text">
         <span *ngIf="isWithData">
-          <i *ngIf="(severity==sev.key && likelihood==lik.key)" class="fa fa-check"></i>
-          <span *ngIf="(severity!=sev.key || likelihood!=lik.key)">&nbsp;</span>
+          <i *ngIf="checkCell(sev.key,lik.key)" class="fa fa-check"></i>
+          <span *ngIf="!checkCell(sev.key,lik.key)">&nbsp;</span>
         </span>
         <span *ngIf="!isWithData">&nbsp;</span>
       </div>

@@ -104,7 +104,7 @@
       </div>
 
       <app-risk-matrix *ngIf="dataColumn.matrixData" [riskMatrixData]="dataColumn.matrixData"  [phHeight]="210"
-        [severityField]="'AN_RISK_RANK_SEVERITY'" [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'"></app-risk-matrix>
+        [severityField]="'AN_RISK_RANK_SEVERITY'" [readOnly]="false" [selectedValues]="selectedValues" [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'"></app-risk-matrix>
 
       <div class="form-group mt-2">
         <!-- <label for="">Search</label> -->
