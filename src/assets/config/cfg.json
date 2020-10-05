@@ -79,20 +79,49 @@
           "active": false,
           "init_fields": "AN_ID`AN_TITLE`ASSET_ID`AN_ORIG_CLASS`AN_CURR_CLASS",
           "ready": true,
-          "loaded":false
+          "loaded": false
         },
-        { "id": 2, "label": "Design Data", "active": false, "ready": true, "loaded":false },
-        { "id": 3, "label": "Chemical Database", "active": false, "loaded":false },
-        { "id": 4, "label": "Risk Based Inspection", "active": false, "loaded":false },
-        { "id": 5, "label": "Survey Data", "active": false, "ready": true, "loaded":false },
-        { "id": 6, "label": "Freespan", "active": false, "ready": false, "loaded":false },
+        {
+          "id": 2,
+          "label": "Design Data",
+          "active": false,
+          "ready": true,
+          "loaded": false
+        },
+        {
+          "id": 3,
+          "label": "Chemical Database",
+          "active": false,
+          "loaded": false
+        },
+        {
+          "id": 4,
+          "label": "Risk Based Inspection",
+          "active": false,
+          "loaded": false
+        },
+        {
+          "id": 5,
+          "label": "Survey Data",
+          "active": false,
+          "ready": true,
+          "loaded": false
+        },
+        {
+          "id": 6,
+          "label": "Freespan",
+          "active": false,
+          "ready": false,
+          "loaded": false
+        },
         {
           "id": 7,
           "label": "Reference Library",
           "active": false,
-          "ready": true, "loaded":false
+          "ready": true,
+          "loaded": false
         },
-        { "id": 8, "label": "Seismic", "active": false, "loaded":false }
+        { "id": 8, "label": "Seismic", "active": false, "loaded": false }
       ]
     },
     {
@@ -101,9 +130,19 @@
       "active": false,
       "icon": "fa fa-wrench",
       "subMenu": [
-        { "id": 9, "label": "User Management", "active": false , "loaded":false},
-        { "id": 10, "label": "Asset Management", "active": false , "loaded":false},
-        { "id": 11, "label": "Survey Upload", "active": false , "loaded":false}
+        {
+          "id": 9,
+          "label": "User Management",
+          "active": false,
+          "loaded": false
+        },
+        {
+          "id": 10,
+          "label": "Asset Management",
+          "active": false,
+          "loaded": false
+        },
+        { "id": 11, "label": "Survey Upload", "active": false, "loaded": false }
       ]
     },
     {
@@ -133,9 +172,12 @@
     "url_deploy": "http://ngimsa.ivideolib.com/api/app",
     "url_use_deploy": false,
     "app_version": {
-      "ver": "Alpha 1.4.0",
-      "build": "20200919",
+      "ver": "Alpha 1.4.1",
+      "build": "20201005",
       "updates": [
+        "Enabled Reference Files data grid",
+        "Continue working on data grid filtering with custom controls for date type and risk type data",
+        "Isolated module state management to be used on active module tab rendering",
         "Completed Anomaly delete action",
         "Streamlined refresh routines after add/edit/delete action",
         "Started working on data grid column resizing and filtering",
@@ -158,11 +200,20 @@
       ],
       "history": [
         {
+          "ver": "Alpha 1.4.0",
+          "build": "20200930",
+          "updates": [
+            "Completed Anomaly delete action",
+            "Streamlined refresh routines after add/edit/delete action",
+            "Started working on data grid column resizing and filtering",
+            "Fixed tree search set-node-on-item-click event",
+            "Fixed null data filtering and update issues"
+          ]
+        },
+        {
           "ver": "Alpha 1.3.9",
           "build": "20200911",
-          "updates": [
-            "Fixed data grid scrolling issue (ping-pong behavior)"
-          ]
+          "updates": ["Fixed data grid scrolling issue (ping-pong behavior)"]
         },
         {
           "ver": "Alpha 1.3.8",
