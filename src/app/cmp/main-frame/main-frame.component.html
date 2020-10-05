@@ -132,9 +132,14 @@
               *ngIf="activeModule==5"></app-survey-data>
             <app-freespan [treeView]="treeView" [moduleId]="6" *ngIf="activeModule==6"></app-freespan>
 
-            <app-reference-library [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="7"
+            <!-- <app-reference-library [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="7"
               [sourceTable]="ds.tblAnomalies" [deletedFlagField]="'RF_DELETED'" [assetField]="'RF_ASSET_ID'"
-              *ngIf="activeModule==7"></app-reference-library>
+              *ngIf="activeModule==7"></app-reference-library> -->
+
+              <app-reference-library [treeView]="setValueTo(treeView,undefined)" [detailsHeight]="270" [moduleId]="7"
+              [sourceTable]="ds.tblRefFiles" *ngIf="activeModule==7" [deletedFlagField]="'RF_DELETED'"
+              [assetField]="'RF_ASSET'"></app-reference-library>
+
 
             <app-seismic [treeView]="treeView" [moduleId]="8" *ngIf="activeModule==8"></app-seismic>
 

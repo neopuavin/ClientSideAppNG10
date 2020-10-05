@@ -19,6 +19,24 @@ export class ReferenceLibraryComponent extends FormCommon
   }
 
   ngOnInit(): void {
+
+        // bypass setup tab because is was already called when the component was loaded once
+        if (!this.moduleParamsInitialized) {
+          // Set Common Data Settings
+          this.CommonFormInit();
+
+          // Call data grid option setup on success of getting all lookup dependencies
+          this.SetupGridColumns();
+
+          // Setup details tab
+          this.SetupDetailsTab();
+        }
+
+
+
+  }
+
+  SetupGridColumns(){
     // Setup main grid configuration
     this.mainGridOptions
       .RowHeight(22)
@@ -48,6 +66,9 @@ export class ReferenceLibraryComponent extends FormCommon
       })
       .AddColumn({ fieldName: 'RF_FILENAME', minWidth: 150 });
 
+  }
+
+  SetupDetailsTab(){
     // Setup main tab configuration
     this.mainTabsOptions
       .AddTab({

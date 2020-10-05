@@ -318,10 +318,11 @@ export class FormCommon {
       sortFields: this.mainGridOptions.orderByClause,
     };
 
-    // console.log('REQUEST PARAMS???:', JSON.stringify(requestParams));
+    console.log('REQUEST PARAMS???:', JSON.stringify(requestParams));
 
     this.ds.Get([requestParams], {
       onSuccess: (data) => {
+        console.log("SetupData Success",data)
         // processed rows for the grid to display
         // this._gridSourceRows = data.processed.data[0];
         this.gridSourceRows = data.processed.data[0];
