@@ -1,3 +1,4 @@
+import { FilterDataType } from './../../api/mod/app-common.classes';
 import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { CellTextAlign } from './../../api/cmp/data-grid/data-grid.component';
 import { FormCommon } from './../form.common';
@@ -37,6 +38,19 @@ export class ReferenceLibraryComponent extends FormCommon
   }
 
   SetupGridColumns(){
+    const {
+      center,
+      minShort,
+      minLong,
+      minMemo,
+      wd1,
+      wd2,
+      wd3,
+      wd4,
+      wd5,
+      wd6,
+    } = this.ds.constUISettings;
+
     // Setup main grid configuration
     this.mainGridOptions
       .RowHeight(22)
@@ -60,15 +74,26 @@ export class ReferenceLibraryComponent extends FormCommon
         fieldName: 'RF_DESC',
         minWidth: 250,
       })
+
       .AddColumn({
         fieldName: 'RF_ASSET',
-        minWidth: 150,
+        minWidth: minLong,
+        filterType: FilterDataType.ASSET,
         lookupParams: {
-          table: this.ds.tblNodesAttrib,
-          displayField: 'NODE_DESC',
+          inlineLookupTableAlias: 'alkp',
+          inlineLookupTableField: 'NODE_DESC',
+          inlineLookupFieldAlias: 'ASSETNAME',
         },
       })
-      .AddColumn({ fieldName: 'RF_FILENAME', minWidth: 150 });
+
+      .AddColumn({ fieldName: 'RF_FILENAME', minWidth: 150 })
+
+      // module-specific join statement *****************************************
+      .LeftJoin({
+        code: 'node',
+        alias: 'alkp',
+        localField: 'RF_ASSET',
+      })
 
   }
 
