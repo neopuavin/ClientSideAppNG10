@@ -965,6 +965,8 @@ export class FormCommon {
 
   GridRowClick(row?: any, forceExtract?: boolean) {
 
+    console.log("GridRowClick:",this.moduleState);
+
     // if row is not supplied but moduleState.currentRow exist, use it as row parameter
     if(!row && this.moduleState.currentRow) row = this.moduleState.currentRow;
 

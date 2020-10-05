@@ -40,6 +40,10 @@ export class ReferenceLibraryComponent extends FormCommon
     // Setup main grid configuration
     this.mainGridOptions
       .RowHeight(22)
+
+      // Set key column name
+      .SetKeyColumnName('RF_ID')
+
       .AddColumn({ fieldName: 'RF_ID', width: 50, align: CellTextAlign.CENTER })
       .AddColumn({
         fieldName: 'RF_TYPE',

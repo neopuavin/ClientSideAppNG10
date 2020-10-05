@@ -94,6 +94,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public set currentRow(value: any) {
 
+    console.log("currentRow:",value);
+
     const keyName = this.options.keyColumnName;
     if (keyName && value) {
       const keyVal = value[keyName];
@@ -384,7 +386,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public RowClick(row: any) {
-
     this.currentRow = row;
   }
 
