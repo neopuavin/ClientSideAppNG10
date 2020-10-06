@@ -72,7 +72,7 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   }
 
   public get isWithData(): boolean {
-    if(this.selectedValues) return true;
+    if (this.selectedValues) return true;
     if (!this.severity) return false;
     if (!this.likelihood) return false;
     return true;
@@ -84,7 +84,6 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
   }
 
   CellClick(sev: number, lik: number) {
-    console.log("this.selectedValues",this.selectedValues);
     if (this.readOnly) return;
 
     if (this.selectedValues) {
@@ -93,13 +92,12 @@ export class RiskMatrixComponent implements OnInit, AfterViewInit {
       );
       if (riskIndex == -1) {
         // not yet selected, add to the collection
-        this.selectedValues.push({severity:sev,likelihood:lik});
-
+        this.selectedValues.push({ severity: sev, likelihood: lik });
       } else {
         // already selected, remove from the selection
-        this.selectedValues.splice(riskIndex);
-
+        this.selectedValues.splice(riskIndex, 1);
       }
+      console.log('this.selectedValues', this.selectedValues);
       return;
     }
 

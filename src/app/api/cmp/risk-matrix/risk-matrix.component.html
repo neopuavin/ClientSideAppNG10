@@ -4,12 +4,12 @@
     <h5>Severity<span *ngIf="severityText">: {{severityText}}</span></h5>
   </div>
   <div class="" id="wrapper_mtx">
-    <div id="heading1">
+    <div id="heading1" [style.min-height.px]="selectedValues ? 20 : null">
       <div><span>Likelihood<span *ngIf="likelihoodText">: {{likelihoodText}}</span></span></div>
     </div>
     <div id="heading2">
       <div class="d-flex" [ngClass]="{'bg-light':false}"><span *ngIf="readOnly">&nbsp;</span>
-        <i *ngIf="!readOnly" class="fa fa-trash text-danger"
+        <i *ngIf="!readOnly && !selectedValues" class="fa fa-trash text-danger"
         style="margin:auto auto;cursor:pointer;font-size:0.9em;text-shadow: white 0px 0px 10px;"
           (click)="RemoveRisk($event)" matTooltipPosition="right"
           matTooltip="Click to remove risk assignment..."></i></div>
