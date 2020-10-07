@@ -1,5 +1,5 @@
 /***********************************************************************
-* Automatically generated on 10/7/2020 10:45:42 AM
+* Automatically generated on 10/7/2020 1:57:07 PM
 ***********************************************************************/
 
 import { AppCommonMethodsService } from '../api/svc/app-common-methods.service';
@@ -836,9 +836,6 @@ export class TblLookups extends TableBase {
 	this.columns.push(new ColumnInfo('LKP_MEMO_1', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('LKP_OLE_1', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('LKP_UPDATE_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('COLUMN1', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('COLUMN2', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('COLUMN3', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 
     this.InitializeTable();
 
@@ -886,10 +883,7 @@ export class TblLookupsRow extends TableRowBase{
 		public LKP_SWITCHES?:number, 
 		public LKP_MEMO_1?:string, 
 		public LKP_OLE_1?:string, 
-		public LKP_UPDATE_DATE?:Date, 
-		public COLUMN1?:string, 
-		public COLUMN2?:string, 
-		public COLUMN3?:string){
+		public LKP_UPDATE_DATE?:Date){
     super();
 
   }

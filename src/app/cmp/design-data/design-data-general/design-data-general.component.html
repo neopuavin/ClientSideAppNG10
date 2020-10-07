@@ -1,0 +1,25 @@
+<app-app-form-a [readOnly]="true" #detailForm [sourceRow]="this.module.sourceRow"
+    [formObject]="this.module.mainFormObject" [labelWidth]="90" [rowSpacing]="1">
+    <app-panel-a [horizontal]="true">
+        <app-panel-a [PR]="2">
+            <app-panel-a [horizontal]="true">
+                <app-panel-a [PR]="2">
+                    <app-app-input-a [fieldName]="'DD_ASSET'" [label]="'Asset'"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_PARAM_TYPE'" [label]="'Parameter Type'"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_PARAM_NAME'" [label]="'Parameter Name'"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_PARAM_REF'" [label]="'Reference'" [rows]="3"></app-app-input-a>
+                </app-panel-a>
+                <app-panel-a [PL]="2" [labelWidth]="120">
+                    <app-app-input-a [fieldName]="'DD_PARAM_VALUE'" [label]="'Parameter Value'"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_PARAM_UNIT'" [label]="'Parameter Unit'"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_UPDATE_DATE'" [label]="'Update Date'"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_PARAM_NOTES'" [label]="'Notes'" [rows]="3"></app-app-input-a>
+
+                </app-panel-a>
+
+            </app-panel-a>
+        </app-panel-a>
+        
+    </app-panel-a>
+
+</app-app-form-a>

@@ -1,4 +1,4 @@
-<app-form-header [title]="moduleTitle" (editClick)="EditRecordEvent($event)" (addClick)="AddRecordEvent($event)"
+<app-form-header [title]="" (editClick)="EditRecordEvent($event)" (addClick)="AddRecordEvent($event)"
 (deleteClick)="DeleteRecordEventLocal($event)" (searchKeyEvent)="SearchEvent($event)"
 (printClick)="PrintRecordEvent($event)" (excelClick)="SendToExcelEvent($event)"
 (filterClick)="SearchEvent($event)"
@@ -26,25 +26,4 @@
       (pageSizeChange)="PageSizeChange($event)" (pageClick)="ChangePage($event)" [options]="mainGridOptions">
     </app-data-grid>
   </div>
-
-  <div id="form-details" *ngIf="true" class="container-fluid p-0" [style.height.px]="detailsHeight">
-
-    <app-data-tabs #mainTab id="mainTabs" [options]="mainTabsOptions" (tabClicked)="TabClicked($event)" name="mainTabs">
-      <div *ngIf="activeTab.id==1">
-        <app-design-data-general></app-design-data-general>
-      </div>
-      <div *ngIf="activeTab.id==2">
-        <app-design-data-kpbasedata></app-design-data-kpbasedata>
-      </div>
-      <div *ngIf="activeTab.id==3">
-        <app-design-data-attachment></app-design-data-attachment>
-      </div>
-      <div *ngIf="activeTab.id==4">
-        <app-design-data-history></app-design-data-history>
-      </div>
-    </app-data-tabs>
-
-  </div>
-
-
 </div>
