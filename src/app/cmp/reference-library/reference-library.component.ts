@@ -62,12 +62,11 @@ export class ReferenceLibraryComponent extends FormCommon
       .AddColumn({
         fieldName: 'RF_TYPE',
         width: 80,
-        align: CellTextAlign.CENTER,
+        // align: CellTextAlign.CENTER,
         lookupParams: {
-          table: this.ds.tblLookups,
-          displayField: 'LKP_DESC_B',
-          groupValue: 139,
-          groupField: 'LKP_GRP_ID',
+          inlineLookupTableAlias: 'rtype',
+          inlineLookupTableField: 'LKP_DESC_B',
+          inlineLookupFieldAlias: 'RTYPE',
         },
       })
       .AddColumn({
@@ -94,7 +93,11 @@ export class ReferenceLibraryComponent extends FormCommon
         alias: 'alkp',
         localField: 'RF_ASSET',
       })
-
+      .LeftJoin({
+        code: 'lkp',
+        alias: 'rtype',
+        localField: 'RF_TYPE',
+      })
   }
 
   SetupDetailsTab(){

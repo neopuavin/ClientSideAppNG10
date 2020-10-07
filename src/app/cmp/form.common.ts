@@ -956,7 +956,6 @@ export class FormCommon {
       this.currentRow = null;
       this._sourceRow = this.currentRow;
     } else if (this.mainGrid) {
-      console.log('$$$$ RESET GRID CURRENT ROW $$$$');
       this.mainGrid.currentRow = row;
       //this.GridRowClick({ row: row, e: null });
       this.GridRowClick(row);
@@ -965,7 +964,6 @@ export class FormCommon {
 
   GridRowClick(row?: any, forceExtract?: boolean) {
 
-    console.log("GridRowClick:",this.moduleState);
 
     // if row is not supplied but moduleState.currentRow exist, use it as row parameter
     if(!row && this.moduleState.currentRow) row = this.moduleState.currentRow;
@@ -1002,14 +1000,14 @@ export class FormCommon {
       // from related tables (ie. asset code, desctription)
       this.ExtractCurrentRow(key, row[this.assetField]);
 
-    console.log(
-      `GridRowClick MODULE STATE (${this.moduleId}) : `,
-      this.moduleState,
-      'this.mainGrid.currentRow:',
-      this.mainGrid.currentRow,
-      'this.mainGrid.gridCurrentRowIndex:',
-      this.mainGrid.moduleState ? this.mainGrid.moduleState.gridCurrentRow : null
-    );
+    // console.log(
+    //   `GridRowClick MODULE STATE (${this.moduleId}) : `,
+    //   this.moduleState,
+    //   'this.mainGrid.currentRow:',
+    //   this.mainGrid.currentRow,
+    //   'this.mainGrid.gridCurrentRowIndex:',
+    //   this.mainGrid.moduleState ? this.mainGrid.moduleState.gridCurrentRow : null
+    // );
   }
 
   ExtractCurrentRow(key: any, assetId: number) {

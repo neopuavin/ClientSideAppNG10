@@ -39,7 +39,7 @@ const both = [
   SettingsModule,
   SurveyDataModule,
   SurveyUploadModule,
-  UserManagementModule
+  UserManagementModule,
 
 ];
 

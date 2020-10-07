@@ -185,7 +185,7 @@ export class AnomalyComponent
         caption: 'Rev#',
         align: center,
       })
-      .AddColumn({ fieldName: 'AN_TITLE', caption: 'Title', minWidth: minLong })
+      .AddColumn({ fieldName: 'AN_TITLE', minWidth: minLong })
       .AddColumn({
         fieldName: 'AN_ATTACHMENTS',
         caption: 'Att#',
@@ -197,7 +197,6 @@ export class AnomalyComponent
       //.AddColumn({ fieldName: 'AI_TARGET_DATE',caption:'Action Date',width: 80,align:center })
       .AddColumn({
         fieldName: 'AN_DESC',
-        caption: 'Description',
         minWidth: minMemo,
       })
       .AddColumn({

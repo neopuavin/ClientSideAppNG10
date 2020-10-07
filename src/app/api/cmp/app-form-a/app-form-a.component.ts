@@ -36,6 +36,8 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
   @Input() excludes: Array<string> = [];
   @Input() readOnly: boolean = false;
 
+  @Input() sourceTable: any = null;
+
   @Output() afterScatter: EventEmitter<any> = new EventEmitter();
 
   private _sourceRow: any = null;
@@ -48,6 +50,7 @@ export class AppFormAComponent implements OnInit, AfterViewInit {
     // call for scatter is necessary when record is changed
     this.Scatter(true);
   }
+
   get sourceRow(): any {
     return this._sourceRow;
   }

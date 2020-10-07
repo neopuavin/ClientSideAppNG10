@@ -1,9 +1,11 @@
-<app-app-form-a [readOnly]="true" #detailForm [sourceRow]="this.module.sourceRow" [formObject]="this.module.mainFormObject"
+<app-app-form-a [readOnly]="true" #detailForm
+  [sourceTable]="this.module.sourceTable"
+  [sourceRow]="this.module.sourceRow" [formObject]="this.module.mainFormObject"
   [labelWidth]="90" [rowSpacing]="1">
   <app-panel-a [horizontal]="true">
     <app-panel-a [PR]="2">
-      <app-app-input-a [fieldName]="'AN_TITLE'" [label]="'Title'"></app-app-input-a>
-      <app-app-input-a [fieldName]="'AN_DESC'" [label]="'Description'" [rows]="6"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_TITLE'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'AN_DESC'" [rows]="6"></app-app-input-a>
       <app-panel-a [horizontal]="true">
         <app-panel-a [PR]="2">
           <app-app-input-a [fieldName] = "'AN_ASIS'" [label]="'Include in OTR1'"  [toggleDisplay]="toggleDisplay"></app-app-input-a>

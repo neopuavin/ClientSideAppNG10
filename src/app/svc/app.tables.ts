@@ -1,5 +1,5 @@
 /***********************************************************************
-* Automatically generated on 10/5/2020 2:22:09 PM
+* Automatically generated on 10/7/2020 10:45:42 AM
 ***********************************************************************/
 
 import { AppCommonMethodsService } from '../api/svc/app-common-methods.service';
@@ -65,7 +65,7 @@ export class TblAnomalies extends TableBase {
 	this.columns.push(new ColumnInfo('AN_RISK_RANK_LIKELIHOOD', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_START_EAST', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_END_EAST', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
-	this.columns.push(new ColumnInfo('AN_DESC', 'string', 'Title', '', -1, -1, -1, -1, -1, false, false, true, this));
+	this.columns.push(new ColumnInfo('AN_DESC', 'string', 'Description', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('AN_START_NORTH', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_END_NORTH', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_NOTIFICATION_REF', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
@@ -76,7 +76,7 @@ export class TblAnomalies extends TableBase {
 	this.columns.push(new ColumnInfo('AN_DELETED_BY', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_DELETED_DATE', 'Date', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_AVAIL_COMMENTS', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
-	this.columns.push(new ColumnInfo('AN_TITLE', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));
+	this.columns.push(new ColumnInfo('AN_TITLE', 'string', 'Title', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_ATTACHMENTS', 'number', '', '', -1, -1, -1, -1, -1, false, false, false, this));
 	this.columns.push(new ColumnInfo('AN_RISK_RANK_COMMENTS', 'string', '', '', -1, -1, -1, -1, -1, false, false, true, this));
 	this.columns.push(new ColumnInfo('ITV_ANOM_REF', 'string', '', '', -1, -1, -1, -1, -1, false, false, false, this));

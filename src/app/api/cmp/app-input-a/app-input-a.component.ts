@@ -1,4 +1,4 @@
-import * as moment from 'moment/moment'
+import * as moment from 'moment/moment';
 import { PanelAComponent } from './../panel-a/panel-a.component';
 import { AppFormAComponent } from './../app-form-a/app-form-a.component';
 import {
@@ -14,6 +14,8 @@ import {
   SimpleChange,
 } from '@angular/core';
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
+import { DataColumn } from '../../mod/app-common.classes';
+import { ColumnInfo } from '../../mod/app-column.model';
 
 @Component({
   selector: 'app-app-input-a',
@@ -24,11 +26,11 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   @ViewChild('input') _input: ElementRef;
   input: HTMLElement;
 
-  @ViewChild('picker') picker:any;
+  @ViewChild('picker') picker: any;
 
   @Input() type: string = null;
 
-  @Input() label: string = 'TextBox';
+  @Input() label: string = '';
   @Input() height: number = -1;
   @Input() width: number = -1;
 
@@ -38,8 +40,8 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
   @Input() phBackSize: number = -1;
   @Input() phDuration: number = -1;
 
-  @Input() dateFormat: string = "DD-MMM-YYYY";
-  @Input() dateTimeFormat: string = "DD-MMM-YYYY, hh:mm:ss a";
+  @Input() dateFormat: string = 'DD-MMM-YYYY';
+  @Input() dateTimeFormat: string = 'DD-MMM-YYYY, hh:mm:ss a';
 
   @Input() fieldName: string = 'TBA';
 
@@ -160,7 +162,6 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     if (!this.fieldName || !this.form.formObject) return;
 
     this.form.RegisterField(this.fieldName);
-
   }
 
   ngAfterViewInit() {
@@ -192,7 +193,6 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     // if(elem){
     //   elem.style.background = 'red';
     // }
-
 
     if (this.readOnly != undefined) return this.readOnly;
     if (this.form.readOnly != undefined) return this.form.readOnly;
@@ -273,6 +273,35 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     return true;
   }
 
+  public get columnInfo(): ColumnInfo {
+
+    let tbl = this.form.sourceTable;
+
+    if(!tbl){
+      const row = this.form.sourceRow;
+      if (!row) return null;
+
+      tbl = row.parentTable;
+      if (!tbl) return null;
+    }
+
+    const cols = tbl.columns;
+    if (!cols) return null;
+
+    const col = cols.find((c) => c.name == this.fieldName);
+    return col;
+  }
+
+  public get labelText(): string {
+    if (this.label) return this.label;
+
+    const col=this.columnInfo;
+    if(!col) return this.fieldName;
+
+    return col.caption ? col.caption :this.fieldName;
+
+  }
+
   private _isDate: any = undefined;
   public get isDate(): boolean {
     if (this._isDate != undefined) return this._isDate;
@@ -284,16 +313,7 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
       return true;
     }
 
-    const row = this.form.sourceRow;
-    if (!row) return false;
-
-    const tbl = row.parentTable;
-    if (!tbl) return false;
-
-    const cols = tbl.columns;
-    if (!cols) return false;
-
-    const col = cols.find((c) => c.name == this.fieldName);
+    const col:ColumnInfo=this.columnInfo;
     if (!col) return false;
 
     this._isDate = col.type == 'Date';
@@ -311,17 +331,20 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     return ctrl;
   }
 
-  public get displayDate():string{
-    if(!this.form) return null;
-    if(!this.form.formObject) return null;
+  public get displayDate(): string {
+    if (!this.form) return null;
+    if (!this.form.formObject) return null;
 
     const ctrl = this.form.formObject.get(this.fieldName);
-    if(!ctrl) return null;
+    if (!ctrl) return null;
     //return new Date(ctrl.value);
-    if(!ctrl.value) return null;
+    if (!ctrl.value) return null;
 
-    const dt = new Date(ctrl.value)
-    const fmt = (dt.getSeconds()!=0 || dt.getMinutes()!=0) ? this.dateTimeFormat : this.dateFormat;
+    const dt = new Date(ctrl.value);
+    const fmt =
+      dt.getSeconds() != 0 || dt.getMinutes() != 0
+        ? this.dateTimeFormat
+        : this.dateFormat;
 
     return moment(dt).format(fmt);
   }
@@ -334,9 +357,10 @@ export class AppInputAComponent implements OnInit, AfterViewInit {
     const ctrl = this.getFormControl;
     if (!ctrl) return '';
     if (this.isToggle) {
-      const tgl = this.toggleDisplay.find(t=>t.value==ctrl.value)
-      return tgl ? tgl.display : `x-${ctrl.value + (JSON.stringify(this.toggleDisplay))}`;
-
+      const tgl = this.toggleDisplay.find((t) => t.value == ctrl.value);
+      return tgl
+        ? tgl.display
+        : `x-${ctrl.value + JSON.stringify(this.toggleDisplay)}`;
     } else {
       if (this.fieldLookup) {
         const lkpItem = this.fieldLookup.find((i) => i.key == ctrl.value);
