@@ -82,6 +82,7 @@ export class DesignDataComponent
 
     this.mainGridOptions
       .RowHeight(22)
+
       .SetKeyColumnName('DD_ID')
 
       .AddColumn({

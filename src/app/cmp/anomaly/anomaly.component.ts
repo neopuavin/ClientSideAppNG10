@@ -52,7 +52,12 @@ export class AnomalyComponent
         this.AnomalyLookup(148);
         this.AnomalyLookup(149);
         this.AnomalyLookup(190);
-        this.AnomalyLookup('antype');
+
+
+        //this.AnomalyLookup('antype');
+        // console.log("types:",this.ds.tblAnomalyTypes, "XXX",this.AnomalyLookup('antype'))
+
+        setTimeout(()=>{console.log("types:",this.ds.tblAnomalyTypes, "XXX",this.AnomalyLookup('antype'))},1000)
 
         // assign required lookups to mainDataGrid
         if (this.ds.riskMatrixData) {

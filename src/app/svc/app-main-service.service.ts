@@ -71,7 +71,7 @@ export class AppMainServiceService {
         appDataset: new AppDataset(this.http, this.apiCommon, {
           apiUrl:
             e.url_use_deploy || location.hostname != 'localhost'
-              ? e.url_deploy
+              ? (location.hostname.toLowerCase().indexOf('soga-s-01') == -1 ? e.url_deploy: e.url_soga)
               : e.url_local,
           appTitle: e.app_title,
           appHeader: e.app_header_main,
@@ -260,6 +260,7 @@ export interface IDataSource {
   }>;
   url_deploy: string;
   url_local: string;
+  url_soga: string;
   url_use_deploy: boolean;
 
   /**app_title": "SPEX - IMSA",

@@ -41,6 +41,7 @@
         }
       ],
       "url_local": "http://soga-alv/ngarbi/api/app",
+      "url_soga": "http://soga-s-01/imsaapi/api/app",
       "url_deploy": "http://ngimsa.ivideolib.com/api/app",
       "url_use_deploy": false
     },
@@ -62,6 +63,7 @@
         }
       ],
       "url_local": "http://soga-alv/ngarbi/api/app",
+      "url_soga": "http://soga-s-01/imsaapi/api/app",
       "url_deploy": "http://ngimsa.ivideolib.com/api/app",
       "url_use_deploy": false
     }
@@ -172,33 +174,21 @@
     "url_deploy": "http://ngimsa.ivideolib.com/api/app",
     "url_use_deploy": false,
     "app_version": {
-      "ver": "Alpha 1.4.1",
-      "build": "20201005",
+      "ver": "Alpha 1.4.2",
+      "build": "20201008",
       "updates": [
-        "Enabled Reference Files data grid",
-        "Continue working on data grid filtering with custom controls for date type and risk type data",
-        "Isolated module state management to be used on active module tab rendering",
-        "Completed Anomaly delete action",
-        "Streamlined refresh routines after add/edit/delete action",
-        "Started working on data grid column resizing and filtering",
-        "Fixed tree search set-node-on-item-click event",
-        "Fixed null data filtering and update issues",
-        "Fixed data grid scrolling issue (ping-pong behavior)",
-        "Anomaly Delete in progress",
-        "Anomaly Create almost complete",
-        "Completed anomaly archiving process",
-        "Completed anomaly Edit live data posting",
-        "Created common posting and user feedback mechanism",
-        "Fixed issue with Cross-Origin Resource Sharing",
-        "Completed data grid column management feature",
-        "Configured anomaly module data grid columns",
-        "Fixed data formatting on data grid and forms",
-        "Activated form date selector",
-        "Reformatted risk matrix component",
-        "Adjusted tabs component stylesheet to remove hilight when tab item is made active",
-        "Changed banner layout"
+        "Reference Library Detail section with data binding deployed",
+        "Initial deployment of Design Data Module",
+        "Enabled Reference Files data grid"
       ],
       "history": [
+        {
+          "ver": "Alpha 1.4.1",
+          "build": "20201005",
+          "updates": [
+            "Enabled Reference Files data grid"
+          ]
+        },
         {
           "ver": "Alpha 1.4.0",
           "build": "20200930",
