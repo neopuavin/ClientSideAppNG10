@@ -363,6 +363,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       disableClose: false,
       //sourceLookups:this.sourceLookups,
       data: {
+        options:this.options,
         column: column,
         table: this.sourceTable,
         sourceLookups: this.sourceLookups,
@@ -996,7 +997,7 @@ export interface IDataGridColumn extends IDataColumn {
   allowFilter?: boolean;
   sortAsc?: boolean;
   sortDesc?: boolean;
-  filters?: Array<any>;
+  // filters?: Array<IFieldExpression>;
   filterType?: number;
   matrixData?: any;
   matrixSeverity?: string;

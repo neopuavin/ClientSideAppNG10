@@ -22,6 +22,22 @@ export class DesignDataComponent
 
   ngOnInit(): void {
 
+    this.ds.SetLookupData(
+      [
+        { filterValue: 109 },
+        { filterValue: 110 },
+        { tableCode: 'desprm' }, // Design Data Parameter Table
+      ],
+      () => {
+        this.DesignDataLookup(109);
+        this.DesignDataLookup(110);
+        this.DesignDataLookup('desprm');
+        //setTimeout(()=>{console.log('desprm lookup: ', this.DesignDataLookup('desprm'))},100);
+        
+
+      }
+    );
+
     if (!this.moduleParamsInitialized) {
       // Set Common Data Settings
       this.CommonFormInit();
@@ -34,7 +50,7 @@ export class DesignDataComponent
     }
 
     // setup tab
-
+  
 
   }
 
@@ -82,19 +98,16 @@ export class DesignDataComponent
 
     this.mainGridOptions
       .RowHeight(22)
-
       .SetKeyColumnName('DD_ID')
 
       .AddColumn({
         fieldName: 'DD_ID',
         width: 50,
-        caption: 'ID',
         align: CellTextAlign.CENTER
       })
       .AddColumn({
         minWidth: minLong,
         fieldName: 'DD_ASSET',
-        caption: 'Asset',
         filterType: FilterDataType.ASSET,
         lookupParams: {
           inlineLookupTableAlias: 'alkp',
@@ -108,45 +121,44 @@ export class DesignDataComponent
         fieldName: 'DD_PARAM',
         width: 100,
         caption: 'Param Type',
-        align: CellTextAlign.CENTER,
-        // filterType: FilterDataType.ASSET,
-        // lookupParams: {
-        //   inlineLookupTableAlias: 'desprm',
-        //   inlineLookupTableField: 'DD_PARAM_NAME',
-        //   inlineLookupFieldAlias: 'parName',
-        // },
+        lookupParams: {
+          inlineLookupTableAlias: 'dpType',
+          inlineLookupTableField: 'LKP_DESC_B',
+          inlineLookupFieldAlias: 'parType',
+        },
 
 
       })
       .AddColumn({
         fieldName: 'DD_PARAM_VALUE',
         width: 100,
-        caption: 'Param Value',
-        align: CellTextAlign.CENTER,
+        //caption: 'Param Value',
       })
       .AddColumn({
         fieldName: 'DD_PARAM_UNIT',
         width: 100,
-        caption: 'Units',
+        //caption: 'Units',
         align: CellTextAlign.CENTER,
         lookupParams: {
           inlineLookupTableAlias: 'ulkp',
           inlineLookupTableField: 'LKP_DESC_B',
           inlineLookupFieldAlias: 'parunit',
+          
         },
       })
       .AddColumn({
         fieldName: 'DD_PARAM_NOTES',
         width: 150,
-        caption: 'Notes',
-        align: CellTextAlign.CENTER,
+        //caption: 'Notes',
       })
       .AddColumn({
         fieldName: 'DD_PARAM_REF',
         width: 150,
-        caption: 'References',
-        align: CellTextAlign.CENTER,
+        //caption: 'References',
       })
+
+
+      .AddRequiredDataFields(['DD_ID', 'DD_ASSET'])
 
 
       // .From(this.sourceTable.tableCode)
@@ -157,10 +169,25 @@ export class DesignDataComponent
         alias: 'ulkp',
         localField: 'DD_PARAM_UNIT',
       })
-    // .LeftJoin({
-    //   code: 'desprm',
-    //   alias: 'parName',
-    //   localField: 'DD_PARAM',
+    
+    
+
+    .LeftJoin({
+      code: 'desprm',
+      localField: 'DD_PARAM',
+      alias: 'dpType2',
+      leftJoin:
+        {code: 'lkp',
+        localField: 'DD_PARAM_TYPE',
+        alias: 'dpType'}
+      
+  
+    })
+
+    // LeftJoin({
+    //   code: 'lkp',
+    //   localField: 'dpType2.DD_PARAM_TYPE',
+    //   alias: 'dpType',
     // })
 
 
@@ -208,20 +235,38 @@ export class DesignDataComponent
       // get formatted lookup common lookup type where field mapping info is
       // embedded in the GetLookupItems function
       ret = this.ds.GetLookupItems(key);
-    else if (lkpKey == 'desdat')
+    else if (lkpKey == 'desprm')
       // get formatted lookup for specific type where field mapping info is
       // specified as parameter in the GetLookupItems function
       ret = this.ds.GetLookupItems(key, {
         key: 'DD_PARAM',
+        text: 'DD_PARAM_NAME',
+        code: 'DD_PARAM_CODE',
       });
-
-    // only create entry of the lookup in the this._AnomalyLookup object
-    // if elements are exiting, otherwise, subsequent call will
-    // return empty array and will cause issues on UI rendering.
+    else if (lkpKey == 'node')
+      // get formatted lookup for specific type where field mapping info is
+      // specified as parameter in the GetLookupItems function
+      ret = this.ds.GetLookupItems(key, {
+        key: 'DD_ASSET',
+        text: 'DD_PARAM_NAME',
+        code: 'DD_PARAM_CODE',
+      });
     if (ret.length) this._DesignDataLookup[lkpKey] = ret;
 
     return [];
   }
+
+  public DesignDataNameLookup() {
+    let ret: Array<any> = this.DesignDataLookup('desprm');
+    return ret;
+  }
+
+  public DesignDataAssetLookup() {
+    let ret: Array<any> = this.DesignDataLookup('node');
+    return ret;
+  }
+
+  
 
   ngAfterViewInit(): void {
     // console.log('ngOnInit INIT!');
@@ -287,139 +332,13 @@ export class DesignDataComponent
 
   /********************************* action button events ******************************************/
   AddRecordEvent(args: any) {
-    if (!this.treeView.currNode) {
-      // prompt to select a record if currentRow is null
-      this.dataSource.Confirm(
-        'No asset selected',
-        'Please select an asset where new anomaly will be raised.',
-        { height: 170 }
-      );
-      return;
-    }
-
-    const row = this.ds.tblAnomalies.Add();
-
-    const form: FormGroup = this.GetRowFormObject(true);
-    const node = this.treeView.currNode;
-
-    // initialize blank form with default values
-    form.get('AN_ID').setValue(-1);
-    form.get('AN_REF').setValue('<New Anomaly>');
-    form.get('AN_REVNO').setValue(0);
-    form.get('AN_ASSET_ID').setValue(node.did);
-    form.get('AN_ORIG_CLASS').setValue(8471);
-    form.get('AN_CURR_CLASS').setValue(8471);
-    form.get('AN_ORIG_AVAIL_CLASS').setValue(8471);
-    form.get('AN_CURR_AVAIL_CLASS').setValue(8471);
-    form.get('AN_ATTACHMENTS').setValue(0);
-    form.get('AN_STATUS').setValue(8450);
-    form.get('AN_FNCR_REQUIRED').setValue(0);
-    form.get('AN_PORTFOLIO_APPL').setValue(0);
-    form.get('AN_PT_SUPPORT').setValue(0);
-    form.get('AN_ASIS').setValue(0);
-    form.get('AN_EQ_FAILURE').setValue(0);
-    form.get('AN_TA_APPROVED').setValue(0);
-    form.get('AN_TA_APPROVED').setValue(0);
-    form.get('AN_TYPE').setValue(58);
-
-    for (const fieldName in form.controls)
-      row[fieldName] = form.get(fieldName).value;
-
-    row.XTRA.assetLookup = [
-      { code: node.code, key: node.did, location: node.loc, text: node.text },
-    ];
-
-    this.dataSource
-      .OpenPopup('addEditAnomaly', 870, 455, true, {
-        row: row,
-
-        // Define a blank form object
-        formObject: form,
-        //
-        riskMatrixData: this.ds.riskMatrixData,
-        // set AnomalyComponent as the parent component reference
-        parent: this,
-        // Dialog title
-        title: 'Add New Anomaly',
-        // dialog title icon
-        icon: 'far fa-file-alt',
-        // dialog action buttons
-        buttons: [
-          {
-            label: 'Cancel',
-            value: 'cancel',
-            class: 'btn btn-sm btn-secondary',
-          },
-          {
-            label: 'Reset',
-            value: 'reset',
-            class: 'btn btn-sm btn-secondary',
-          },
-          {
-            label: 'Save',
-            value: 'save',
-            class: 'btn btn-sm btn-warning',
-          },
-        ],
-      })
-      .subscribe((result) => {
-        // if (result) {
-        //   if (result.mode == 'accept') this.SaveRecord(result);
-        // } else this.CancelUpdate();
-      });
+    
   }
 
   EditRecordEvent(args: any) {
     // override function
 
-    if (!this.currentRow) {
-      // prompt to select a record if currentRow is null
-      this.dataSource.Confirm(
-        'No current record',
-        'Please select an Design Data record to edit'
-      );
-      return;
-    }
-
-    this.dataSource
-      .OpenPopup('addEditAnomaly', 870, 455, true, {
-        row: this.currentRow,
-
-        // use common form object from the FormCommon base class
-        //formObject: this.mainFormObject,
-        formObject: this.GetRowFormObject(),
-        //
-        riskMatrixData: this.ds.riskMatrixData,
-        // set AnomalyComponent as the parent component reference
-        parent: this,
-        // Dialog title
-        title: 'Edit Anomaly',
-        // dialog title icon
-        icon: 'fa-edit',
-        // dialog action buttons
-        buttons: [
-          {
-            label: 'Cancel',
-            value: 'cancel',
-            class: 'btn btn-sm btn-secondary',
-          },
-          {
-            label: 'Reset',
-            value: 'reset',
-            class: 'btn btn-sm btn-secondary',
-          },
-          {
-            label: 'Save',
-            value: 'save',
-            class: 'btn btn-sm btn-warning',
-          },
-        ],
-      })
-      .subscribe((result) => {
-        // if (result) {
-        //   if (result.mode == 'accept') this.SaveRecord(result);
-        // } else this.CancelUpdate();
-      });
+    
   }
 
   DeleteRecordEventLocal(args: any) {

@@ -14,17 +14,35 @@
 
   <div id="form-grid" [style.height]="gridPanelHeight" style="padding:0px 0px;border-bottom:1px solid #c0c0c0;">
 
-    <app-data-grid #mainGrid [pageNumber]="reqInfo.pageNumber" [pageSize]="reqInfo.pageSize"
-      [totalPages]="reqInfo.totalPages" [totalRecords]="reqInfo.totalRecords" [sourceRows]="gridSourceRows"
-      [sourceLookups]="gridSourceLookups" [sourceTable]="sourceTable" [showMenu]="true"
+    <app-data-grid #mainGrid
+      [pageNumber]="reqInfo.pageNumber"
+      [pageSize]="reqInfo.pageSize"
+      [totalPages]="reqInfo.totalPages"
+      [totalRecords]="reqInfo.totalRecords"
+
+      [sourceRows]="gridSourceRows"
+      [sourceLookups]="gridSourceLookups"
+      [sourceTable]="sourceTable"
+      [showMenu]="true"
+
       [promptNoRecords]="'No record(s) found. Please click a node on the tree to get data.'"
-      [isLoadingData]="isLoadingData" [promptLoadingData]="promptLoadingData"
-      (rowClick)="GridRowClick($event)"
-      [isRowWaiting] = "isRowWaiting" [ManagmentOpener]="dataSource.OpenPopup"
+      [isLoadingData]="isLoadingData"
+      [promptLoadingData]="promptLoadingData"
+      [isRowWaiting] = "isRowWaiting"
+      [ManagmentOpener]="dataSource.OpenPopup"
       [gridPortHeight]="1080"
+      [activeFiltering]="moduleState.filteringActive"
+
+      [moduleState]="moduleState"
+
+      (rowClick)="GridRowClick($event)"
       (onColumnsChanged)="SetupData()"
-      (pageSizeChange)="PageSizeChange($event)" (pageClick)="ChangePage($event)" [options]="mainGridOptions">
+      (pageSizeChange)="PageSizeChange($event)"
+      (pageClick)="ChangePage($event)"
+
+      [options]="mainGridOptions">
     </app-data-grid>
+
   </div>
 
   <div id="form-details" *ngIf="true" class="container-fluid p-0" [style.height.px]="detailsHeight">

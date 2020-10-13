@@ -1,6 +1,4 @@
-import { TblLookups } from './../../../svc/app.tables';
-// import { FilterDataType } from './../../mod/app-common.classes';
-import { IDataGridColumn } from './../data-grid/data-grid.component';
+import { IDataGridColumn, DataGridOption } from './../data-grid/data-grid.component';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, Inject, Input, OnInit } from '@angular/core';
@@ -161,6 +159,12 @@ export class FilterParametersComponent implements OnInit {
   public columnData: Array<any> = [];
 
   ngOnInit(): void {
+
+    console.log("\nthis.dataGridOption:",this.dataGridOption,
+      "\nthis.dataGridOption.whereClause",this.dataGridOption.whereClause ? this.dataGridOption.whereClause : "EMPTY!",
+      "\nthis.dataGridOption.FieldList",this.dataGridOption.FieldList ? this.dataGridOption.FieldList : "EMPTY!",
+      '\nDATA COLUMN:', this.dataColumn,"\nLOOKUPS:",this.Lookups);
+
     this.formData.addControl('operatorValue', new FormControl('eq'));
     this.formData.addControl('operatorPrompt', new FormControl('Equal To'));
     this.formData.addControl('searchValue1', new FormControl(null));
@@ -173,7 +177,6 @@ export class FilterParametersComponent implements OnInit {
 
     this.testDateParse();
 
-    console.log('DATA COLUMN:', this.dataColumn,"LOOKUPS:",this.Lookups);
   }
 
   testData: Array<any> = [
@@ -303,6 +306,11 @@ export class FilterParametersComponent implements OnInit {
     }
 
     return ret;
+  }
+
+  public get dataGridOption():DataGridOption{
+    if(!this.data) return null;
+    return this.data.options;
   }
 
   public get isDate(): boolean {

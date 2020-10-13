@@ -242,8 +242,7 @@ export class AnomalyComponent
           inlineLookupTableField: 'LKP_DESC_B',
         },
         //sortAsc:true,
-        sortDesc: true,
-        filters: [1],
+        sortDesc: true
       })
       .AddColumn({
         fieldName: 'AN_WO_REF',
@@ -387,6 +386,7 @@ export class AnomalyComponent
 
       .AddColumn({
         fieldName: 'AN_RISK_RANK_SEVERITY',
+        fieldMap:'S',
         fieldAlias: 'SEVERITY',
         width: wd3,
         align: center,
@@ -400,6 +400,7 @@ export class AnomalyComponent
       })
       .AddColumn({
         fieldName: 'AN_RISK_RANK_LIKELIHOOD',
+        fieldMap:'L',
         fieldAlias: 'LIKELIHOOD',
         width: wd3,
         align: center,
@@ -430,8 +431,8 @@ export class AnomalyComponent
         'AN_CURR_CLASS',
         'AN_ORIG_AVAIL_CLASS',
         'AN_CURR_AVAIL_CLASS',
-        // 'SEVERITY',
-        // 'LIKELIHOOD',
+        'SEVERITY',
+        'LIKELIHOOD',
         'AN_DATE_IDENT',
         'AN_RAISED_DATE',
         'AN_RAISED_BY',
@@ -443,6 +444,7 @@ export class AnomalyComponent
         code: 'node',
         alias: 'alkp',
         localField: 'AN_ASSET_ID',
+
       })
       .LeftJoin({
         code: 'lkp',
@@ -488,7 +490,14 @@ export class AnomalyComponent
         code: 'lkp',
         alias: 'risklik',
         localField: 'AN_RISK_RANK_LIKELIHOOD',
-      });
+      })
+      .AddFieldMap({nickName:"OC",fieldName:"AN_ORIG_AVAIL_CLASS"})
+      .AddFieldMap({nickName:"L",fieldName:"AN_RISK_RANK_LIKELIHOOD"})
+      .AddFieldMap({nickName:"S",fieldName:"AN_RISK_RANK_SEVERITY"})
+      // .Equal({fieldName:'AN_ORIG_AVAIL_CLASS'},8471,true)
+      .Equal({fieldName:'AN_RISK_RANK_LIKELIHOOD'},8522,true)
+      .Equal({fieldName:'AN_RISK_RANK_SEVERITY'},8540)
+
 
     console.log(
       '\nSELECT field(s):',

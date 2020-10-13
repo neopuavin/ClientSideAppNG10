@@ -2,12 +2,14 @@ import {
   IFromClauseLink,
   SQLJoinChars,
   RequestParams,
+  IFieldMap,
 } from './app-params.model';
 
 export interface IDataColumn {
   // [tableAlias.]<fieldName>[@<fieldAlias>]
   // [aggregateFuction]([tableAlias.]<fieldName>)[@<fieldAlias>]
   fieldName?: string;
+  fieldMap?: string;
   fieldAlias?: string;
   fieldKey?: string;
   tableAlias?: string;
@@ -22,6 +24,8 @@ export interface IDataColumn {
   // In the return object, this will be set as one of the elements in
   // the inline lokkup object
   // returnObject.lookups.FIELD_NAME_DISPLAY_FIELD.key#
+
+  filters?: Array<IFieldExpression>;
 
   displayField?: string;
   visible?: boolean;
@@ -93,6 +97,7 @@ export class DataColumn {
     this.fieldKey = args.fieldKey;
     this.caption = args.caption ? args.caption : '';
     this.fieldAlias = args.fieldAlias ? args.fieldAlias : '';
+    this.fieldMap = args.fieldMap ? args.fieldMap : '';
     this.tableAlias = args.tableAlias ? args.tableAlias : '';
     this.displayField = args.displayField ? args.displayField : '';
     this.aggregateFunction = args.aggregateFuction ? args.aggregateFuction : '';
@@ -107,6 +112,8 @@ export class DataColumn {
   public parentOption: DataOption = null;
   public fieldKey: string;
   public fieldName: string;
+  public fieldMap: string;
+
   public tableAlias: string;
   public fieldAlias: string;
   public displayField: string;
@@ -118,7 +125,9 @@ export class DataColumn {
   public allowFilter: boolean;
   public sortAsc: boolean;
   public sortDesc: boolean;
-  public filters: Array<any>;
+  //public filters: Array<any>;
+  public filters: Array<IFieldExpression>;
+
   public requiredFields: Array<string>;
 }
 
@@ -221,14 +230,30 @@ export class DataOption {
     return ret;
   }
 
+  GetFieldnameExpression(fieldName: string): string {
+    // susbstitutes fieldname with nickname if defined.
+    if (this._fieldMaps.length == 0) return fieldName;
+
+    const fm = this._fieldMaps.find((m) => m.fieldName == fieldName);
+    const placeHolderCharacter = '!$';
+
+    if (!fm) return fieldName;
+    return placeHolderCharacter + fm.nickName;
+  }
+
   public GetFieldExpression(
     fieldParam: IFieldDefParam,
-    noFieldAlias?: boolean
+    noFieldAlias?: boolean,
+    forFiltering?: boolean
   ): string {
     if (!noFieldAlias) noFieldAlias = false;
+
+    let fieldName: string = forFiltering
+      ? this.GetFieldnameExpression(fieldParam.fieldName)
+      : fieldParam.fieldName;
+
     const fldExpr =
-      (fieldParam.tableAlias ? fieldParam.tableAlias + '.' : '') +
-      fieldParam.fieldName;
+      (fieldParam.tableAlias ? fieldParam.tableAlias + '.' : '') + fieldName;
     let fldAlias: string =
       (fieldParam.fieldAlias || fieldParam.displayField) && !noFieldAlias
         ? '@' +
@@ -361,14 +386,39 @@ export class DataOption {
   }
 
   public get whereClause(): string {
+    // Get base filter expresssion
     const baseExpr: string = this._BaseFilterOn
       ? this.whereClauseSub(this.BaseWhereTree)
       : '';
+
+    // Get dynamic filter expresssion
     const subExpr: string = this._SubFilterOn ? this.whereClauseSub() : '';
 
+    // return composite expression
     return `${
       baseExpr.length ? `(${baseExpr})${subExpr.length ? '^' : ''}` : ''
     }${subExpr.length ? `(${subExpr})` : ''}`;
+  }
+
+  private _fieldMaps: Array<IFieldMap> = [];
+  public get fieldMap(): string {
+    // returns field nickname mapping which is used to shorten
+    // filter expressions by substituting nicknames to the actual fieldnames
+    if (this._fieldMaps.length == 0) return '';
+    let ret: string = '';
+    this._fieldMaps.forEach((m) => {
+      ret += `${ret.length ? ';' : ''}${m.nickName},${m.fieldName}`;
+    });
+    return ret;
+  }
+
+  public AddFieldMap(map: IFieldMap) {
+    this._fieldMaps.push(map);
+    return this;
+  }
+
+  public ClearFieldMap() {
+    this._fieldMaps = [];
   }
 
   public get orderByClause(): string {
@@ -402,7 +452,9 @@ export class DataOption {
         ret += '|';
       } else if (e.fieldParam) {
         ret += `${this.GetLogicalOperator(ret, e)}{${this.GetFieldExpression(
-          e.fieldParam
+          e.fieldParam,
+          false,
+          true
         )}${e.operator ? '|' + e.operator : ''}|${this.GetValueString(e)}}`;
       } else {
       }
@@ -807,7 +859,7 @@ export class DataOption {
         ret += (ret.length == 0 ? '' : '`') + fldExpr;
 
       if (c.requiredFields) {
-        console.log("c.requiredFields",c.requiredFields.join(","))
+        console.log('c.requiredFields', c.requiredFields.join(','));
         c.requiredFields.forEach((fn) => {
           if (!visibleFields.find((vf) => vf.fieldName == fn)) {
             // if required field is not one of the visible fields

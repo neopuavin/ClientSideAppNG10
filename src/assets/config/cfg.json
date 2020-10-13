@@ -78,7 +78,7 @@
         {
           "id": 1,
           "label": "Anomaly",
-          "active": false,
+          "active": true,
           "init_fields": "AN_ID`AN_TITLE`ASSET_ID`AN_ORIG_CLASS`AN_CURR_CLASS",
           "ready": true,
           "loaded": false

@@ -24,6 +24,7 @@ export class RequestParams {
   keyField?: string;
   includedFields?: string;
   filter?: string;
+  fieldMap?: string;
   sortFields?: string;
   pageNumber?: number;
   pageSize?: number;
@@ -100,4 +101,10 @@ export interface IFromClauseLink {
   foreignField?:string;       // link field found in the child table
   leftJoin?:IFromClauseLink;  // sub left join params
   innerJoin?:IFromClauseLink; // sub inner join params
+}
+
+
+export interface IFieldMap{
+  nickName:string;
+  fieldName:string;
 }

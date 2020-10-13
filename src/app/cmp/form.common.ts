@@ -268,10 +268,9 @@ export class FormCommon {
     if (fieldList.length == 0) {
       console.log('DATA FIELD NOT SET');
       return;
-    }else{
-      console.log('\n\nDATA FIELD FIELD LIST:',fieldList);
+    } else {
+      console.log('\n\nDATA FIELD FIELD LIST:', fieldList);
     }
-
 
     // this flag is set to make sure that module initialization  is arleady called
     this.moduleState.setupDataCalled = true;
@@ -304,15 +303,20 @@ export class FormCommon {
       // add deleted flag to the base filter of the main grid option object
     }
     const localFilter = this.mainGridOptions.whereClause;
+
     filter += localFilter ? '^' + localFilter : '';
 
     // Base request parameters where initially common filtering and sorting is applied
+    console.log('\n*******FILTER*****', filter,
+    "\nFieldMap:",this.mainGridOptions.fieldMap);
+
     let requestParams: RequestParams = {
       code: this.mainGridOptions.fromClauseCode,
       includedFields: fieldList,
       filter: filter,
       pageNumber: pageNumber,
       pageSize: pageSize,
+      fieldMap:this.mainGridOptions.fieldMap,
       //clearExisting: true,
       snapshot: true,
       sortFields: this.mainGridOptions.orderByClause,
@@ -322,7 +326,7 @@ export class FormCommon {
 
     this.ds.Get([requestParams], {
       onSuccess: (data) => {
-        console.log("SetupData Success",data)
+        console.log('SetupData Success', data);
         // processed rows for the grid to display
         // this._gridSourceRows = data.processed.data[0];
         this.gridSourceRows = data.processed.data[0];
@@ -379,7 +383,6 @@ export class FormCommon {
     //console.log('FilterEvent', args);
     this.moduleState.filteringActive = !this.moduleState.filteringActive;
   }
-
 
   public GetRowFormObject(blankForm?: boolean): FormGroup {
     // create form object containing controls based on the entire
@@ -963,10 +966,8 @@ export class FormCommon {
   }
 
   GridRowClick(row?: any, forceExtract?: boolean) {
-
-
     // if row is not supplied but moduleState.currentRow exist, use it as row parameter
-    if(!row && this.moduleState.currentRow) row = this.moduleState.currentRow;
+    if (!row && this.moduleState.currentRow) row = this.moduleState.currentRow;
 
     if (!row) return;
 

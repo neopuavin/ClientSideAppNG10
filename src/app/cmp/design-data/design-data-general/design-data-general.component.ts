@@ -4,6 +4,7 @@ import {
   Component,
   OnInit,
   Inject,
+  Input,
   AfterViewInit,
 } from '@angular/core';
 
@@ -15,14 +16,32 @@ import { DesignDataCommon } from '../design-data.common';
   styleUrls: ['./design-data-general.component.scss']
 })
 export class DesignDataGeneralComponent extends DesignDataCommon
-implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit {
 
-constructor(@Inject(DesignDataComponent) public module: DesignDataComponent) {
-  super(module);
-}
+  @Input() data: any = {};
 
-public get toggleDisplay():Array<any>{
-  return this.module.ds.toggleYesNoNA;
-}
+  constructor(@Inject(DesignDataComponent) public module: DesignDataComponent) {
+    super(module);
+  }
+
+  public get toggleDisplay(): Array<any> {
+    return this.module.ds.toggleYesNoNA;
+  }
+
+
+
+  public get row(): any {
+    if (!this.data) return null;
+    return this.data.row;
+  }
+
+  public get assetLookup(): Array<any> {
+    if (!this.data) return null;
+    if (!this.row) return null;
+    if (!this.row.XTRA) return null;
+
+    return this.row.XTRA.assetLookup;
+  }
+  
 
 }
