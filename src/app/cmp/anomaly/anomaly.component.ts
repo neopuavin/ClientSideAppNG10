@@ -495,8 +495,8 @@ export class AnomalyComponent
       .AddFieldMap({nickName:"L",fieldName:"AN_RISK_RANK_LIKELIHOOD"})
       .AddFieldMap({nickName:"S",fieldName:"AN_RISK_RANK_SEVERITY"})
       // .Equal({fieldName:'AN_ORIG_AVAIL_CLASS'},8471,true)
-      .Equal({fieldName:'AN_RISK_RANK_LIKELIHOOD'},8522,true)
-      .Equal({fieldName:'AN_RISK_RANK_SEVERITY'},8540)
+      // .Equal({fieldName:'AN_RISK_RANK_LIKELIHOOD'},8522,true)
+      // .Equal({fieldName:'AN_RISK_RANK_SEVERITY'},8540)
 
 
     console.log(
