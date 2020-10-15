@@ -25,10 +25,12 @@
     display: flex;
     flex-direction: column;
     > div {
+
+      cursor: pointer;
       span {
         font-family: $form_label_font-family;
         padding-top: 3px;
-        cursor: default;
+        // cursor: default;
       }
       span.fa-stack {
         padding: 0px;
@@ -48,12 +50,20 @@
         cursor: pointer;
       }
       i.active {
+        margin-top: 3px;
         border: 1px solid $bs_info;
         background: $bs_warning_light;
+      }
+      i.inactive{
+        margin-top: 3px;
+        background: #f8f8f8;
       }
       i.text-maroon {
         color: maroon;
       }
+    }
+    > div:hover{
+      background-color: #fafafa;
     }
   }
   > div.sep {

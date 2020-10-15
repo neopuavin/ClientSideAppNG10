@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import { FilterParametersComponent } from './../filter-parameters/filter-parameters.component';
 import { DataGridColMgtComponent } from './data-grid-col-mgt.component';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -160,6 +161,10 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() rowClick: EventEmitter<any> = new EventEmitter();
   @Output() onColumnsChanged: EventEmitter<any> = new EventEmitter();
 
+  @Output() filterData: EventEmitter<any> = new EventEmitter();
+
+  @Output() applyFilter: EventEmitter<any> = new EventEmitter();
+
   @ViewChild('gridViewPort') gridViewPort: CdkVirtualScrollViewport;
   @ViewChild('gridViewPort') gridViewPortElem: any;
   @ViewChild('gridHeader') gridHeaderObj: any;
@@ -199,7 +204,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     if (!col) return;
 
-    this.OpenFilter(col);
+    // this.OpenFilter(col);
   }
 
   ngOnDestroy() {
@@ -211,6 +216,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    console.log("data grid applyFilter:",this.applyFilter);
 
     this._portHeight = this.gridPortHeight;
     this.InitDataSource();
@@ -354,7 +361,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  OpenFilter(column: DataColumn) {
+  OpenFilter(column: DataGridColumn) {
     let ref: MatDialogRef<FilterParametersComponent, any>;
 
     ref = this.dialog.open(FilterParametersComponent, {
@@ -367,10 +374,16 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
         column: column,
         table: this.sourceTable,
         sourceLookups: this.sourceLookups,
+        parent:this
       },
     });
 
     return ref.afterClosed();
+  }
+
+  ApplyFilter(column:DataGridColumn){
+    console.log("GRID DATA GRID CIOLUMN:",column);
+    if(this.applyFilter) this.applyFilter.emit({column:column,option:this.options});
   }
 
   private _isReady: boolean = false;
@@ -456,7 +469,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   InitDataSource(): void {
     if (this.sourceTable && this.options != null) {
-      this.options.columns.forEach((c: DataGridColum) => {
+      this.options.columns.forEach((c: DataGridColumn) => {
         // map captions
 
         if (c.caption == '') {
@@ -571,7 +584,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //GetTableSnapShot
   public headerWidth(
-    c: DataGridColum,
+    c: DataGridColumn,
     args?: { min?: boolean; max?: boolean }
   ): number {
     if (c.width == -1) {
@@ -626,7 +639,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 1000);
   }
 
-  public cellWidth(c: DataGridColum, idx: number): number {
+  public cellWidth(c: DataGridColumn, idx: number): number {
     const widths = this.cellWidths;
     if (!widths) return 100;
     return widths[idx + 1];
@@ -638,17 +651,17 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return c.width;
   }
 
-  public cellStyle(c: DataGridColum): any {
+  public cellStyle(c: DataGridColumn): any {
     if (c.width == -1) return null;
     return null;
   }
 
-  public cellClass(c: DataGridColum): any {
+  public cellClass(c: DataGridColumn): any {
     if (c.width == -1) return null;
     return null;
   }
 
-  public cellColor(r: any, c: DataGridColum): string {
+  public cellColor(r: any, c: DataGridColumn): string {
     if (this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.foreGround) return null;
@@ -666,7 +679,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     const color = value ? c.colorParams.foreGround[value] : null;
     return !color ? null : color;
   }
-  public cellBack(r: any, c: DataGridColum): any {
+  public cellBack(r: any, c: DataGridColumn): any {
     if (this.debugMode) return null;
     if (!c.colorParams) return null;
     if (!c.colorParams.backGround) return null;
@@ -690,7 +703,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // return !color ? null : color;
   }
 
-  public cellText(r: any, c: DataGridColum): string {
+  public cellText(r: any, c: DataGridColumn): string {
     // NOTE: If this will affect the performance of the grid because of resolving lookups,
     // first time display lookup result can be stored in a collection inside the
     // row object and can be subsequently used to render text instead of actively
@@ -725,7 +738,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return value;
   }
 
-  cellTextFromValue(r: any, c: DataGridColum): string {
+  cellTextFromValue(r: any, c: DataGridColumn): string {
     const fmt: string = '`' + c.value.replace(/\{/gi, '${r.') + '`';
     let value: string = eval(fmt);
     const lkpParams = c.lookupParams;
@@ -744,7 +757,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return value; // //eval("`${r[AN_ID]}`");
   }
 
-  cellTextFromFieldName(r: any, c: DataGridColum): string {
+  cellTextFromFieldName(r: any, c: DataGridColumn): string {
     let value: any = r[c.fieldName];
     let recordValue: boolean = false;
 
@@ -795,7 +808,7 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
     return value;
   }
 
-  cellTextFromLookupParams(r: any, c: DataGridColum, value: any): string {
+  cellTextFromLookupParams(r: any, c: DataGridColumn, value: any): string {
     // get lookup definition parameters
     const lkpPrm = c.lookupParams;
     let retVal: any;
@@ -1005,7 +1018,7 @@ export interface IDataGridColumn extends IDataColumn {
 
 }
 
-export class DataGridColum extends DataColumn {
+export class DataGridColumn extends DataColumn {
   constructor(args: IDataGridColumn) {
     super(args);
 
@@ -1019,6 +1032,7 @@ export class DataGridColum extends DataColumn {
     this.displayFormat = args.displayFormat;
 
     this.allowFilter = args.allowFilter != undefined ? args.allowFilter : true;
+
     this.sortAsc = args.sortAsc;
     this.sortDesc = args.sortDesc;
 
@@ -1058,6 +1072,7 @@ export class DataGridColum extends DataColumn {
   public sortDesc: boolean;
   public filters: Array<any>;
   public filterType: number;
+
   public matrixData: any;
   public matrixSeverity: string;
   public matrixLikelihood: string;
@@ -1065,7 +1080,7 @@ export class DataGridColum extends DataColumn {
 
 export class DataGridOption extends DataOption {
   constructor(
-    public columns: Array<DataGridColum>,
+    public columns: Array<DataGridColumn>,
     args?: { rowHeight?: number; table?: any; dataSource?: AppDataset }
   ) {
     super(columns, args);
@@ -1129,7 +1144,7 @@ export class DataGridOption extends DataOption {
     return this;
   }
 
-  public SetColumnVisibility(column: DataGridColum, visible: boolean) {
+  public SetColumnVisibility(column: DataGridColumn, visible: boolean) {
     // Sets visibility mode of a column and its matching data and inline lookup fields
     column.visible = visible;
 
@@ -1209,8 +1224,8 @@ export class DataGridOption extends DataOption {
     return this;
   }
 
-  private _visibleColumns: Array<DataGridColum> = null;
-  public get visibleColumns(): Array<DataGridColum> {
+  private _visibleColumns: Array<DataGridColumn> = null;
+  public get visibleColumns(): Array<DataGridColumn> {
     //return
     if (!this._visibleColumns) {
       this._visibleColumns = this.columns.filter((c) => c.visible); //.sort((a,b)=>{return b.order<a.order});
@@ -1244,7 +1259,7 @@ export class DataGridOption extends DataOption {
     if (args.visible == undefined) args.visible = true;
 
     // create column entry
-    const col = new DataGridColum(args);
+    const col = new DataGridColumn(args);
     col.parentOption = this;
     col.order = this.columns.length;
 

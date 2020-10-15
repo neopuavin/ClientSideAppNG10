@@ -11,7 +11,7 @@ import { RequestParams } from './../api/mod/app-params.model';
 import { Subscription, Observable } from 'rxjs';
 
 import { DataTab } from './../api/cmp/data-tabs/data-tabs.component';
-import { DataGridComponent } from './../api/cmp/data-grid/data-grid.component';
+import { DataGridComponent, DataGridColumn } from './../api/cmp/data-grid/data-grid.component';
 
 import {
   TreeViewNode,
@@ -256,6 +256,23 @@ export class FormCommon {
   public SetFilterParams(): void {
     // this method is a provision to set more module specific filter parameters
     //
+  }
+
+  public ApplyFilter(e:{column:DataGridColumn,filterForm:FormGroup,option:DataGridOption}){
+    const {column,option}=e;
+    console.log("Module ApplyFilter:",e);
+
+    column.filters = [];
+
+
+    // clear filter expressions stored in _WhereTree array
+    // go through all columns where filtering is allowed and where filter parameter is set
+
+    option.columns.forEach(c=>{
+      if(c.allowFilter)
+      console.log(c.fieldKey,c.filters ? c.filters.length : 'no filters');
+      else console.log(c.fieldKey,"not filterable")
+    })
   }
 
   SetupData(pageNumber?: number, pageSize?: number) {

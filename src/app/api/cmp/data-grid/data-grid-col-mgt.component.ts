@@ -3,7 +3,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { DataGridOption, DataGridColum } from './data-grid.component';
+import { DataGridOption, DataGridColumn } from './data-grid.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   Component,
@@ -99,7 +99,7 @@ export class DataGridColMgtComponent implements OnInit, AfterViewInit {
   public get options(): DataGridOption {
     return this.data.parent.options;
   }
-  public get columns(): Array<DataGridColum> {
+  public get columns(): Array<DataGridColumn> {
     return this.options.columns;
   }
 

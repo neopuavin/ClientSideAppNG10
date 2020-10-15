@@ -1,4 +1,4 @@
-import { DataGridColum } from './../../api/cmp/data-grid/data-grid.component';
+import { DataGridColumn, DataGridOption } from './../../api/cmp/data-grid/data-grid.component';
 import {
   DataOption,
   IFilterOperator,
@@ -8,6 +8,7 @@ import { AppMainServiceService } from './../../svc/app-main-service.service';
 import { FormCommon } from './../form.common';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-anomaly',
@@ -62,7 +63,7 @@ export class AnomalyComponent
         // assign required lookups to mainDataGrid
         if (this.ds.riskMatrixData) {
           // late lookup binding to grid column
-          const riskColumn: DataGridColum = this.mainGridOptions.columns.find(
+          const riskColumn: DataGridColumn = this.mainGridOptions.columns.find(
             (c) => c.fieldKey == 'RISK'
           );
           if (riskColumn) {
@@ -148,7 +149,7 @@ export class AnomalyComponent
         align: center,
         isKey: true,
         allowFilter: false,
-        sortAsc: true,
+        // sortAsc: true,
         // filters:[1],
       })
       .AddColumn({
@@ -189,6 +190,7 @@ export class AnomalyComponent
         width: wd1,
         caption: 'Rev#',
         align: center,
+        // filters:[{}]
       })
       .AddColumn({ fieldName: 'AN_TITLE', minWidth: minLong })
       .AddColumn({
@@ -242,7 +244,7 @@ export class AnomalyComponent
           inlineLookupTableField: 'LKP_DESC_B',
         },
         //sortAsc:true,
-        sortDesc: true
+        // sortDesc: true
       })
       .AddColumn({
         fieldName: 'AN_WO_REF',

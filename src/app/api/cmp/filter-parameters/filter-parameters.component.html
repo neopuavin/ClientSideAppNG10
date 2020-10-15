@@ -5,12 +5,14 @@
   <app-panel-a>
     <div id="details" class="container-fluid py-2" [formGroup]="formData">
       <div id="sorting" class="form-group menu-item sep">
-        <div class="d-flex"><i class="fa fa-sort-alpha-up text-maroon active"></i><span (click)="testDateParse()">Sort
+        <div class="d-flex" (click)="SortAscending()"><i class="fa fa-sort-alpha-up text-maroon"
+            [ngClass]="{active:sortAscending, inactive:!sortAscending}"></i><span>Sort
             Oldest to Newest</span></div>
-        <div class="d-flex"><i class="fa fa-sort-alpha-down-alt text-maroon"></i><span>Sort Newest to Oldest</span>
+        <div class="d-flex" (click)="SortDescending()"><i class="fa fa-sort-alpha-down-alt text-maroon"
+            [ngClass]="{active:sortDescending, inactive:!sortDescending}"></i><span>Sort Newest to Oldest</span>
         </div>
       </div>
-      <div class="form-group menu-item">
+      <div class="form-group menu-item" (click)="ApplyFilter(true)">
         <div class="d-flex">
           <span class="fa-stack fa-1x">
             <i class="fa fa-filter fa-stack-1x text-secondary"></i>
@@ -103,8 +105,9 @@
 
       </div>
 
-      <app-risk-matrix *ngIf="dataColumn.matrixData" [riskMatrixData]="dataColumn.matrixData"  [phHeight]="210"
-        [severityField]="'AN_RISK_RANK_SEVERITY'" [readOnly]="false" [selectedValues]="selectedValues" [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'"></app-risk-matrix>
+      <app-risk-matrix *ngIf="dataColumn.matrixData" [riskMatrixData]="dataColumn.matrixData" [phHeight]="210"
+        [severityField]="'AN_RISK_RANK_SEVERITY'" [readOnly]="false" [selectedValues]="selectedValues"
+        [likelihoodField]="'AN_RISK_RANK_LIKELIHOOD'"></app-risk-matrix>
 
       <div class="form-group mt-2">
         <!-- <label for="">Search</label> -->
@@ -129,8 +132,8 @@
     <span class="sr-only">Loading...</span>
   </div> -->
       <div id="action" class="pt-1">
-        <button class="btn btn-sm btn-secondary mx-1">Cancel</button>
-        <button class="btn btn-sm btn-warning mx-1">Apply</button>
+        <button class="btn btn-sm btn-secondary mx-1" (click)="CancelFilter()">Cancel</button>
+        <button class="btn btn-sm btn-warning mx-1" (click)="ApplyFilter()">Apply</button>
       </div>
     </div>
     <!--end of container-->

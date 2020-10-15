@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import {
   IFromClauseLink,
   SQLJoinChars,
@@ -126,6 +127,7 @@ export class DataColumn {
   public sortAsc: boolean;
   public sortDesc: boolean;
   //public filters: Array<any>;
+  public filterData: FormGroup = null;
   public filters: Array<IFieldExpression>;
 
   public requiredFields: Array<string>;
@@ -490,8 +492,10 @@ export class DataOption {
       }
     }
 
+    // append expression to the end of the collection
     collection.push(expr);
 
+    // srt current expression object
     if (
       expr.groupStart ||
       expr.logicalAndGroupStart ||

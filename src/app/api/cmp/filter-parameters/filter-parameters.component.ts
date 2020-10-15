@@ -1,9 +1,13 @@
-import { IDataGridColumn, DataGridOption } from './../data-grid/data-grid.component';
+import {
+  IDataGridColumn,
+  DataGridOption,
+  DataGridColumn,
+} from './../data-grid/data-grid.component';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ColumnInfo } from '../../mod/app-column.model';
-import { IFilterOperator, FilterDataType } from '../../mod/app-common.classes';
+import { IFilterOperator, FilterDataType, DataColumn } from '../../mod/app-common.classes';
 import * as moment from 'moment/moment';
 
 @Component({
@@ -15,7 +19,7 @@ export class FilterParametersComponent implements OnInit {
   @Input() dateFormat: string = 'DD-MMM-YYYY';
   @Input() dateTimeFormat: string = 'DD-MMM-YYYY, hh:mm:ss a';
 
-  public selectedValues:Array<{severity:number, likelihood:number}> =[];
+  public selectedValues: Array<{ severity: number; likelihood: number }> = [];
 
   public COMMON_TYPES: number =
     FilterDataType.TEXT | FilterDataType.DATE | FilterDataType.NUMBER;
@@ -45,7 +49,6 @@ export class FilterParametersComponent implements OnInit {
     '2019-sep-16',
     '2019-nov-22',
   ];
-
 
   private _dataType: number = null;
   public get dataType(): number {
@@ -83,7 +86,7 @@ export class FilterParametersComponent implements OnInit {
     private dialogRef: MatDialogRef<FilterParametersComponent>
   ) {}
 
-  public get Lookups():any{
+  public get Lookups(): any {
     return this.data ? this.data.sourceLookups : null;
   }
 
@@ -148,35 +151,33 @@ export class FilterParametersComponent implements OnInit {
     return this._validOperators;
   }
 
-  public formData: FormGroup = new FormGroup({
-    searchValues: new FormArray([
-      new FormControl(''),
-      new FormControl(''),
-      new FormControl(''),
-    ]),
-  });
+  public formData: FormGroup = new FormGroup({});
 
   public columnData: Array<any> = [];
 
   ngOnInit(): void {
+    // console.log(
+    //   '\nthis.dataGridOption:',
+    //   this.dataGridOption,
+    //   '\nthis.dataGridOption.whereClause',
+    //   this.dataGridOption.whereClause
+    //     ? this.dataGridOption.whereClause
+    //     : 'EMPTY!',
+    //   '\nthis.dataGridOption.FieldList',
+    //   this.dataGridOption.FieldList ? this.dataGridOption.FieldList : 'EMPTY!',
+    //   '\nDATA COLUMN:',
+    //   this.dataColumn,
+    //   '\nLOOKUPS:',
+    //   this.Lookups
+    // );
 
-    console.log("\nthis.dataGridOption:",this.dataGridOption,
-      "\nthis.dataGridOption.whereClause",this.dataGridOption.whereClause ? this.dataGridOption.whereClause : "EMPTY!",
-      "\nthis.dataGridOption.FieldList",this.dataGridOption.FieldList ? this.dataGridOption.FieldList : "EMPTY!",
-      '\nDATA COLUMN:', this.dataColumn,"\nLOOKUPS:",this.Lookups);
+    this.formData = this.EmptyForm;
 
-    this.formData.addControl('operatorValue', new FormControl('eq'));
-    this.formData.addControl('operatorPrompt', new FormControl('Equal To'));
-    this.formData.addControl('searchValue1', new FormControl(null));
-    this.formData.addControl('searchValue2', new FormControl(null));
-    this.formData.addControl('dateDisplay', new FormControl(null));
-    this.formData.addControl('dateValue', new FormControl(null));
-    this.formData.addControl('dateStart', new FormControl(null));
-    this.formData.addControl('dateEnd', new FormControl(null));
-    this.formData.addControl('search', new FormControl(null));
+    console.log('this.dataColumn.filterData:', this.dataColumn.filterData);
+    if (this.dataColumn.filterData)
+      this.formData.patchValue(this.dataColumn.filterData.value);
 
     this.testDateParse();
-
   }
 
   testData: Array<any> = [
@@ -196,8 +197,7 @@ export class FilterParametersComponent implements OnInit {
       i.day = i.date.substr(8, 2);
     });
     const tmpArr = this.groupBy(this.testData, 'year');
-    tmpArr.forEach((yr) => {
-    });
+    tmpArr.forEach((yr) => {});
   }
 
   operatorSelected(op: IFilterOperator) {
@@ -308,8 +308,8 @@ export class FilterParametersComponent implements OnInit {
     return ret;
   }
 
-  public get dataGridOption():DataGridOption{
-    if(!this.data) return null;
+  public get dataGridOption(): DataGridOption {
+    if (!this.data) return null;
     return this.data.options;
   }
 
@@ -369,7 +369,7 @@ export class FilterParametersComponent implements OnInit {
     return this._columnCaption;
   }
 
-  public get dataColumn(): IDataGridColumn {
+  public get dataColumn(): DataGridColumn {
     if (this.data) return this.data.column;
     return null;
   }
@@ -426,5 +426,97 @@ export class FilterParametersComponent implements OnInit {
     }}`;
 
     //${this.searchValues.value}
+  }
+
+  SortDescending() {
+    this.sortDescending = !this.sortDescending;
+    if (this.sortDescending) this.sortAscending = !this.sortDescending;
+  }
+  SortAscending() {
+    this.sortAscending = !this.sortAscending;
+    if (this.sortAscending) this.sortDescending = !this.sortAscending;
+  }
+
+  public get sortAscending() {
+    return this.formData.get('sortAscending').value;
+  }
+  public set sortAscending(value: boolean) {
+    this.formData.get('sortAscending').setValue(value);
+  }
+
+  public get sortDescending() {
+    return this.formData.get('sortDescending').value;
+  }
+  public set sortDescending(value: boolean) {
+    this.formData.get('sortDescending').setValue(value);
+  }
+
+  ApplyFilter(clear?: boolean) {
+    if (!clear) clear = false;
+
+    if (this.data.parent)
+      if (this.data.parent.ApplyFilter) {
+        // process filter expression(s)
+        if(clear)this.formData = this.EmptyForm;
+        this.RecordFilter();
+        console.log("this.dataColumn.filters:",this.dataColumn.filters);
+        this.data.parent.ApplyFilter(this.dataColumn);
+      } else console.log('ApplyFilter event not defined');
+    else console.log('ApplyFilter event not defined');
+
+    this.dialogRef.close();
+  }
+  CancelFilter() {
+    this.dialogRef.close();
+  }
+
+  RecordFilter() {
+    const gc: DataGridColumn = this.dataColumn;
+    // clear filters
+    gc.filters = [];
+    // process filter(s)
+    console.log('RecordFilter for data column:', gc);
+    gc.filters.push({
+      fieldParam: { fieldName: gc.fieldName },
+      operator: this.operatorValue,
+      value: this.searchValue1,
+    });
+
+    // set search box value to empty before saving to dataColumn's filterData form
+    this.formData.get('search').setValue("");
+
+    // set dataColumn sorting parameter
+    gc.sortAsc = this.sortAscending;
+    gc.sortDesc = this.sortDescending;
+
+    gc.filters = [{},{}];
+
+
+    if (!gc.filterData) gc.filterData = this.EmptyForm;
+    gc.filterData.patchValue(this.formData.value);
+  }
+
+  private get EmptyForm(): FormGroup {
+    let newForm: FormGroup = new FormGroup({
+      searchValues: new FormArray([
+        new FormControl(''),
+        new FormControl(''),
+        new FormControl(''),
+      ]),
+    });
+
+    newForm.addControl('operatorValue', new FormControl('eq'));
+    newForm.addControl('operatorPrompt', new FormControl('Equal To'));
+    newForm.addControl('sortAscending', new FormControl(false));
+    newForm.addControl('sortDescending', new FormControl(false));
+    newForm.addControl('searchValue1', new FormControl(null));
+    newForm.addControl('searchValue2', new FormControl(null));
+    newForm.addControl('dateDisplay', new FormControl(null));
+    newForm.addControl('dateValue', new FormControl(null));
+    newForm.addControl('dateStart', new FormControl(null));
+    newForm.addControl('dateEnd', new FormControl(null));
+    newForm.addControl('search', new FormControl(null));
+
+    return newForm;
   }
 }
