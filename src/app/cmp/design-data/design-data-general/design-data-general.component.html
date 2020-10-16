@@ -4,8 +4,8 @@
         <app-panel-a [PR]="2">
             <app-panel-a [horizontal]="true">
                 <app-panel-a [PR]="2">
-                    <app-app-input-a [fieldName]="'DD_ASSET'" [label]="'Asset'" [lookupSource]="assetLookup"></app-app-input-a>
-                    <app-app-input-a [fieldName]="'DD_PARAM'" [label]="'Parameter Type'" [lookupSource]="this.module.DesignDataLookup(109)"></app-app-input-a>
+                    <app-app-input-a [fieldName]="'DD_ASSET'" [label]="'Asset'" [lookupSource]="this.module.DesignDataAssetLookup()"></app-app-input-a>
+                    <!-- <app-app-input-a [fieldName]="'DD_PARAM'" [label]="'Parameter Type (This Field is currently under adjustment that will alter the common class'" [lookupSource]="this.module.DesignDataLookup(109)"></app-app-input-a> -->
                     <app-app-input-a [fieldName]="'DD_PARAM'" [label]="'Parameter Name'" [lookupSource]="this.module.DesignDataNameLookup()"></app-app-input-a>
                     <app-app-input-a [fieldName]="'DD_PARAM_REF'" [label]="'Reference'" [rows]="3"></app-app-input-a>
                 </app-panel-a>

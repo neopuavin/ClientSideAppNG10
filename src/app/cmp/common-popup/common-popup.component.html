@@ -10,6 +10,9 @@
   <app-anom-add-edit #subComponent [data]="data" *ngIf="data.component=='addEditAnomaly'"></app-anom-add-edit>
   <app-alert #subComponent [data]="data" *ngIf="data.component=='alert'"></app-alert>
 
+  <app-reference-addedit #subComponent [data]="data" *ngIf="data.component=='addEditReffile'"></app-reference-addedit>
+  <app-design-data-add-edit #subComponent [data]="data" *ngIf="data.component=='addEditDesigndata'"></app-design-data-add-edit>
+
 </mat-dialog-content>
 
 <mat-dialog-actions *ngIf="data.buttons" align="center" class="p-0" style="height:35px;">

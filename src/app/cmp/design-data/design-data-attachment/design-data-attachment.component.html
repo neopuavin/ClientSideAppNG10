@@ -1,1 +1,29 @@
-<p>design-data-attachment works!</p>
+<app-form-header [title]="" (editClick)="EditRecordEvent($event)" (addClick)="AddRecordEvent($event)"
+(deleteClick)="DeleteRecordEventLocal($event)" (searchKeyEvent)="SearchEvent($event)"
+(printClick)="PrintRecordEvent($event)" (excelClick)="SendToExcelEvent($event)"
+(filterClick)="SearchEvent($event)"
+[rights]="rights">
+<div *ngIf="false" id="after-title" class="p-1 pl-2 pt-1">
+  <i class="fa fa-spinner fa-spin fa-3x fa-fw mr-1" style="font-size:.9em;"></i><span>Loading Data. Please
+    wait...</span>
+</div>
+</app-form-header>
+
+
+<div id="form-wrapper" class="d-flex flex-column">
+
+  <div id="form-grid" [style.height]="gridPanelHeight" style="padding:0px 0px;border-bottom:1px solid #c0c0c0;">
+
+    <app-data-grid #mainGrid [pageNumber]="reqInfo.pageNumber" [pageSize]="reqInfo.pageSize"
+      [totalPages]="reqInfo.totalPages" [totalRecords]="reqInfo.totalRecords" [sourceRows]="gridSourceRows"
+      [sourceLookups]="gridSourceLookups" [sourceTable]="sourceTable" [showMenu]="true"
+      [promptNoRecords]="'No record(s) found. Please click a node on the tree to get data.'"
+      [isLoadingData]="isLoadingData" [promptLoadingData]="promptLoadingData"
+      (rowClick)="GridRowClick($event)"
+      [isRowWaiting] = "isRowWaiting" [ManagmentOpener]="dataSource.OpenPopup"
+      [gridPortHeight]="1080"
+      (onColumnsChanged)="SetupData()"
+      (pageSizeChange)="PageSizeChange($event)" (pageClick)="ChangePage($event)" [options]="mainGridOptions">
+    </app-data-grid>
+  </div>
+</div>

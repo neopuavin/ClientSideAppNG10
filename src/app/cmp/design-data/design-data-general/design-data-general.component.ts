@@ -42,6 +42,19 @@ export class DesignDataGeneralComponent extends DesignDataCommon
 
     return this.row.XTRA.assetLookup;
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => (this._isReady = true), 1);
+    //setTimeout(() => this.SetDesignDataParTypeGroup(), 1);
+
+    console.log('\nDesignDataAddEditPopupData:', this.data);
+  }
+
+  private _isReady: boolean = false;
+  public get isReady(): boolean {
+    // in the future, this should be dicated by the required parameters in the form (eg. lookups, etc.)
+    return this._isReady;
+  }
   
 
 }

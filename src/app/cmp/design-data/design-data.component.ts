@@ -7,6 +7,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CellTextAlign } from 'src/app/api/cmp/data-grid/data-grid.component';
 import { FilterDataType } from './../../api/mod/app-common.classes';
 
+
 @Component({
   selector: 'app-design-data',
   templateUrl: './design-data.component.html',
@@ -266,6 +267,7 @@ export class DesignDataComponent
     return ret;
   }
 
+
   
 
   ngAfterViewInit(): void {
@@ -332,11 +334,128 @@ export class DesignDataComponent
 
   /********************************* action button events ******************************************/
   AddRecordEvent(args: any) {
-    
+    if (!this.treeView.currNode) {
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm(
+        'No asset selected',
+        'Please select an asset where new data will be raised.',
+        { height: 170 }
+      );
+      return;
+    }
+
+    const row = this.ds.tblDesignData.Add();
+
+    const form: FormGroup = this.GetRowFormObject(true);
+    const node = this.treeView.currNode;
+
+    // initialize blank form with default values
+    form.get('DD_ID').setValue(-1);
+    form.get('DD_ASSET').setValue(node.did);
+    form.get('DD_PARAM_REF').setValue('<New Reference>');
+    form.get('DD_PARAM_NOTES').setValue('<New Notes>');
+    form.get('DD_PARAM_NOTES').setValue('<New Parameter Value>');
+    form.get('DD_PARAM_UNIT').setValue(1543);
+    form.get('DD_PARAM').setValue(1);// for ADM - Allowable Bending Moment IMSA_TBL_DESIGN_DATA_PARAMS
+
+
+    for (const fieldName in form.controls)
+      row[fieldName] = form.get(fieldName).value;
+
+    row.XTRA.assetLookup = [
+      { code: node.code, key: node.did, location: node.loc, text: node.text },
+    ];
+
+    this.dataSource
+      .OpenPopup('addEditDesigndata', 770, 330, true, {
+        row: row,
+
+        // Define a blank form object
+        formObject: form,
+        //
+        riskMatrixData: this.ds.riskMatrixData,
+        // set AnomalyComponent as the parent component reference
+        parent: this,
+        // Dialog title
+        title: 'Add New Design Data',
+        // dialog title icon
+        icon: 'far fa-file-alt',
+        // dialog action buttons
+        buttons: [
+          {
+            label: 'Cancel',
+            value: 'cancel',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
+            label: 'Reset',
+            value: 'reset',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
+            label: 'Save',
+            value: 'save',
+            class: 'btn btn-sm btn-warning',
+          },
+        ],
+      })
+      .subscribe((result) => {
+        // if (result) {
+        //   if (result.mode == 'accept') this.SaveRecord(result);
+        // } else this.CancelUpdate();
+      });
   }
 
   EditRecordEvent(args: any) {
     // override function
+
+    if (!this.currentRow) {
+      // prompt to select a record if currentRow is null
+      this.dataSource.Confirm(
+        'No current record',
+        'Please select a record to edit'
+      );
+      return;
+    }
+
+    this.dataSource
+      .OpenPopup('addEditDesigndata', 770, 330, true, {
+        row: this.currentRow,
+
+        // use common form object from the FormCommon base class
+        //formObject: this.mainFormObject,
+        formObject: this.GetRowFormObject(),
+        //
+        // set AnomalyComponent as the parent component reference
+        parent: this,
+        // Dialog title
+        title: 'Edit Design Data',
+        // dialog title icon
+        icon: 'fa-edit',
+        // dialog action buttons
+        buttons: [
+          {
+            label: 'Cancel',
+            value: 'cancel',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
+            label: 'Reset',
+            value: 'reset',
+            class: 'btn btn-sm btn-secondary',
+          },
+          {
+            label: 'Save',
+            value: 'save',
+            class: 'btn btn-sm btn-warning',
+          },
+        ],
+      })
+      .subscribe((result) => {
+        // if (result) {
+        //   if (result.mode == 'accept') this.SaveRecord(result);
+        // } else this.CancelUpdate();
+      });
 
     
   }
@@ -348,18 +467,13 @@ export class DesignDataComponent
       messages: {
         msgTitle:
           'Confirm record deletion' +
-          (row ? ` of Anomaly Ref#${row['AN_REF']}` : ''),
-        msgWarning: `You are about to delete the currently selected anomaly record.<br/><br/>Do you want to continue?`,
-        msgSuccess: `Anomaly Ref#${row['AN_REF']} was successfully deleted`
+          (row ? ` of Design Data Parameter value${row['DD_PARAM_VALUE']}` : ''),
+        msgWarning: `You are about to delete the currently selected design data record.<br/><br/>Do you want to continue?`,
+        msgSuccess: `Design Data Parameter value${row['DD_PARAM_VALUE']} was successfully deleted`
       },
-      userStampFields: ['AN_DELETED_BY'],
-      dateStampFields: ['AN_DELETED_DATE'],
     });
   }
 
-  DeleteSelectedRecord() {
-    console.log('Execute delete');
-  }
 
   PrintRecordEvent(args: any) {
     console.log('PrintRecordEvent', args, 'Current row:', this.currentRow);

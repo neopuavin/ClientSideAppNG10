@@ -1,0 +1,29 @@
+<app-app-form-a #detailForm [excludes]="" [readOnly]="false" (afterScatter)="AfterScatter($event)"
+  [sourceRow]="data.row" [formObject]="formObject" [labelWidth]="90" [rowSpacing]="1">
+  <div style="font-size:0.95em;padding:10px;height:240px;margin-bottom:10px;" class="form-control">
+    
+    <app-panel-a [horizontal]="true">
+      <app-panel-a [PL]="2">
+        <app-app-input-a [fieldName]="'DD_ASSET'" [actionIcon]="'fa-sitemap'" [actionTip]="'Select new asset...'"
+        (actionClick)="ChangeAsset($event)" [label]="'Asset'" [LPL]="0"
+        [lookupSource]="assetLookup">
+        </app-app-input-a>
+        <app-app-input-a [fieldName]="'DD_PARAM_REF'" [label]="'Reference'" [rows]="4"></app-app-input-a>
+        <app-app-input-a [fieldName]="'DD_PARAM_NOTES'" [label]="'Notes'" [rows]="4"></app-app-input-a>
+      </app-panel-a>
+      <app-panel-a [PL]="2" [width]="350" [labelWidth]="150">
+        <app-app-input-a [fieldName]="'DD_PARAM_VALUE'" [label]="'Parameter Value'">
+        </app-app-input-a>
+        <!-- <app-app-input-a [fieldName]="'DD_PARAM'" [label]="'Parameter Type'" [lookupSource]="this.DesignDataLookup(109)"></app-app-input-a> -->
+        <app-app-input-a [fieldName]="'DD_PARAM_UNIT'" [label]="'Parameter Unit'" [lookupSource]="this.DesignDataLookup(110)">
+        </app-app-input-a>
+        <app-app-input-a [fieldName]="'DD_PARAM'" [label]="'Parameter Name'" [lookupSource]="this.DesignDataNameLookup()">
+        </app-app-input-a>
+        <app-app-input-a [fieldName]="'DD_UPDATE_DATE'" [label]="'Updated Date'">
+        </app-app-input-a>
+      </app-panel-a>
+    </app-panel-a>
+  </div>
+  
+
+</app-app-form-a>

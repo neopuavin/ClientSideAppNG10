@@ -5,8 +5,6 @@ import { DataOption, ILookupItem } from '../../../api/mod/app-common.classes';
 import { FormCommon } from '../../form.common';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
-import { CellTextAlign } from 'src/app/api/cmp/data-grid/data-grid.component';
-
 
 import { DesignDataComponent } from './../design-data.component';
 
@@ -38,12 +36,10 @@ extends FormCommon
        fieldName: 'DD_ID',
        width: 50,
        caption: 'ID',
-       align: CellTextAlign.CENTER,
        isKey: true,
      })
      .AddColumn({
        width: 350,
-       align: CellTextAlign.CENTER,
        fieldName: 'DD_ASSET',
        caption: 'Asset',
        // lookupParams: {

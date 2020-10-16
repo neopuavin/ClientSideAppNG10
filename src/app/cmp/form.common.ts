@@ -1,3 +1,4 @@
+import { IFieldExpression } from './../api/mod/app-common.classes';
 import { ColumnInfo } from './../api/mod/app-column.model';
 import { AppFormAComponent } from './../api/cmp/app-form-a/app-form-a.component';
 import {
@@ -11,7 +12,10 @@ import { RequestParams } from './../api/mod/app-params.model';
 import { Subscription, Observable } from 'rxjs';
 
 import { DataTab } from './../api/cmp/data-tabs/data-tabs.component';
-import { DataGridComponent, DataGridColumn } from './../api/cmp/data-grid/data-grid.component';
+import {
+  DataGridComponent,
+  DataGridColumn,
+} from './../api/cmp/data-grid/data-grid.component';
 
 import {
   TreeViewNode,
@@ -28,6 +32,7 @@ import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { DataGridOption } from '../api/cmp/data-grid/data-grid.component';
 import { DataTabsOption } from '../api/cmp/data-tabs/data-tabs.component';
 import { JsonPipe } from '@angular/common';
+import { MatOptionSelectionChange } from '@angular/material/core';
 
 @Component({
   template: '',
@@ -258,21 +263,44 @@ export class FormCommon {
     //
   }
 
-  public ApplyFilter(e:{column:DataGridColumn,filterForm:FormGroup,option:DataGridOption}){
-    const {column,option}=e;
-    console.log("Module ApplyFilter:",e);
+  public ApplyFilter(e: { column: DataGridColumn; option: DataGridOption }) {
+    const { column, option } = e;
+    console.log('Module ApplyFilter:', e);
 
-    column.filters = [];
-
+    //column.filters = [];
 
     // clear filter expressions stored in _WhereTree array
     // go through all columns where filtering is allowed and where filter parameter is set
 
-    option.columns.forEach(c=>{
-      if(c.allowFilter)
-      console.log(c.fieldKey,c.filters ? c.filters.length : 'no filters');
-      else console.log(c.fieldKey,"not filterable")
-    })
+    // clear all filter
+    option.SubFilterClear;
+
+    option.columns.forEach((c) => {
+      // 'return' statement here will not exit the main function (i.e. ApplyFilter),
+      // but will only exit the callback function within the forEach method of the collection
+      if (!c.allowFilter) return;
+
+      if (!c.filters) return;
+      if (c.filters.length == 0) return;
+
+      c.filters.forEach((f: IFieldExpression) => {
+        console.log('filter:', JSON.stringify(f));
+        switch (f.operator) {
+          case 'eq':
+            option.Equal(f.fieldParam, f.value);
+            break;
+          default:
+        }
+      });
+
+      console.log("WhereTree FILTER:",JSON.stringify(option.WhereTree))
+      this.SetupData();
+
+
+      // if(c.allowFilter)
+      // console.log(c.fieldKey,c.filters ? c.filters.length : 'no filters');
+      // else console.log(c.fieldKey,"not filterable")
+    });
   }
 
   SetupData(pageNumber?: number, pageSize?: number) {
@@ -324,8 +352,12 @@ export class FormCommon {
     filter += localFilter ? '^' + localFilter : '';
 
     // Base request parameters where initially common filtering and sorting is applied
-    console.log('\n*******FILTER*****', filter,
-    "\nFieldMap:",this.mainGridOptions.fieldMap);
+    console.log(
+      '\n*******FILTER*****',
+      filter,
+      '\nFieldMap:',
+      this.mainGridOptions.fieldMap
+    );
 
     let requestParams: RequestParams = {
       code: this.mainGridOptions.fromClauseCode,
@@ -333,7 +365,7 @@ export class FormCommon {
       filter: filter,
       pageNumber: pageNumber,
       pageSize: pageSize,
-      fieldMap:this.mainGridOptions.fieldMap,
+      fieldMap: this.mainGridOptions.fieldMap,
       //clearExisting: true,
       snapshot: true,
       sortFields: this.mainGridOptions.orderByClause,

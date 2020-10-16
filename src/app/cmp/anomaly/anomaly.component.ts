@@ -560,7 +560,7 @@ export class AnomalyComponent
     if (isCommonLookup) lkpKey = 'lkp' + key;
     if (this._AnomalyLookup[lkpKey])
       // formatted lookup is already set in _AnomalyLookup object
-      return this._AnomalyLookup[lkpKey];
+        return this._AnomalyLookup[lkpKey];
 
     // anomaly lookup not yet available
     let ret: Array<any> = [];
@@ -579,7 +579,7 @@ export class AnomalyComponent
       });
 
     // only create entry of the lookup in the this._AnomalyLookup object
-    // if elements are exiting, otherwise, subsequent call will
+    // if elements are existing, otherwise, subsequent call will
     // return empty array and will cause issues on UI rendering.
     if (ret.length) this._AnomalyLookup[lkpKey] = ret;
 

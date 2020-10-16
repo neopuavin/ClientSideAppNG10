@@ -361,8 +361,12 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  private _filteredColumn:DataGridColumn;
+  public get filteredColumn():DataGridColumn{return this._filteredColumn}
   OpenFilter(column: DataGridColumn) {
     let ref: MatDialogRef<FilterParametersComponent, any>;
+
+    this._filteredColumn = this.options.columns.find(c=>c.fieldKey == column.fieldKey);
 
     ref = this.dialog.open(FilterParametersComponent, {
       minWidth: '300px',
@@ -370,8 +374,8 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
       disableClose: false,
       //sourceLookups:this.sourceLookups,
       data: {
+        column:this.filteredColumn,
         options:this.options,
-        column: column,
         table: this.sourceTable,
         sourceLookups: this.sourceLookups,
         parent:this
@@ -382,7 +386,6 @@ export class DataGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ApplyFilter(column:DataGridColumn){
-    console.log("GRID DATA GRID CIOLUMN:",column);
     if(this.applyFilter) this.applyFilter.emit({column:column,option:this.options});
   }
 

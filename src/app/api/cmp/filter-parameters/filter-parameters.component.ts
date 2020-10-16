@@ -7,7 +7,11 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ColumnInfo } from '../../mod/app-column.model';
-import { IFilterOperator, FilterDataType, DataColumn } from '../../mod/app-common.classes';
+import {
+  IFilterOperator,
+  FilterDataType,
+  DataColumn,
+} from '../../mod/app-common.classes';
 import * as moment from 'moment/moment';
 
 @Component({
@@ -370,8 +374,9 @@ export class FilterParametersComponent implements OnInit {
   }
 
   public get dataColumn(): DataGridColumn {
-    if (this.data) return this.data.column;
-    return null;
+    if (!this.data) return null;
+    if (!this.data.parent) return null;
+    return this.data.parent.filteredColumn;
   }
 
   private _columnFieldName: string = null;
@@ -457,9 +462,8 @@ export class FilterParametersComponent implements OnInit {
     if (this.data.parent)
       if (this.data.parent.ApplyFilter) {
         // process filter expression(s)
-        if(clear)this.formData = this.EmptyForm;
-        this.RecordFilter();
-        console.log("this.dataColumn.filters:",this.dataColumn.filters);
+        if (clear) this.formData = this.EmptyForm;
+        this.RecordFilter(clear);
         this.data.parent.ApplyFilter(this.dataColumn);
       } else console.log('ApplyFilter event not defined');
     else console.log('ApplyFilter event not defined');
@@ -470,30 +474,39 @@ export class FilterParametersComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  RecordFilter() {
-    const gc: DataGridColumn = this.dataColumn;
+  private get dataGridOptions(): DataGridOption {
+    if (!this.data) return null;
+    if (!this.data.parent) return null;
+    return this.data.parent.options;
+  }
+
+  RecordFilter(clear?: boolean) {
+    if (!clear) clear = false;
+    let opt: DataGridOption = this.dataGridOptions;
+    if (!opt) return;
+
+    let gc: DataGridColumn = this.dataColumn;
+    if (!gc) return;
     // clear filters
     gc.filters = [];
     // process filter(s)
-    console.log('RecordFilter for data column:', gc);
-    gc.filters.push({
-      fieldParam: { fieldName: gc.fieldName },
-      operator: this.operatorValue,
-      value: this.searchValue1,
-    });
-
-    // set search box value to empty before saving to dataColumn's filterData form
-    this.formData.get('search').setValue("");
-
     // set dataColumn sorting parameter
     gc.sortAsc = this.sortAscending;
     gc.sortDesc = this.sortDescending;
 
-    gc.filters = [{},{}];
-
-
-    if (!gc.filterData) gc.filterData = this.EmptyForm;
-    gc.filterData.patchValue(this.formData.value);
+    if (!clear) {
+      gc.filters.push({
+        fieldParam: { fieldName: this.dataColumn.fieldName },
+        operator: this.operatorValue,
+        value: this.searchValue1,
+        value1: this.searchValue1,
+        value2: this.searchValue2,
+      });
+      // set search box value to empty before saving to dataColumn's filterData form
+      this.formData.get('search').setValue('');
+      if (!gc.filterData) gc.filterData = this.EmptyForm;
+      gc.filterData.patchValue(this.formData.value);
+    } else gc.filterData = null;
   }
 
   private get EmptyForm(): FormGroup {

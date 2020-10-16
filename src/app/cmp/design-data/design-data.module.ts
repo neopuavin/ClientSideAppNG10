@@ -7,13 +7,15 @@ import { DesignDataGeneralComponent } from './design-data-general/design-data-ge
 import { DesignDataKpbasedataComponent } from './design-data-kpbasedata/design-data-kpbasedata.component';
 import { DesignDataHistoryComponent } from './design-data-history/design-data-history.component';
 import { DesignDataAttachmentComponent } from './design-data-attachment/design-data-attachment.component';
+import { DesignDataAddEditComponent } from './design-data-add-edit/design-data-add-edit.component';
 
 const declare = [
   DesignDataComponent,
   DesignDataGeneralComponent,
   DesignDataKpbasedataComponent,
   DesignDataHistoryComponent,
-  DesignDataAttachmentComponent
+  DesignDataAttachmentComponent,
+  DesignDataAddEditComponent
 ];
 
 @NgModule({
