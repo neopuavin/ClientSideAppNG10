@@ -383,6 +383,7 @@ export class FormCommon {
         // inline lookup definitions
         // this._gridSourceLookups = data.processed.lookups[0];
         this.gridSourceLookups = data.processed.lookups[0];
+        console.log("this.gridSourceLookups:",this.gridSourceLookups);
 
         // refresh data grid to display extracted data
         if (this.mainGrid) this.mainGrid.Refresh();
@@ -393,7 +394,6 @@ export class FormCommon {
         if (this.gridSourceRows.length) row = this.gridSourceRows[0];
 
         // console.log('RETURN DATA:', data, 'ROW:', row);
-
         this.ResetCurrentRow(row);
         this.mainGridOptions.RecordExtractedDataFieldnames();
       },
@@ -990,6 +990,18 @@ export class FormCommon {
           );
         }
       });
+  }
+
+  GetGridLookup(lookupName:string):Array<any>{
+    const lkps = this.moduleState.gridSourceLookups;
+    if(!lkps) return[]
+    const lkp = this.moduleState.gridSourceLookups[lookupName];
+    if(!lkp) return;
+    let ret:Array<any> = [];
+    for(let key in lkp){
+      ret.push({key:key,text:lkp[key]});
+    }
+    return ret;
   }
 
   public GridRowClickLocal(data: any): void {

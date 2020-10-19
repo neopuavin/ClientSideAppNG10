@@ -825,7 +825,7 @@ export class ModuleState {
 
   public moduleId: number;
 
-  public gridSourceLookups: Array<any>;
+  public gridSourceLookups:any;// Array<any>;
 
   public gridDataSource: Array<any> = [];
   public gridCurrentRowIndex: number = -1;
@@ -851,7 +851,7 @@ export class ModuleState {
     this.mainFormCollection = [];
     this.mainRecordsBuffer = [];
     this.gridDataSource = [];
-    this.gridSourceLookups = [];
+    this.gridSourceLookups = {};
 
     // delete this.mainGridOptions;
     // delete this.mainTabsOptions;

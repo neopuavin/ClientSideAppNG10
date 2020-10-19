@@ -5,7 +5,7 @@
       <app-app-input-a [fieldName]="'RF_TYPE'" [label]="'Type'" [lookupSource]="this.module.RefLookup(139)"></app-app-input-a>
       <app-app-input-a [fieldName]="'RF_DESC'" [label]="'Description'" [rows]="3"></app-app-input-a>
 
-      <app-app-input-a [lookupSource]="this.module.RefLookup(142)"
+      <app-app-input-a  [lookupSource]="this.module.GetGridLookup('RTYPE')"
       [fieldName]="'RF_PATH'" [label]="'Path'"></app-app-input-a>
 
       <app-app-input-a [fieldName]="'RF_UPDDATE'" [label]="'Upload date'"></app-app-input-a>
@@ -15,7 +15,7 @@
       </app-panel-a>
 
     <app-panel-a [PL]="2" [width]="350" [labelWidth]="80">
-      <app-app-input-a [fieldName]="'RF_ASSET'" [label]="'Asset'"></app-app-input-a>
+      <app-app-input-a [fieldName]="'RF_ASSET'" [label]="'Asset'" [lookupSource]="this.module.GetGridLookup('ASSETNAME')"></app-app-input-a>
       <app-app-input-a [fieldName]="'RF_FILENAME'" [label]="'Filename'"></app-app-input-a>
       <app-app-input-a [fieldName]="'RF_LLID'" [label]="'Document Id'"></app-app-input-a>
       <app-app-input-a [fieldName]="'RF_UPLDATE'" [label]="'Upload date'"></app-app-input-a>

@@ -101,6 +101,8 @@ export class ReferenceLibraryComponent
 
       .AddColumn({ fieldName: 'RF_FILENAME', minWidth: 150 })
 
+      .AddRequiredDataFields(["RF_ID","RF_ASSET","ASSETNAME","RTYPE"])
+
       // module-specific join statement *****************************************
       .LeftJoin({
         code: 'node',
@@ -112,7 +114,8 @@ export class ReferenceLibraryComponent
         code: 'lkp',
         alias: 'tlkp',
         localField: 'RF_TYPE',
-      });
+      })
+
   }
 
   SetupDetailsTab() {
