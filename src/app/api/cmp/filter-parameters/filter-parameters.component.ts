@@ -330,6 +330,17 @@ export class FilterParametersComponent implements OnInit {
     const res: number = this.dataType & this.TEXT_OR_NUMBER;
     return res != 0;
   }
+  public get isNumber(): boolean {
+    const res: number = this.dataType & FilterDataType.NUMBER;
+    return res != 0;
+  }
+  GetSearchValue(value: any): any {
+    if (this.isNumber) {
+      return isNaN(value) ? null : +value;
+    } else {
+      return value;
+    }
+  }
 
   public get operatorValue(): string {
     return this.getFormControlValue('operatorValue');
@@ -498,9 +509,9 @@ export class FilterParametersComponent implements OnInit {
       gc.filters.push({
         fieldParam: { fieldName: this.dataColumn.fieldName },
         operator: this.operatorValue,
-        value: this.searchValue1,
-        value1: this.searchValue1,
-        value2: this.searchValue2,
+        value: this.GetSearchValue(this.searchValue1),
+        value1: this.GetSearchValue(this.searchValue1),
+        value2: this.GetSearchValue(this.searchValue2),
       });
       // set search box value to empty before saving to dataColumn's filterData form
       this.formData.get('search').setValue('');

@@ -25,6 +25,7 @@ export class ReferenceLibraryComponent
     this.ds.SetLookupData(
       [
         { filterValue: 142 }, // Anomaly Status
+        { filterValue: 139 }, // Anomaly Status
         // { filterValue: 156 }, // Survey Data Class
         // { filterValue: 157 }, // Chem Data Class
         // { filterValue: 253 }, // Compliance Module Status Color
@@ -32,6 +33,7 @@ export class ReferenceLibraryComponent
       () => {
         // call all Anomaly Lookup formating methods
         console.log('this.RefLookup(142):', this.RefLookup(142));
+        console.log('this.RefLookup(139):', this.RefLookup(139));
       }
     );
 

@@ -41,7 +41,7 @@
         }
       ],
       "url_local": "http://soga-alv/ngarbi/api/app",
-      "url_soga": "http://soga-s-01/imsaapi/api/app",
+      "url_soga": "http://soga-s-01/imsaapi2/api/app",
       "url_deploy": "http://ngimsa.ivideolib.com/api/app",
       "url_use_deploy": false
     },
